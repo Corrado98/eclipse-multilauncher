@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.internal.core.LaunchConfiguration;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -143,6 +144,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 					if (list != null) {
 						viewer.setInput(list);
 						viewer.refresh();
+						setDirty(true);
+						updateLaunchConfigurationDialog();
 					}
 
 				}
@@ -183,6 +186,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 				if (selectedConfiguration != null && list != null)
 					list.remove(selectedConfiguration);
 				viewer.refresh();
+				setDirty(true);
+				updateLaunchConfigurationDialog();
 			}
 		});
 	}
@@ -211,6 +216,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 						list.set(indexBefore, temp2);
 						viewer.setInput(list);
 						viewer.refresh();
+						setDirty(true);
+						updateLaunchConfigurationDialog();
 
 					} else {
 						System.out.println("UP ERROR");
@@ -297,6 +304,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 						list.set(indexAfter, temp2);
 						viewer.setInput(list);
 						viewer.refresh();
+						setDirty(true);
+						updateLaunchConfigurationDialog();
 					} else {
 						System.out.println("DOWN ERROR");
 						return;
@@ -334,7 +343,13 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		// }
 		List<String> empty = new ArrayList<>();
 		try {
-			viewer.setInput(configuration.getAttribute("configs", empty));
+			list = configuration.getAttribute("configs", empty);
+		} catch (CoreException e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			viewer.setInput(configuration.getAttribute("configs", list));
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -348,5 +363,11 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		// text.getText());
 		// configuration.setAttribute(attributeName, value);
 		configuration.setAttribute("configs", list);
+		try {
+			configuration.doSave();
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
