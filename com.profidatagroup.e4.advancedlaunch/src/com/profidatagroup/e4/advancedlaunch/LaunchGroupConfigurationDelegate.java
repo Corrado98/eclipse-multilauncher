@@ -32,7 +32,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	
 	public LaunchGroupConfigurationDelegate() {
 		//HARDCODED ATM
-		selectedPostLaunchAction = "Read Console-Text"; // = ComboBox.getSelectedIndex().getText()
+		selectedPostLaunchAction = "Wait until prior config Terminated"; // = ComboBox.getSelectedIndex().getText()
 	}
 
 	@Override

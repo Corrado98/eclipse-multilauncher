@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
 import com.profidatagroup.e4.advancedlaunch.Activator;
+import com.profidatagroup.e4.advancedlaunch.SampleLaunchConfigurationAttributes;
 
 /**
  * 
@@ -47,17 +48,17 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	private Button btnUp;
 	private Button btnDown;
 	private TableViewer viewer;
-	private ILaunchConfiguration selectedConfiguration;
+	private String selectedConfiguration;
 	private Composite comp; // can be local in create control.
-	private List<ILaunchConfiguration> list = new ArrayList<>();
-//	private DialogSettings settings = new DialogSettings("Settings");
-//	private IPath path = Activator.getDefault().getStateLocation();
-//	private String filename = path.append("settings.xml").toOSString();
-//	File file = new File(filename);
+	private List<String> list = new ArrayList<>();
+	// private DialogSettings settings = new DialogSettings("Settings");
+	// private IPath path = Activator.getDefault().getStateLocation();
+	// private String filename = path.append("settings.xml").toOSString();
+	// File file = new File(filename);
 
 	@Override
 	public void createControl(Composite parent) {
-		//isFileAlreadyCreated(file);
+		// isFileAlreadyCreated(file);
 		initComp(parent);
 		createAddBtnWithListener();
 		initTableViewer();
@@ -68,31 +69,31 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		createDownButtonWithListener();
 	}
 
-//	private void isFileAlreadyCreated(File f) {
-//		if (!f.exists()) {
-//			try {
-//				f.createNewFile();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
+	// private void isFileAlreadyCreated(File f) {
+	// if (!f.exists()) {
+	// try {
+	// f.createNewFile();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// }
 
-//	private void loadSettingsFromFile() {
-//		try {
-//			settings.load(filename);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//
-//	private void saveSettingsToFile() {
-//		try {
-//			settings.save(filename);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
+	// private void loadSettingsFromFile() {
+	// try {
+	// settings.load(filename);
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// private void saveSettingsToFile() {
+	// try {
+	// settings.save(filename);
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
 
 	private void initComp(Composite parent) {
 		comp = new Group(parent, SWT.BORDER);
@@ -137,8 +138,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 					for (ILaunchConfiguration a : multiLaunchConfigurationSelectionDialog
 							.getSelectedLaunchConfigurations()) {
 						System.out.println(a.getName());
-						list.add(a);
-					}					
+						list.add(a.getName());
+					}
 					if (list != null) {
 						viewer.setInput(list);
 						viewer.refresh();
@@ -157,7 +158,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				Object selectedElement = selection.getFirstElement();
 				// do something with it
-				selectedConfiguration = (ILaunchConfiguration) selectedElement;
+				selectedConfiguration = (String) selectedElement;
 				if (selectedElement != null) {
 					btnRemove.setEnabled(true);
 					btnUp.setEnabled(true);
@@ -200,9 +201,9 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 					// up than that, therefore return
 					if (index > 0) {
 						int indexBefore = index - 1;
-						ILaunchConfiguration temp = list.get(index); // 5
-						ILaunchConfiguration temp2 = list.get(indexBefore); // 10
-						ILaunchConfiguration temp3 = null; //
+						String temp = list.get(index); // 5
+						String temp2 = list.get(indexBefore); // 10
+						String temp3 = null; //
 						temp3 = temp;
 						temp = temp2;
 						temp2 = temp3;
@@ -233,8 +234,9 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		colLaunchConfigurationName.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				ILaunchConfiguration ilc = (ILaunchConfiguration) element;
-				return ilc.getName();
+//				ILaunchConfiguration ilc = (ILaunchConfiguration) element;
+//				return ilc.getName();
+				return (String) element;
 			}
 		});
 
@@ -245,12 +247,14 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		colLaunchConfigurationMode.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				ILaunchConfiguration ilc = (ILaunchConfiguration) element;
-				try {
-					return ilc.getModes().toString();
-				} catch (CoreException e) {
-				}
-				return "Error";
+//				ILaunchConfiguration ilc = (ILaunchConfiguration) element;
+//				try {
+//					return ilc.getModes().toString();
+//				} catch (CoreException e) {
+//				}
+//				return "Error";
+//				return (String) element;
+				return "";
 			}
 		});
 
@@ -283,9 +287,9 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 					// down than that, therefore return
 					if (index + 1 < list.size()) {
 						int indexAfter = index + 1;
-						ILaunchConfiguration temp = list.get(index); // 5
-						ILaunchConfiguration temp2 = list.get(indexAfter); // 10
-						ILaunchConfiguration temp3 = null; //
+						String temp = list.get(index); // 5
+						String temp2 = list.get(indexAfter); // 10
+						String temp3 = null; //
 						temp3 = temp;
 						temp = temp2;
 						temp2 = temp3;
@@ -328,6 +332,13 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		// } catch (CoreException e) {
 		// // ignore here
 		// }
+		List<String> empty = new ArrayList<>();
+		try {
+			viewer.setInput(configuration.getAttribute("configs", empty));
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -335,5 +346,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		// set the text value for the CONSOLE_TEXT key
 		// configuration.setAttribute(SampleLaunchConfigurationAttributes.CONSOLE_TEXT,
 		// text.getText());
+		// configuration.setAttribute(attributeName, value);
+		configuration.setAttribute("configs", list);
 	}
 }
