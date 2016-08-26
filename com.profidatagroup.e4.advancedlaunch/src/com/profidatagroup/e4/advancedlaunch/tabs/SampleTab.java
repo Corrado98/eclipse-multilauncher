@@ -35,6 +35,10 @@ import org.eclipse.swt.widgets.Text;
 
 import com.profidatagroup.e4.advancedlaunch.Activator;
 
+/**
+ * 
+ * @author PaCo
+ */
 public class SampleTab extends AbstractLaunchConfigurationTab {
 
 	private Text text;
