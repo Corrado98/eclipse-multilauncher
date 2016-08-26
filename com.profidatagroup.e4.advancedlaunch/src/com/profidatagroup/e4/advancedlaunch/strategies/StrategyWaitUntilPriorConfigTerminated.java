@@ -17,6 +17,8 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
 
+import com.profidatagroup.e4.advancedlaunch.tabs.SampleTab;
+
 public class StrategyWaitUntilPriorConfigTerminated extends LaunchStrategy {
 
 	private List<Set<IProcess>> processesToWait = Collections.synchronizedList(new ArrayList<>());
@@ -24,12 +26,8 @@ public class StrategyWaitUntilPriorConfigTerminated extends LaunchStrategy {
 	@Override
 	public void launchSelectedStrategy() {
 
-		// DO A HARDCODED SIMULATION
-		List<String> myList = new ArrayList<>();
-
-		// My simulated sequence of selected launch configurations.
-		myList.add("Primes");
-		myList.add("Numbers");
+		List<String> myList = SampleTab.list;
+		if(myList == null) return;
 
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType type = manager

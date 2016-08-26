@@ -51,7 +51,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	private TableViewer viewer;
 	private String selectedConfiguration;
 	private Composite comp; // can be local in create control.
-	private List<String> list = new ArrayList<>();
+	public static List<String> list = new ArrayList<>();
 	// private DialogSettings settings = new DialogSettings("Settings");
 	// private IPath path = Activator.getDefault().getStateLocation();
 	// private String filename = path.append("settings.xml").toOSString();
