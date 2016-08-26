@@ -50,16 +50,14 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	private ILaunchConfiguration selectedConfiguration;
 	private Composite comp; // can be local in create control.
 	private List<ILaunchConfiguration> list = new ArrayList<>();
-	private DialogSettings settings = new DialogSettings("Settings");
-	private IPath path = Activator.getDefault().getStateLocation();
-	private String filename = path.append("settings.xml").toOSString();
-	//private String launchesPath = path.append("..\\org.eclipse.debug.core\\.launches\\")
-	File file = new File(filename);
+//	private DialogSettings settings = new DialogSettings("Settings");
+//	private IPath path = Activator.getDefault().getStateLocation();
+//	private String filename = path.append("settings.xml").toOSString();
+//	File file = new File(filename);
 
 	@Override
 	public void createControl(Composite parent) {
-		isFileAlreadyCreated(file);
-		//loadAlreadySavedSettings();
+		//isFileAlreadyCreated(file);
 		initComp(parent);
 		createAddBtnWithListener();
 		initTableViewer();
@@ -70,35 +68,31 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		createDownButtonWithListener();
 	}
 
-	private void isFileAlreadyCreated(File f) {
-		if (!f.exists()) {
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	private void loadAlreadySavedSettings() {
-		
-	}
+//	private void isFileAlreadyCreated(File f) {
+//		if (!f.exists()) {
+//			try {
+//				f.createNewFile();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 
-	private void loadSettingsFromFile() {
-		try {
-			settings.load(filename);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void saveSettingsToFile() {
-		try {
-			settings.save(filename);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//	private void loadSettingsFromFile() {
+//		try {
+//			settings.load(filename);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	private void saveSettingsToFile() {
+//		try {
+//			settings.save(filename);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	private void initComp(Composite parent) {
 		comp = new Group(parent, SWT.BORDER);
@@ -127,8 +121,6 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		
-		//load
 	}
 
 	private void createAddBtnWithListener() {
@@ -142,14 +134,10 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 					// gets selected launchconfigurations from chooser
 					// (selection dialog)
-					int counter = 0;
 					for (ILaunchConfiguration a : multiLaunchConfigurationSelectionDialog
 							.getSelectedLaunchConfigurations()) {
 						System.out.println(a.getName());
 						list.add(a);
-						settings.put(String.valueOf(counter), a.getName());
-						saveSettingsToFile();
-						counter++;
 					}					
 					if (list != null) {
 						viewer.setInput(list);
