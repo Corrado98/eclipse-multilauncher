@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Advancedlaunch
+Bundle-SymbolicName: com.profidatagroup.e4.advancedlaunch;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.profidatagroup.e4.advancedlaunch.Activator
+Bundle-Vendor: PROFIDATAGROUP
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui;bundle-version="3.11.200",
+ org.eclipse.ui.console
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

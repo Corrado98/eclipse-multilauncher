@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  
+   <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
+	   <launchConfigurationType
+	   	   id="com.profidatagroup.e4.advancedlaunch.launchConfigurationType"
+		   name="Launch Group"
+		   delegate="com.profidatagroup.e4.advancedlaunch.LaunchGroupConfigurationDelegate"
+		   modes= "run, debug"
+		   sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+	       sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
+	   </launchConfigurationType>
+	</extension>
+
+	<extension
+	    point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+	    <launchConfigurationTabGroup
+	        class="com.profidatagroup.e4.advancedlaunch.tabs.SampleTabGroup"
+	        id="com.profidatagroup.e4.advancedlaunch.launchConfigurationTabGroup"
+	        type="com.profidatagroup.e4.advancedlaunch.launchConfigurationType">
+	    </launchConfigurationTabGroup>
+	</extension> 
+	
+	<extension
+	     point="org.eclipse.ui.console.consolePatternMatchListeners">
+		  <consolePatternMatchListener
+			        class="com.profidatagroup.e4.advancedlaunch.strategies.StrategyReadConsoleText"
+			        id="com.profidatagroup.e4.advancedlaunch.strategies.StrategyReadConsoleText"
+			        regex="*foo*">
+					     <enablement>
+					        <test property="org.eclipse.ui.console.consoleTypeTest" value="exampleConsole"/>
+					     </enablement>
+		  </consolePatternMatchListener>
+	</extension>
+
+</plugin>
