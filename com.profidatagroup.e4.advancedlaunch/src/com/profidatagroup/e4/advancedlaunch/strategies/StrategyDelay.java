@@ -22,7 +22,12 @@ public class StrategyDelay extends LaunchStrategy {
 //	}
 
 	@Override
-	public void launchSelectedStrategy() {
+	public void launchSelectedStrategy(/*ILaunchConfiguration configurationToLaunch, String mode*/) {
+		/*configurationToLaunch.launch(mode, null);
+		 * waitDelay(seconds)
+		 * 
+		 * 
+		 */
 
 		// DO A HARDCODED SIMULATION
 		List<String> myList = new ArrayList<>();

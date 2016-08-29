@@ -3,7 +3,9 @@ package com.profidatagroup.e4.advancedlaunch.tabs;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.cdt.launch.internal.ui.MultiLaunchConfigurationSelectionDialog;
 import org.eclipse.core.runtime.CoreException;
@@ -69,32 +71,6 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		insertPlaceHolder();
 		createDownButtonWithListener();
 	}
-
-	// private void isFileAlreadyCreated(File f) {
-	// if (!f.exists()) {
-	// try {
-	// f.createNewFile();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// }
-
-	// private void loadSettingsFromFile() {
-	// try {
-	// settings.load(filename);
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// private void saveSettingsToFile() {
-	// try {
-	// settings.save(filename);
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
 
 	private void initComp(Composite parent) {
 		comp = new Group(parent, SWT.BORDER);
@@ -265,7 +241,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			}
 		});
 
-		// create a column for the launchconfiguration ACTIOn
+		// create a column for the launchconfiguration ACTION
 		TableViewerColumn colLaunchConfigurationAction = new TableViewerColumn(viewer, SWT.NONE);
 		colLaunchConfigurationAction.getColumn().setWidth(200);
 		colLaunchConfigurationAction.getColumn().setText("Action");
@@ -363,11 +339,29 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		// text.getText());
 		// configuration.setAttribute(attributeName, value);
 		configuration.setAttribute("configs", list);
-		try {
-			configuration.doSave();
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+//		Map<String, Map<ILaunchConfiguration, Map<String, String>>> map = new HashMap<>();
+		
+//		
+//		Map<ILaunchConfiguration, Map<String, String>> map2 = new HashMap<>();
+//		
+//		Map<String, String> attributes = new HashMap<>();
+//		
+//		attributes.put("debug", "delay");
+//		
+//		ILaunchConfiguration conf = null;
+//		
+//		map2.put(conf, attributes);	
+//		
+//		map.put("configuration", map2);
+//		
+//		configuration.setAttributes(map);
+//		
+//		try {
+//			configuration.doSave();
+//		} catch (CoreException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 }

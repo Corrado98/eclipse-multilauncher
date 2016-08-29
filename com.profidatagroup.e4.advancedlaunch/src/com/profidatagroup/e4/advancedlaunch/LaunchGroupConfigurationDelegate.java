@@ -39,6 +39,8 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
 		
+		//get all configs and check their attributes
+		
 		switch(selectedPostLaunchAction) {
 		case "Wait until prior config Terminated": 
 			new StrategyWaitUntilPriorConfigTerminated().launchSelectedStrategy();

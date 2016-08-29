@@ -24,10 +24,20 @@ public class StrategyWaitUntilPriorConfigTerminated extends LaunchStrategy {
 	private List<Set<IProcess>> processesToWait = Collections.synchronizedList(new ArrayList<>());
 
 	@Override
-	public void launchSelectedStrategy() {
+	public void launchSelectedStrategy(/*ILaunchConfiguration configurationToLaunch, String mode*/) {
+		
+		/*
+		 * configurationToLaunch.launch(mode, null);
+		 *  
+		 * 
+		 * 
+		 */
 
 		List<String> myList = SampleTab.list;
-		if(myList == null) return;
+		if(myList == null) {
+			System.out.println("LIST IS NULL!");
+			return;
+		}
 
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType type = manager

@@ -225,6 +225,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		combo.add(LaunchElement.actionEnumToStr(EPostLaunchAction.NONE));
 		combo.add(LaunchElement.actionEnumToStr(EPostLaunchAction.WAIT_FOR_TERMINATION));
 		combo.add(LaunchElement.actionEnumToStr(EPostLaunchAction.DELAY));
+		
+		//my addition to the predefined cdt code
+		combo.add("Wait for Console-Text");
+		
 		combo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
