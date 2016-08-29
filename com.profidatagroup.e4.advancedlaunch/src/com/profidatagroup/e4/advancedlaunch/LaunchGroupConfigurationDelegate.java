@@ -32,7 +32,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	
 	public LaunchGroupConfigurationDelegate() {
 		//HARDCODED ATM
-		selectedPostLaunchAction = "Wait until prior config Terminated"; // = ComboBox.getSelectedIndex().getText()
+		selectedPostLaunchAction = "Delay"; // = ComboBox.getSelectedIndex().getText()
 	}
 
 	@Override
@@ -43,19 +43,19 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		
 		switch(selectedPostLaunchAction) {
 		case "Wait until prior config Terminated": 
-			new WaitUntilPriorConfigTerminatedStrategy().launchSelectedStrategy();
+			new WaitUntilPriorConfigTerminatedStrategy().launch();
 			break;
 			
 		case "Delay": //HARDCODED 4s ATM
-			new DelayStrategy().launchSelectedStrategy();
+			new DelayStrategy().launch();
 			break;
 			
 		case "Read Console-Text": 
-			new ReadConsoleTextStrategy().launchSelectedStrategy();
+			new ReadConsoleTextStrategy().launch();
 			break;
 			
 		case "None":
-			new EmptyStrategy().launchSelectedStrategy();
+			new EmptyStrategy().launch();
 			break;
 			
 		}

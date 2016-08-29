@@ -25,41 +25,15 @@ public class WaitUntilPriorConfigTerminatedStrategy extends AbstractLaunchStrate
 
 	@Override
 	public void launchSelectedStrategy() {
-
-		List<String> myList = SampleTab.configurationNameList;
-		if(myList == null) {
-			System.out.println("LIST IS NULL!");
-			return;
-		}
-
-		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-		ILaunchConfigurationType type = manager
-				.getLaunchConfigurationType("org.eclipse.jdt.launching.localJavaApplication");
-		ILaunchConfiguration[] configurations;
-		
-		addProcessesTerminateListener();
-
-		// all configurations of "Java Application"
-		try {
-			configurations = manager.getLaunchConfigurations(type);
-
-			for (int i = 0; i < myList.size(); i++) {
-				for (int j = 0; j < configurations.length; j++) {
-					if (myList.get(i).equals(configurations[j].getName())) {
-
-						ILaunch childLaunch = configurations[j].launch("debug", null);
-						IProcess[] childLaunchProcesses = childLaunch.getProcesses();
-						waitForProcessesToTerminate(childLaunchProcesses);
-						System.out.println(myList.get(i) + " was launched!");
-					}
-				}
-			}
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-
+		IProcess[] childLaunchProcesses = getChildLaunch().getProcesses();
+		waitForProcessesToTerminate(childLaunchProcesses);
 	}
 	
+	@Override
+	protected void useOptionalProcessTerminatedListener() {
+		addProcessesTerminateListener();
+	}	
+
 	private void addProcessesTerminateListener() {
 		DebugPlugin.getDefault().addDebugEventListener(new IDebugEventSetListener() {
 
@@ -77,7 +51,7 @@ public class WaitUntilPriorConfigTerminatedStrategy extends AbstractLaunchStrate
 					}
 				}
 			}
-		});	
+		});
 	}
 
 	// Adds the processes I launched in a List (Set)

@@ -16,6 +16,10 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 
+/*
+ * No correct working solution atm.
+ * 
+ */
 public class ReadConsoleTextStrategy extends AbstractLaunchStrategy implements IPatternMatchListenerDelegate {
 
 	@Override
