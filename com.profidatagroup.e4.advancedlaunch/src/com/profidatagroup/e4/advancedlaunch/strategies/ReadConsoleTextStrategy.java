@@ -16,7 +16,7 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 
-public class StrategyReadConsoleText extends LaunchStrategy implements IPatternMatchListenerDelegate {
+public class ReadConsoleTextStrategy extends AbstractLaunchStrategy implements IPatternMatchListenerDelegate {
 
 	@Override
 	public void launchSelectedStrategy() {
@@ -33,24 +33,6 @@ public class StrategyReadConsoleText extends LaunchStrategy implements IPatternM
 		
 		MessageConsoleStream out = myConsole.newMessageStream();
 		out.println("Hello from Generic foo console sample action");
-		//myConsole.destroy();
-//		conMan.removeConsoles(consoles);
-
-		
-		
-
-//		IWorkbench wb = PlatformUI.getWorkbench();
-//		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
-//		IWorkbenchPage page = win.getActivePage();
-//
-//		String id = IConsoleConstants.ID_CONSOLE_VIEW;
-//		IConsoleView view;
-//		try {
-//			view = (IConsoleView) page.showView(id);
-//			view.display(myConsole);
-//		} catch (PartInitException e) {
-//			e.printStackTrace();
-//		}
 		
 
 	}
@@ -68,7 +50,7 @@ public class StrategyReadConsoleText extends LaunchStrategy implements IPatternM
 
 	@Override
 	public void matchFound(PatternMatchEvent event) {
-		System.out.println("MATCH FOUND YAAAAAAAAAAAAAAAAAAAAAY");
+		System.out.println("MATCH FOUND");
 	}
 
 }

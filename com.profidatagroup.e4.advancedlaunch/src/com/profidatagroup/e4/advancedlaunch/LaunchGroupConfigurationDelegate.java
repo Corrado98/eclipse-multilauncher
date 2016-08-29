@@ -20,10 +20,10 @@ import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.ui.DebugUITools;
 
-import com.profidatagroup.e4.advancedlaunch.strategies.StrategyDelay;
-import com.profidatagroup.e4.advancedlaunch.strategies.StrategyNone;
-import com.profidatagroup.e4.advancedlaunch.strategies.StrategyReadConsoleText;
-import com.profidatagroup.e4.advancedlaunch.strategies.StrategyWaitUntilPriorConfigTerminated;
+import com.profidatagroup.e4.advancedlaunch.strategies.DelayStrategy;
+import com.profidatagroup.e4.advancedlaunch.strategies.EmptyStrategy;
+import com.profidatagroup.e4.advancedlaunch.strategies.ReadConsoleTextStrategy;
+import com.profidatagroup.e4.advancedlaunch.strategies.WaitUntilPriorConfigTerminatedStrategy;
 
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
 
@@ -43,19 +43,19 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		
 		switch(selectedPostLaunchAction) {
 		case "Wait until prior config Terminated": 
-			new StrategyWaitUntilPriorConfigTerminated().launchSelectedStrategy();
+			new WaitUntilPriorConfigTerminatedStrategy().launchSelectedStrategy();
 			break;
 			
 		case "Delay": //HARDCODED 4s ATM
-			new StrategyDelay().launchSelectedStrategy();
+			new DelayStrategy().launchSelectedStrategy();
 			break;
 			
 		case "Read Console-Text": 
-			new StrategyReadConsoleText().launchSelectedStrategy();
+			new ReadConsoleTextStrategy().launchSelectedStrategy();
 			break;
 			
 		case "None":
-			new StrategyNone().launchSelectedStrategy();
+			new EmptyStrategy().launchSelectedStrategy();
 			break;
 			
 		}

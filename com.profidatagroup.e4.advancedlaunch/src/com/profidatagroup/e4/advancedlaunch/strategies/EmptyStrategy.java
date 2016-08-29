@@ -9,7 +9,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchManager;
 
-public class StrategyNone extends LaunchStrategy {
+public class EmptyStrategy extends AbstractLaunchStrategy {
 
 	@Override
 	public void launchSelectedStrategy() {

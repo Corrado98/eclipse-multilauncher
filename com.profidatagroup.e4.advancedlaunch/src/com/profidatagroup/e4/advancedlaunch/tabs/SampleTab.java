@@ -53,11 +53,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	private TableViewer viewer;
 	private String selectedConfiguration;
 	private Composite comp; // can be local in create control.
-	public static List<String> list = new ArrayList<>();
-	// private DialogSettings settings = new DialogSettings("Settings");
-	// private IPath path = Activator.getDefault().getStateLocation();
-	// private String filename = path.append("settings.xml").toOSString();
-	// File file = new File(filename);
+	public static List<String> configurationNameList = new ArrayList<>();
 
 	@Override
 	public void createControl(Composite parent) {
@@ -115,10 +111,10 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 					for (ILaunchConfiguration a : multiLaunchConfigurationSelectionDialog
 							.getSelectedLaunchConfigurations()) {
 						System.out.println(a.getName());
-						list.add(a.getName());
+						configurationNameList.add(a.getName());
 					}
-					if (list != null) {
-						viewer.setInput(list);
+					if (configurationNameList != null) {
+						viewer.setInput(configurationNameList);
 						viewer.refresh();
 						setDirty(true);
 						updateLaunchConfigurationDialog();
@@ -159,8 +155,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		btnRemove.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				if (selectedConfiguration != null && list != null)
-					list.remove(selectedConfiguration);
+				if (selectedConfiguration != null && configurationNameList != null)
+					configurationNameList.remove(selectedConfiguration);
 				viewer.refresh();
 				setDirty(true);
 				updateLaunchConfigurationDialog();
@@ -177,20 +173,20 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			@Override
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null) {
-					int index = list.indexOf(selectedConfiguration);
+					int index = configurationNameList.indexOf(selectedConfiguration);
 					// If first element of table is selected, cant move it more
 					// up than that, therefore return
 					if (index > 0) {
 						int indexBefore = index - 1;
-						String temp = list.get(index); // 5
-						String temp2 = list.get(indexBefore); // 10
+						String temp = configurationNameList.get(index); // 5
+						String temp2 = configurationNameList.get(indexBefore); // 10
 						String temp3 = null; //
 						temp3 = temp;
 						temp = temp2;
 						temp2 = temp3;
-						list.set(index, temp);
-						list.set(indexBefore, temp2);
-						viewer.setInput(list);
+						configurationNameList.set(index, temp);
+						configurationNameList.set(indexBefore, temp2);
+						viewer.setInput(configurationNameList);
 						viewer.refresh();
 						setDirty(true);
 						updateLaunchConfigurationDialog();
@@ -217,8 +213,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		colLaunchConfigurationName.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-//				ILaunchConfiguration ilc = (ILaunchConfiguration) element;
-//				return ilc.getName();
+				// ILaunchConfiguration ilc = (ILaunchConfiguration) element;
+				// return ilc.getName();
 				return (String) element;
 			}
 		});
@@ -230,13 +226,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		colLaunchConfigurationMode.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-//				ILaunchConfiguration ilc = (ILaunchConfiguration) element;
-//				try {
-//					return ilc.getModes().toString();
-//				} catch (CoreException e) {
-//				}
-//				return "Error";
-//				return (String) element;
+				// ILaunchConfiguration ilc = (ILaunchConfiguration) element;
 				return "";
 			}
 		});
@@ -265,20 +255,20 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			@Override
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null) {
-					int index = list.indexOf(selectedConfiguration);
+					int index = configurationNameList.indexOf(selectedConfiguration);
 					// If last element of table is selected, cant move it more
 					// down than that, therefore return
-					if (index + 1 < list.size()) {
+					if (index + 1 < configurationNameList.size()) {
 						int indexAfter = index + 1;
-						String temp = list.get(index); // 5
-						String temp2 = list.get(indexAfter); // 10
+						String temp = configurationNameList.get(index); // 5
+						String temp2 = configurationNameList.get(indexAfter); // 10
 						String temp3 = null; //
 						temp3 = temp;
 						temp = temp2;
 						temp2 = temp3;
-						list.set(index, temp);
-						list.set(indexAfter, temp2);
-						viewer.setInput(list);
+						configurationNameList.set(index, temp);
+						configurationNameList.set(indexAfter, temp2);
+						viewer.setInput(configurationNameList);
 						viewer.refresh();
 						setDirty(true);
 						updateLaunchConfigurationDialog();
@@ -309,23 +299,15 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
-		// try {
-		// String consoleText =
-		// configuration.getAttribute(SampleLaunchConfigurationAttributes.CONSOLE_TEXT,
-		// "Simon says \"RUN!\"");
-		// text.setText(consoleText);
-		// } catch (CoreException e) {
-		// // ignore here
-		// }
 		List<String> empty = new ArrayList<>();
 		try {
-			list = configuration.getAttribute("configs", empty);
+			configurationNameList = configuration.getAttribute("configs", empty);
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		try {
-			viewer.setInput(configuration.getAttribute("configs", list));
+			viewer.setInput(configuration.getAttribute("configs", configurationNameList));
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -334,34 +316,6 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		// set the text value for the CONSOLE_TEXT key
-		// configuration.setAttribute(SampleLaunchConfigurationAttributes.CONSOLE_TEXT,
-		// text.getText());
-		// configuration.setAttribute(attributeName, value);
-		configuration.setAttribute("configs", list);
-		
-//		Map<String, Map<ILaunchConfiguration, Map<String, String>>> map = new HashMap<>();
-		
-//		
-//		Map<ILaunchConfiguration, Map<String, String>> map2 = new HashMap<>();
-//		
-//		Map<String, String> attributes = new HashMap<>();
-//		
-//		attributes.put("debug", "delay");
-//		
-//		ILaunchConfiguration conf = null;
-//		
-//		map2.put(conf, attributes);	
-//		
-//		map.put("configuration", map2);
-//		
-//		configuration.setAttributes(map);
-//		
-//		try {
-//			configuration.doSave();
-//		} catch (CoreException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		configuration.setAttribute("configs", configurationNameList);
 	}
 }

@@ -11,23 +11,13 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
 
-public class StrategyDelay extends LaunchStrategy {
+public class DelayStrategy extends AbstractLaunchStrategy {
 
 	//HARDCODED ATM
 	private int seconds = 4; 
-			
-//	public StrategyDelay(int seconds)
-//	{
-//		this.seconds = seconds;
-//	}
 
 	@Override
-	public void launchSelectedStrategy(/*ILaunchConfiguration configurationToLaunch, String mode*/) {
-		/*configurationToLaunch.launch(mode, null);
-		 * waitDelay(seconds)
-		 * 
-		 * 
-		 */
+	public void launchSelectedStrategy() {
 
 		// DO A HARDCODED SIMULATION
 		List<String> myList = new ArrayList<>();

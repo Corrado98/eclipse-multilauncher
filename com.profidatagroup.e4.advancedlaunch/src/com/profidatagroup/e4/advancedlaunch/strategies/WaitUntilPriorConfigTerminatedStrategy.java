@@ -19,21 +19,14 @@ import org.eclipse.debug.core.model.IProcess;
 
 import com.profidatagroup.e4.advancedlaunch.tabs.SampleTab;
 
-public class StrategyWaitUntilPriorConfigTerminated extends LaunchStrategy {
+public class WaitUntilPriorConfigTerminatedStrategy extends AbstractLaunchStrategy {
 
 	private List<Set<IProcess>> processesToWait = Collections.synchronizedList(new ArrayList<>());
 
 	@Override
-	public void launchSelectedStrategy(/*ILaunchConfiguration configurationToLaunch, String mode*/) {
-		
-		/*
-		 * configurationToLaunch.launch(mode, null);
-		 *  
-		 * 
-		 * 
-		 */
+	public void launchSelectedStrategy() {
 
-		List<String> myList = SampleTab.list;
+		List<String> myList = SampleTab.configurationNameList;
 		if(myList == null) {
 			System.out.println("LIST IS NULL!");
 			return;
