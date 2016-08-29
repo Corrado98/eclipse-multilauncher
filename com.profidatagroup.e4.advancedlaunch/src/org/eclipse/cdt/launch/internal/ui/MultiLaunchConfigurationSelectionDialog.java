@@ -79,6 +79,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private Label fDelayAmountLabel;
 	private Text fDelayAmountWidget; // in seconds
 	private boolean fForEditing; // true if dialog was opened to edit an entry, otherwise it was opened to add one
+	//private Combo combo;
 	
 	public MultiLaunchConfigurationSelectionDialog(Shell shell, String initMode, boolean forEditing) {
 		super(shell);
@@ -105,6 +106,20 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			}
 		};
 	}
+	
+//	public Text getfDelayAmountWidget() {
+//		return fDelayAmountWidget;
+//	}
+//	
+//	public int getUserDelay() {
+//		int userNumber = 0;
+//		try {
+//			userNumber = Integer.parseInt(fDelayAmountWidget.getText());
+//		} catch(NumberFormatException nfe) {
+//			System.out.println("no letters allowed!");
+//		}
+//		return userNumber;
+//	}
 
 	protected ILaunchManager getLaunchManager() {
 		return DebugPlugin.getDefault().getLaunchManager();
@@ -266,6 +281,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		
 		showHideDelayAmountWidgets();
 	}
+
+//	public Combo getCombo() {
+//		return combo;
+//	}
 
 	private void showHideDelayAmountWidgets() {
 		final boolean visible = action == EPostLaunchAction.DELAY;

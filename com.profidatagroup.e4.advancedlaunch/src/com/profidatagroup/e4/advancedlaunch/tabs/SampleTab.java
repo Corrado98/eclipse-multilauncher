@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.security.auth.login.Configuration;
+
+import org.eclipse.cdt.launch.internal.MultiLaunchConfigurationDelegate.LaunchElement;
+import org.eclipse.cdt.launch.internal.MultiLaunchConfigurationDelegate.LaunchElement.EPostLaunchAction;
 import org.eclipse.cdt.launch.internal.ui.MultiLaunchConfigurationSelectionDialog;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -25,6 +29,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -37,6 +42,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
 import com.profidatagroup.e4.advancedlaunch.Activator;
+import com.profidatagroup.e4.advancedlaunch.LaunchConfigurationBean;
 import com.profidatagroup.e4.advancedlaunch.SampleLaunchConfigurationAttributes;
 
 /**
@@ -51,9 +57,13 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	private Button btnUp;
 	private Button btnDown;
 	private TableViewer viewer;
-	private String selectedConfiguration;
+	private LaunchConfigurationBean selectedConfiguration;
 	private Composite comp; // can be local in create control.
-	public static List<String> configurationNameList = new ArrayList<>();
+	private MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
+			getShell(), "debug", false);
+	// public static List<String> selectedConfigurationsNameList = new
+	// ArrayList<>();
+	public static List<LaunchConfigurationBean> launchConfigurationDataList = new ArrayList<>();
 
 	@Override
 	public void createControl(Composite parent) {
@@ -103,18 +113,21 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		btnAdd.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
-						getShell(), "debug", false);
+
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 					// gets selected launchconfigurations from chooser
 					// (selection dialog)
 					for (ILaunchConfiguration a : multiLaunchConfigurationSelectionDialog
 							.getSelectedLaunchConfigurations()) {
 						System.out.println(a.getName());
-						configurationNameList.add(a.getName());
+						launchConfigurationDataList.add(new LaunchConfigurationBean(a.getName(),
+								multiLaunchConfigurationSelectionDialog.getMode(),
+								LaunchElement.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()),
+								String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
+
 					}
-					if (configurationNameList != null) {
-						viewer.setInput(configurationNameList);
+					if (launchConfigurationDataList != null) {
+						viewer.setInput(launchConfigurationDataList);
 						viewer.refresh();
 						setDirty(true);
 						updateLaunchConfigurationDialog();
@@ -133,7 +146,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				Object selectedElement = selection.getFirstElement();
 				// do something with it
-				selectedConfiguration = (String) selectedElement;
+				selectedConfiguration = (LaunchConfigurationBean) selectedElement;
 				if (selectedElement != null) {
 					btnRemove.setEnabled(true);
 					btnUp.setEnabled(true);
@@ -155,8 +168,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		btnRemove.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				if (selectedConfiguration != null && configurationNameList != null)
-					configurationNameList.remove(selectedConfiguration);
+				if (selectedConfiguration != null && launchConfigurationDataList != null)
+					launchConfigurationDataList.remove(selectedConfiguration);
 				viewer.refresh();
 				setDirty(true);
 				updateLaunchConfigurationDialog();
@@ -173,20 +186,20 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			@Override
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null) {
-					int index = configurationNameList.indexOf(selectedConfiguration);
+					int index = launchConfigurationDataList.indexOf(selectedConfiguration);
 					// If first element of table is selected, cant move it more
 					// up than that, therefore return
 					if (index > 0) {
 						int indexBefore = index - 1;
-						String temp = configurationNameList.get(index); // 5
-						String temp2 = configurationNameList.get(indexBefore); // 10
-						String temp3 = null; //
+						LaunchConfigurationBean temp = launchConfigurationDataList.get(index); // 5
+						LaunchConfigurationBean temp2 = launchConfigurationDataList.get(indexBefore); // 10
+						LaunchConfigurationBean temp3 = null; //
 						temp3 = temp;
 						temp = temp2;
 						temp2 = temp3;
-						configurationNameList.set(index, temp);
-						configurationNameList.set(indexBefore, temp2);
-						viewer.setInput(configurationNameList);
+						launchConfigurationDataList.set(index, temp);
+						launchConfigurationDataList.set(indexBefore, temp2);
+						viewer.setInput(launchConfigurationDataList);
 						viewer.refresh();
 						setDirty(true);
 						updateLaunchConfigurationDialog();
@@ -215,7 +228,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			public String getText(Object element) {
 				// ILaunchConfiguration ilc = (ILaunchConfiguration) element;
 				// return ilc.getName();
-				return (String) element;
+				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
+				return lcb.getName();
 			}
 		});
 
@@ -226,8 +240,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		colLaunchConfigurationMode.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				// ILaunchConfiguration ilc = (ILaunchConfiguration) element;
-				return "";
+				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
+				return lcb.getMode();
 			}
 		});
 
@@ -240,7 +254,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			public String getText(Object element) {
 				// ILaunchConfiguration ilc = (ILaunchConfiguration) element;
 				// ilc.getWorkingCopy().setAttribute(ACTION, ssss);
-				return "";
+				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
+				return lcb.getPostLaunchAction();
 			}
 		});
 
@@ -255,20 +270,20 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			@Override
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null) {
-					int index = configurationNameList.indexOf(selectedConfiguration);
+					int index = launchConfigurationDataList.indexOf(selectedConfiguration);
 					// If last element of table is selected, cant move it more
 					// down than that, therefore return
-					if (index + 1 < configurationNameList.size()) {
+					if (index + 1 < launchConfigurationDataList.size()) {
 						int indexAfter = index + 1;
-						String temp = configurationNameList.get(index); // 5
-						String temp2 = configurationNameList.get(indexAfter); // 10
-						String temp3 = null; //
+						LaunchConfigurationBean temp = launchConfigurationDataList.get(index); // 5
+						LaunchConfigurationBean temp2 = launchConfigurationDataList.get(indexAfter); // 10
+						LaunchConfigurationBean temp3 = null; //
 						temp3 = temp;
 						temp = temp2;
 						temp2 = temp3;
-						configurationNameList.set(index, temp);
-						configurationNameList.set(indexAfter, temp2);
-						viewer.setInput(configurationNameList);
+						launchConfigurationDataList.set(index, temp);
+						launchConfigurationDataList.set(indexAfter, temp2);
+						viewer.setInput(launchConfigurationDataList);
 						viewer.refresh();
 						setDirty(true);
 						updateLaunchConfigurationDialog();
@@ -299,15 +314,32 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
-		List<String> empty = new ArrayList<>();
-		try {
-			configurationNameList = configuration.getAttribute("configs", empty);
-		} catch (CoreException e1) {
-			e1.printStackTrace();
-		}
+		createBeansFromAttributes(configuration);
+	}
 
+	private void createBeansFromAttributes(ILaunchConfiguration configuration) {
 		try {
-			viewer.setInput(configuration.getAttribute("configs", configurationNameList));
+
+			List<String> names = new ArrayList<>();
+			List<String> modes = new ArrayList<>();
+			List<String> postLaunchActions = new ArrayList<>();
+			List<String> params = new ArrayList<>();
+
+			launchConfigurationDataList.clear();
+
+			names = configuration.getAttribute("names", new ArrayList<String>());
+			modes = configuration.getAttribute("modes", new ArrayList<String>());
+			postLaunchActions = configuration.getAttribute("postLaunchActions", new ArrayList<String>());
+			params = configuration.getAttribute("params", new ArrayList<String>());
+
+			for (int i = 0; i < names.size(); i++) {
+				launchConfigurationDataList.add(new LaunchConfigurationBean(names.get(i), modes.get(i),
+						postLaunchActions.get(i), params.get(i)));
+			}
+
+			viewer.setInput(launchConfigurationDataList);
+			viewer.refresh();
+
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -316,6 +348,21 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute("configs", configurationNameList);
+		List<String> names = new ArrayList<>();
+		List<String> modes = new ArrayList<>();
+		List<String> postLaunchActions = new ArrayList<>();
+		List<String> params = new ArrayList<>();
+
+		for (LaunchConfigurationBean launchConfigurationBean : launchConfigurationDataList) {
+			names.add(launchConfigurationBean.getName());
+			modes.add(launchConfigurationBean.getMode());
+			postLaunchActions.add(launchConfigurationBean.getPostLaunchAction());
+			params.add(launchConfigurationBean.getParam());
+		}
+
+		configuration.setAttribute("names", names);
+		configuration.setAttribute("modes", modes);
+		configuration.setAttribute("postLaunchActions", postLaunchActions);
+		configuration.setAttribute("params", params);
 	}
 }

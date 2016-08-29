@@ -20,7 +20,7 @@ public abstract class AbstractLaunchStrategy {
 
 	public void launch() {
 
-		if (SampleTab.configurationNameList == null) {
+		if (SampleTab.launchConfigurationDataList == null) {
 			System.out.println("LIST IS NULL!");
 			return;
 		}
@@ -36,12 +36,12 @@ public abstract class AbstractLaunchStrategy {
 		try {
 			configurations = manager.getLaunchConfigurations(type);
 
-			for (int i = 0; i < SampleTab.configurationNameList.size(); i++) {
+			for (int i = 0; i < SampleTab.launchConfigurationDataList.size(); i++) {
 				for (int j = 0; j < configurations.length; j++) {
-					if (SampleTab.configurationNameList.get(i).equals(configurations[j].getName())) {
+					if (SampleTab.launchConfigurationDataList.get(i).equals(configurations[j].getName())) {
 						childLaunch = configurations[j].launch("debug", null);
 						launchSelectedStrategy();
-						System.out.println(SampleTab.configurationNameList.get(i) + " was launched!");
+						System.out.println(SampleTab.launchConfigurationDataList.get(i) + " was launched!");
 					}
 				}
 			}
