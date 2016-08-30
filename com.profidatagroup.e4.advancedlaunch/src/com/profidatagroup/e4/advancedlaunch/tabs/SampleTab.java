@@ -56,9 +56,11 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	private Button btnRemove;
 	private Button btnUp;
 	private Button btnDown;
+	private Button btnEdit;
 	private TableViewer viewer;
 	private LaunchConfigurationBean selectedConfiguration;
-	private Composite comp; // can be local in create control.
+	private Composite mainComposite;
+	private Composite buttonComposite;
 	private MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
 			getShell(), "debug", false);
 	// public static List<String> selectedConfigurationsNameList = new
@@ -68,26 +70,28 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public void createControl(Composite parent) {
 		// isFileAlreadyCreated(file);
-		initComp(parent);
-		createAddBtnWithListener();
+		initComposites(parent);
 		initTableViewer();
+		createAddBtnWithListener();
 		createRemoveButtonWithListener();
-		insertPlaceHolder();
 		createUpButtonWithListener();
-		insertPlaceHolder();
 		createDownButtonWithListener();
+		createEditButtonWithListener();
 	}
 
-	private void initComp(Composite parent) {
-		comp = new Group(parent, SWT.BORDER);
-		comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		comp.setLayout(new FillLayout());
-		setControl(comp);
-		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(comp);
+	private void initComposites(Composite parent) {
+		mainComposite = new Group(parent, SWT.BORDER);
+		mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		mainComposite.setLayout(new FillLayout());
+		setControl(mainComposite);
+		buttonComposite = new Composite(mainComposite, SWT.BORDER_DOT);
+		buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonComposite.setLayout(new FillLayout());
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(mainComposite);
 	}
 
 	private void initTableViewer() {
-		viewer = new TableViewer(comp, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		viewer = new TableViewer(mainComposite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
 		Table table3 = viewer.getTable();
 		table3.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -108,7 +112,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void createAddBtnWithListener() {
-		btnAdd = new Button(comp, SWT.None);
+		btnAdd = new Button(buttonComposite, SWT.None);
 		btnAdd.setText("Add..");
 		btnAdd.addListener(SWT.Selection, new Listener() {
 			@Override
@@ -162,7 +166,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void createRemoveButtonWithListener() {
-		btnRemove = new Button(comp, SWT.None);
+		btnRemove = new Button(buttonComposite, SWT.None);
 		btnRemove.setText("Remove..");
 		btnRemove.setEnabled(false);
 		btnRemove.addListener(SWT.Selection, new Listener() {
@@ -178,7 +182,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void createUpButtonWithListener() {
-		btnUp = new Button(comp, SWT.None);
+		btnUp = new Button(buttonComposite, SWT.None);
 		btnUp.setText("Up");
 		btnUp.setEnabled(false);
 		btnUp.addListener(SWT.Selection, new Listener() {
@@ -262,7 +266,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void createDownButtonWithListener() {
-		btnDown = new Button(comp, SWT.None);
+		btnDown = new Button(buttonComposite, SWT.None);
 		btnDown.setText("Down");
 		btnDown.setEnabled(false);
 		btnDown.addListener(SWT.Selection, new Listener() {
@@ -298,6 +302,19 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			}
 		});
 	}
+	
+	private void createEditButtonWithListener() {
+		btnEdit = new Button(buttonComposite, SWT.None);
+		btnEdit.setText("Edit");
+		btnEdit.setEnabled(false);
+		btnEdit.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				
+			}
+		});
+	}
 
 	@Override
 	public String getName() {
@@ -305,7 +322,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void insertPlaceHolder() {
-		new Label(comp, SWT.None);
+		new Label(mainComposite, SWT.None);
 	}
 
 	@Override
