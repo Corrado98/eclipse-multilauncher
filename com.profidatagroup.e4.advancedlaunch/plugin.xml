@@ -33,5 +33,29 @@
 					     </enablement>
 		  </consolePatternMatchListener>
 	</extension>
+ <extension
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          allPopups="false"
+          locationURI="toolbar:org.eclipse.ui.main.toolbar">
+       <toolbar
+             id="com.profidatagroup.e4.advancedlaunch.toolbar1">
+          <command
+                commandId="com.profidatagroup.e4.advancedlaunch.command1"
+                label="terminate run/debugmode configurations"
+                style="push">
+          </command>
+       </toolbar>
+    </menuContribution>
+ </extension>
+ <extension
+       point="org.eclipse.ui.commands">
+    <command
+          defaultHandler="com.profidatagroup.e4.advancedlaunch.TerminateConfigurations"
+          id="com.profidatagroup.e4.advancedlaunch.command1"
+          name="terminate">
+    </command>
+ </extension>
+	
 
 </plugin>

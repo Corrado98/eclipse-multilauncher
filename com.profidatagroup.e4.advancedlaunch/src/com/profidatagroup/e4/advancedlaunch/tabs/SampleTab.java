@@ -63,6 +63,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	private Composite buttonComposite;
 	private MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
 			getShell(), "debug", false);
+	private MultiLaunchConfigurationSelectionDialog editMultiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
+			getShell(), "debug", true);
 	// public static List<String> selectedConfigurationsNameList = new
 	// ArrayList<>();
 	public static List<LaunchConfigurationBean> launchConfigurationDataList = new ArrayList<>();
@@ -91,7 +93,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void initTableViewer() {
-		viewer = new TableViewer(mainComposite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		viewer = new TableViewer(mainComposite,
+				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
 		Table table3 = viewer.getTable();
 		table3.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -142,6 +145,20 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		});
 
 	}
+	
+	private void createEditButtonWithListener() {
+		btnEdit = new Button(buttonComposite, SWT.None);
+		btnEdit.setText("Edit");
+		btnEdit.setEnabled(false);
+		btnEdit.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				editMultiLaunchConfigurationSelectionDialog.open();
+			}
+			
+		});
+	}
 
 	private void addTableViewerSelectionChangedListener() {
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -151,14 +168,30 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 				Object selectedElement = selection.getFirstElement();
 				// do something with it
 				selectedConfiguration = (LaunchConfigurationBean) selectedElement;
+				
+				/*
+				 * Detect multiple items selected and disable edit button. 
+				 * 
+				 */
+				
+//				Object [] selections = selection.toArray();
+//			
+//				if(selections != null) {
+//					btnEdit.setEnabled(false);
+//				} else {
+//					btnEdit.setEnabled(true);
+//				}
+				
 				if (selectedElement != null) {
 					btnRemove.setEnabled(true);
 					btnUp.setEnabled(true);
 					btnDown.setEnabled(true);
+					btnEdit.setEnabled(true);
 				} else {
 					btnRemove.setEnabled(false);
 					btnUp.setEnabled(false);
 					btnDown.setEnabled(false);
+					btnEdit.setEnabled(false);
 				}
 			}
 		});
@@ -299,19 +332,6 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 					System.out.println("selectedConfiguration IS NULL");
 				}
 
-			}
-		});
-	}
-	
-	private void createEditButtonWithListener() {
-		btnEdit = new Button(buttonComposite, SWT.None);
-		btnEdit.setText("Edit");
-		btnEdit.setEnabled(false);
-		btnEdit.addListener(SWT.Selection, new Listener() {
-
-			@Override
-			public void handleEvent(Event event) {
-				
 			}
 		});
 	}

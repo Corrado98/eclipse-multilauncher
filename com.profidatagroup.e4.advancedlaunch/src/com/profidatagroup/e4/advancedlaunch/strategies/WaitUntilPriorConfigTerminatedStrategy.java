@@ -37,11 +37,6 @@ public class WaitUntilPriorConfigTerminatedStrategy extends AbstractLaunchStrate
 		}
 	}
 
-	// @Override
-	// protected void useOptionalProcessTerminatedListener() {
-	// addProcessesTerminateListener();
-	// }
-
 	private void addProcessesTerminateListener() {
 		DebugPlugin.getDefault().addDebugEventListener(new IDebugEventSetListener() {
 
