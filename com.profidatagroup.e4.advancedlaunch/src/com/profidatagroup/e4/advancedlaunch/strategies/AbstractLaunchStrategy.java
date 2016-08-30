@@ -38,7 +38,7 @@ public abstract class AbstractLaunchStrategy {
 
 			for (int i = 0; i < SampleTab.launchConfigurationDataList.size(); i++) {
 				for (int j = 0; j < configurations.length; j++) {
-					if (SampleTab.launchConfigurationDataList.get(i).equals(configurations[j].getName())) {
+					if (SampleTab.launchConfigurationDataList.get(i).getName().equals(configurations[j].getName())) {
 						childLaunch = configurations[j].launch("debug", null);
 						launchSelectedStrategy();
 						System.out.println(SampleTab.launchConfigurationDataList.get(i) + " was launched!");
