@@ -1,5 +1,6 @@
 package com.profidatagroup.e4.advancedlaunch.strategies;
 
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -23,7 +24,9 @@ import org.eclipse.ui.console.TextConsole;
 public class ReadConsoleTextStrategy extends AbstractLaunchStrategy implements IPatternMatchListenerDelegate {
 
 	@Override
-	public void launchSelectedStrategy() {
+	public void launchSelectedStrategy(ILaunchConfiguration iLaunchConfiguration, String mode, String param) {
+		
+		
 		ConsolePlugin plugin = ConsolePlugin.getDefault();
 		IConsoleManager conMan = plugin.getConsoleManager();
 		IConsole[] existing = conMan.getConsoles();

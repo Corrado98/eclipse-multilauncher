@@ -13,12 +13,14 @@ import org.eclipse.debug.core.model.IProcess;
 
 public class DelayStrategy extends AbstractLaunchStrategy {
 
-	//HARDCODED ATM
-	private int seconds = 4; 
-
 	@Override
-	public void launchSelectedStrategy() {
-		waitDelay(seconds);
+	public void launchSelectedStrategy(ILaunchConfiguration iLaunchConfiguration, String mode, String param) {
+		try {
+			iLaunchConfiguration.launch(mode, null);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		waitDelay(Integer.parseInt(param));
 	}
 
 	private void waitDelay(int seconds) {

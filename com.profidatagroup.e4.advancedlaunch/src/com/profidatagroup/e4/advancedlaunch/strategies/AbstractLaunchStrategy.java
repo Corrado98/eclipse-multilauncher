@@ -18,39 +18,35 @@ public abstract class AbstractLaunchStrategy {
 	private static ILaunch childLaunch;
 	
 
-	public void launch() {
 
-		if (SampleTab.launchConfigurationDataList == null) {
-			System.out.println("LIST IS NULL!");
-			return;
-		}
+		
+//		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+//		ILaunchConfigurationType type = manager
+//				.getLaunchConfigurationType("org.eclipse.jdt.launching.localJavaApplication");
+//		ILaunchConfiguration[] configurations;
 
-		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-		ILaunchConfigurationType type = manager
-				.getLaunchConfigurationType("org.eclipse.jdt.launching.localJavaApplication");
-		ILaunchConfiguration[] configurations;
-
-		useOptionalProcessTerminatedListener();
+//		useOptionalProcessTerminatedListener();
+//		launchSelectedStrategy();
 		
 		// all configurations of "Java Application"
-		try {
-			configurations = manager.getLaunchConfigurations(type);
+//		try {
+//			configurations = manager.getLaunchConfigurations(type);
+//
+//			for (int i = 0; i < SampleTab.launchConfigurationDataList.size(); i++) {
+//				for (int j = 0; j < configurations.length; j++) {
+//					if (SampleTab.launchConfigurationDataList.get(i).getName().equals(configurations[j].getName())) {
+//						childLaunch = configurations[j].launch("debug", null);
+//						launchSelectedStrategy();
+//						System.out.println(SampleTab.launchConfigurationDataList.get(i) + " was launched!");
+//					}
+//				}
+//			}
+//		} catch (CoreException e) {
+//			e.printStackTrace();
+//		}
+	
 
-			for (int i = 0; i < SampleTab.launchConfigurationDataList.size(); i++) {
-				for (int j = 0; j < configurations.length; j++) {
-					if (SampleTab.launchConfigurationDataList.get(i).getName().equals(configurations[j].getName())) {
-						childLaunch = configurations[j].launch("debug", null);
-						launchSelectedStrategy();
-						System.out.println(SampleTab.launchConfigurationDataList.get(i) + " was launched!");
-					}
-				}
-			}
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-	}
-
-	protected abstract void launchSelectedStrategy();
+	protected abstract void launchSelectedStrategy(ILaunchConfiguration iLaunchConfiguration, String mode, String param);
 
 	/*
 	 * <b>ONLY</b> class <b>WaitUntilPriorConfigTerminatedStrategy</b> should override this
@@ -58,9 +54,9 @@ public abstract class AbstractLaunchStrategy {
 	 * 
 	 * 
 	 */
-	protected void useOptionalProcessTerminatedListener() {
-		
-	}
+//	protected void useOptionalProcessTerminatedListener() {
+//		
+//	}
 	
 	protected static ILaunch getChildLaunch() {
 		return childLaunch;

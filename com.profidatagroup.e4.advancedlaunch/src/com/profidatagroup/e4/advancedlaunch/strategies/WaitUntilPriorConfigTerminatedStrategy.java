@@ -24,15 +24,23 @@ public class WaitUntilPriorConfigTerminatedStrategy extends AbstractLaunchStrate
 	private List<Set<IProcess>> processesToWait = Collections.synchronizedList(new ArrayList<>());
 
 	@Override
-	public void launchSelectedStrategy() {
-		IProcess[] childLaunchProcesses = getChildLaunch().getProcesses();
-		waitForProcessesToTerminate(childLaunchProcesses);
+	public void launchSelectedStrategy(ILaunchConfiguration iLaunchConfiguration, String mode, String param) {
+
+		ILaunch childLaunch;
+		try {
+			childLaunch = iLaunchConfiguration.launch(mode, null);
+			addProcessesTerminateListener();
+			IProcess[] childLaunchProcesses = childLaunch.getProcesses();
+			waitForProcessesToTerminate(childLaunchProcesses);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 	}
-	
-	@Override
-	protected void useOptionalProcessTerminatedListener() {
-		addProcessesTerminateListener();
-	}	
+
+	// @Override
+	// protected void useOptionalProcessTerminatedListener() {
+	// addProcessesTerminateListener();
+	// }
 
 	private void addProcessesTerminateListener() {
 		DebugPlugin.getDefault().addDebugEventListener(new IDebugEventSetListener() {

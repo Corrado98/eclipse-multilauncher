@@ -24,41 +24,61 @@ import com.profidatagroup.e4.advancedlaunch.strategies.DelayStrategy;
 import com.profidatagroup.e4.advancedlaunch.strategies.EmptyStrategy;
 import com.profidatagroup.e4.advancedlaunch.strategies.ReadConsoleTextStrategy;
 import com.profidatagroup.e4.advancedlaunch.strategies.WaitUntilPriorConfigTerminatedStrategy;
+import com.profidatagroup.e4.advancedlaunch.tabs.SampleTab;
 
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
 
-	List<Set<IProcess>> processesToWait = Collections.synchronizedList(new ArrayList<>()); 
-	String selectedPostLaunchAction; // = ComboBox.getSelectedIndex().getText()
-	
-	public LaunchGroupConfigurationDelegate() {
-		//HARDCODED ATM
-		selectedPostLaunchAction = "Delay"; // = ComboBox.getSelectedIndex().getText()
-	}
+	private List<Set<IProcess>> processesToWait = Collections.synchronizedList(new ArrayList<>());
+	private int counter = 0;
+
+	private ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+	private ILaunchConfigurationType type = manager
+			.getLaunchConfigurationType("org.eclipse.jdt.launching.localJavaApplication");
+	private ILaunchConfiguration[] configurations;
 
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
-		
-		//get all configs and check their attributes
-		
-		switch(selectedPostLaunchAction) {
-		case "Wait until prior config Terminated": 
-			new WaitUntilPriorConfigTerminatedStrategy().launch();
-			break;
-			
-		case "Delay": //HARDCODED 4s ATM
-			new DelayStrategy().launch();
-			break;
-			
-		case "Read Console-Text": 
-			new ReadConsoleTextStrategy().launch();
-			break;
-			
-		case "None":
-			new EmptyStrategy().launch();
-			break;
-			
+
+		if (SampleTab.launchConfigurationDataList == null || SampleTab.launchConfigurationDataList.isEmpty()) {
+			System.out.println("LIST IS NULL OR EMPTY!");
+			return;
 		}
 
+		configurations = manager.getLaunchConfigurations(type);
+
+		for (LaunchConfigurationBean bean : SampleTab.launchConfigurationDataList) {
+			for (ILaunchConfiguration iLaunchConfiguration : configurations) {
+				
+				if (bean.getName().equals(iLaunchConfiguration.getName())) {
+					switch (bean.getPostLaunchAction()) {
+					case "Wait until terminated":						
+						new WaitUntilPriorConfigTerminatedStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
+						counter++;
+						break;
+
+					case "Delay":
+						new DelayStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
+						counter++;
+						break;
+
+					case "Read Console-Text":
+						new ReadConsoleTextStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
+						counter++;
+						break;
+
+					case "None":
+						new EmptyStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
+						counter++;
+						break;
+
+					default:
+						System.out.println("Fatal Error");
+						break;
+					}
+				}
+				
+			}
+		}
 	}
 }

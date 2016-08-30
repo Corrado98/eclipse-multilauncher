@@ -12,7 +12,7 @@ import org.eclipse.debug.core.ILaunchManager;
 public class EmptyStrategy extends AbstractLaunchStrategy {
 
 	@Override
-	public void launchSelectedStrategy() {
+	public void launchSelectedStrategy(ILaunchConfiguration iLaunchConfiguration, String mode, String param) {
 		return;
 	}
 
