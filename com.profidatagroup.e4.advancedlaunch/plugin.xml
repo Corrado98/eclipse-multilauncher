@@ -26,13 +26,14 @@
 	     point="org.eclipse.ui.console.consolePatternMatchListeners">
 		  <consolePatternMatchListener
 			        class="com.profidatagroup.e4.advancedlaunch.strategies.ReadConsoleTextStrategy"
-			        id="com.profidatagroup.e4.advancedlaunch.strategies.StrategyReadConsoleText"
+			        id="com.profidatagroup.e4.advancedlaunch.strategies.ReadConsoleTextStrategy"
 			        regex="*foo*">
 					     <enablement>
-					        <test property="org.eclipse.ui.console.consoleTypeTest" value="exampleConsole"/>
+					        <test property="org.eclipse.ui.console.consoleTypeTest" value="TextConsole"/>
 					     </enablement>
 		  </consolePatternMatchListener>
 	</extension>
+	
  <extension
        point="org.eclipse.ui.menus">
     <menuContribution

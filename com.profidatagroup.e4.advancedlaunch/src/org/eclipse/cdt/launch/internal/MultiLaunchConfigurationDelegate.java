@@ -64,7 +64,8 @@ public class MultiLaunchConfigurationDelegate extends LaunchConfigurationDelegat
 		public static enum EPostLaunchAction {
 			NONE,
 			WAIT_FOR_TERMINATION,
-			DELAY
+			DELAY,
+			WAIT_FOR_CONSOLESTRING
 		};
 		/**
 		 * Allows us decouple the enum identifier in the code from its textual representation in the GUI
@@ -77,6 +78,8 @@ public class MultiLaunchConfigurationDelegate extends LaunchConfigurationDelegat
 				return LaunchMessages.MultiLaunchConfigurationDelegate_Action_WaitUntilTerminated;
 			case DELAY:
 				return LaunchMessages.MultiLaunchConfigurationDelegate_Action_Delay;
+			case WAIT_FOR_CONSOLESTRING:
+				return "Wait for Console-String";
 			default:
 				assert false : "new post launch action type is missing logic"; //$NON-NLS-1$
 				return LaunchMessages.MultiLaunchConfigurationDelegate_Action_None;
@@ -94,6 +97,9 @@ public class MultiLaunchConfigurationDelegate extends LaunchConfigurationDelegat
 			}
 			else if (str.equals(LaunchMessages.MultiLaunchConfigurationDelegate_Action_Delay)) {
 				return EPostLaunchAction.DELAY;
+			}
+			else if (str.equals("Wait for Console-String")) {
+				return EPostLaunchAction.WAIT_FOR_CONSOLESTRING;
 			}
 			else {
 				assert false : "new post launch action type is missing logic"; //$NON-NLS-1$
