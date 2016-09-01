@@ -29,7 +29,6 @@ import com.profidatagroup.e4.advancedlaunch.tabs.SampleTab;
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
 
 	private List<Set<IProcess>> processesToWait = Collections.synchronizedList(new ArrayList<>());
-	private int counter = 0;
 
 	private ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 	private ILaunchConfigurationType type = manager
@@ -54,22 +53,18 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 					switch (bean.getPostLaunchAction()) {
 					case "Wait until terminated":						
 						new WaitUntilPriorConfigTerminatedStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
-						counter++;
 						break;
 
 					case "Delay":
 						new DelayStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
-						counter++;
 						break;
 
 					case "Read Console-Text":
 						new ReadConsoleTextStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
-						counter++;
 						break;
 
 					case "None":
 						new EmptyStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
-						counter++;
 						break;
 
 					default:

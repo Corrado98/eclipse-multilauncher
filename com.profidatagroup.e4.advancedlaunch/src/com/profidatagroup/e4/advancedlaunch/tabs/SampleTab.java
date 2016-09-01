@@ -170,7 +170,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 				selectedConfiguration = (LaunchConfigurationBean) selectedElement;
 				
 				/*
-				 * Detect multiple items selected and disable edit button. 
+				 * Detect multiple items selected and disable edit button. NOT WORKING ATM.
 				 * 
 				 */
 				

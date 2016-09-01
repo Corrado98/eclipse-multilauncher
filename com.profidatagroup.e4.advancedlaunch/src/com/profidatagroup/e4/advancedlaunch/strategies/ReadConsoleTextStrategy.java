@@ -19,6 +19,8 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 
+import com.profidatagroup.e4.advancedlaunch.ConsoleListener;
+
 /*
  * No correct working solution atm.
  * 
@@ -34,47 +36,45 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy implements I
 			e.printStackTrace();
 		}
 		
-//		IConsoleManager manager = ConsolePlugin.getDefault().getConsoleManager(); 
-//
-//		// Existing consoles
-//		IConsole[] consoles = manager.getConsoles();
-//
-//		// Listen for consoles being added/removed
-//		manager.addConsoleListener(new IConsoleListener() {
-//			
-//			@Override
-//			public void consolesRemoved(IConsole[] consoles) {
-//				// TODO Auto-generated method stub
-//				for (int i = 0; i < consoles.length; i++) {
-//					System.out.println(consoles[i].getName() + " REMOVED");
-//				}
-//			}
-//			
-//			@Override
-//			public void consolesAdded(IConsole[] consoles) {
-//				for (int i = 0; i < consoles.length; i++) {
-//					System.out.println(consoles[i].getName() + " ADDED");
-//				}
-//				
-//			}
-//		});
-		
-//		
-//		ConsolePlugin plugin = ConsolePlugin.getDefault();
-//		IConsoleManager conMan = plugin.getConsoleManager();
-//		IConsole[] existing = conMan.getConsoles();
-//		for (int i = 0; i < existing.length; i++) {
-//			System.out.println(existing[i].getName());
-//		}
-//		// no console found, so create a new one
-//		MessageConsole myConsole = new MessageConsole("Meine Konsole", null);
-//		IConsole[] consoles = new IConsole[1];
-//		conMan.addConsoles(consoles);
-//		
-//		MessageConsoleStream out = myConsole.newMessageStream();
-//		out.println("Hello from Generic foo console sample action");
-		
+		IConsoleManager manager = ConsolePlugin.getDefault().getConsoleManager();
 
+		// Existing consoles
+		IConsole[] consoles = manager.getConsoles();
+
+		// Listen for consoles being added/removed
+		manager.addConsoleListener(new IConsoleListener() {
+
+			@Override
+			public void consolesRemoved(IConsole[] consoles) {
+				// TODO Auto-generated method stub
+				for (int i = 0; i < consoles.length; i++) {
+					if(consoles[i] instanceof TextConsole) {				
+						System.out.println(consoles[i].getName() + " REMOVED");
+					}
+					
+				}
+			}
+
+			@Override
+			public void consolesAdded(IConsole[] consoles) {
+				for (int i = 0; i < consoles.length; i++) {
+					if(consoles[i] instanceof TextConsole) {				
+						System.out.println(consoles[i].getName() + " ADDED");
+						TextConsole textConsole = (TextConsole) consoles[i];
+						/*
+						 * CONTINUE HERE!
+						 * 
+						 * 
+						 * 
+						 */
+						String a = "";
+						textConsole.addPatternMatchListener(new ConsoleListener(a));
+					}
+					
+				}
+
+			}
+		});
 	}
 
 	@Override

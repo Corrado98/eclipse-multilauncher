@@ -5,6 +5,11 @@ import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 
 public class ConsoleListener implements IPatternMatchListener {
+	private String checkRegex;
+	
+	public ConsoleListener(String checkRegex) {
+		this.checkRegex = checkRegex;
+	}
 
 	@Override
 	public void connect(TextConsole console) {
@@ -26,7 +31,7 @@ public class ConsoleListener implements IPatternMatchListener {
 
 	@Override
 	public String getPattern() {
-		return ".*successfully.*";
+		return checkRegex; /*".*successfully.*";*/
 	}
 
 	@Override

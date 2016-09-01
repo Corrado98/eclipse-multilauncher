@@ -24,38 +24,40 @@ public class Activator extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public Activator() {
-		IConsoleManager manager = ConsolePlugin.getDefault().getConsoleManager();
-
-		// Existing consoles
-		IConsole[] consoles = manager.getConsoles();
-
-		// Listen for consoles being added/removed
-		manager.addConsoleListener(new IConsoleListener() {
-
-			@Override
-			public void consolesRemoved(IConsole[] consoles) {
-				// TODO Auto-generated method stub
-				for (int i = 0; i < consoles.length; i++) {
-					if(consoles[i] instanceof TextConsole) {				
-						System.out.println(consoles[i].getName() + " REMOVED");
-					}
-					
-				}
-			}
-
-			@Override
-			public void consolesAdded(IConsole[] consoles) {
-				for (int i = 0; i < consoles.length; i++) {
-					if(consoles[i] instanceof TextConsole) {				
-						System.out.println(consoles[i].getName() + " ADDED");
-						TextConsole textConsole = (TextConsole) consoles[i];
-						textConsole.addPatternMatchListener(new ConsoleListener());
-					}
-					
-				}
-
-			}
-		});
+//		IConsoleManager manager = ConsolePlugin.getDefault().getConsoleManager();
+//
+//		// Existing consoles
+//		IConsole[] consoles = manager.getConsoles();
+//
+//		// Listen for consoles being added/removed
+//		manager.addConsoleListener(new IConsoleListener() {
+//
+//			@Override
+//			public void consolesRemoved(IConsole[] consoles) {
+//				// TODO Auto-generated method stub
+//				for (int i = 0; i < consoles.length; i++) {
+//					if(consoles[i] instanceof TextConsole) {				
+//						System.out.println(consoles[i].getName() + " REMOVED");
+//					}
+//					
+//				}
+//			}
+//
+//			@Override
+//			public void consolesAdded(IConsole[] consoles) {
+//				for (int i = 0; i < consoles.length; i++) {
+//					if(consoles[i] instanceof TextConsole) {				
+//						System.out.println(consoles[i].getName() + " ADDED");
+//						TextConsole textConsole = (TextConsole) consoles[i];
+//						
+//						
+//						textConsole.addPatternMatchListener(new ConsoleListener(a));
+//					}
+//					
+//				}
+//
+//			}
+//		});
 	}
 
 	/*

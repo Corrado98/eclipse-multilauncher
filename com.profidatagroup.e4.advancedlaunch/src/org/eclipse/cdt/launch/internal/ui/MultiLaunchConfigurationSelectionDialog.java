@@ -78,6 +78,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private ComboControlledStackComposite fStackComposite;
 	private Label fDelayAmountLabel;
 	private Text fDelayAmountWidget; // in seconds
+	private Text consoleStringWidget; //as String
 	private boolean fForEditing; // true if dialog was opened to edit an entry, otherwise it was opened to add one
 	//private Combo combo;
 	
@@ -259,9 +260,11 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		fDelayAmountLabel.setText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_9); 
 		
 		fDelayAmountWidget = new Text(comp, SWT.SINGLE | SWT.BORDER);
+		consoleStringWidget = new Text(comp, SWT.SINGLE | SWT.BORDER);
 		GridData gridData = new GridData();
 		gridData.widthHint = convertWidthInCharsToPixels(8);
 		fDelayAmountWidget.setLayoutData(gridData);
+		consoleStringWidget.setLayoutData(gridData);
 		fDelayAmountWidget.addModifyListener(new ModifyListener(){
 			@Override
 			public void modifyText(ModifyEvent e) {
@@ -280,6 +283,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		}
 		
 		showHideDelayAmountWidgets();
+		showHideConsoleStringWidgets();
 	}
 
 //	public Combo getCombo() {
@@ -291,6 +295,13 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		fDelayAmountLabel.setVisible(visible);
 		fDelayAmountWidget.setVisible(visible);
 	}
+	
+	private void showHideConsoleStringWidgets() {
+		//final boolean visible = action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING;
+		//fDelayAmountLabel.setVisible(true);
+		consoleStringWidget.setVisible(true);
+	}
+
 
 	public ILaunchConfiguration[] getSelectedLaunchConfigurations() {
 		List<ILaunchConfiguration> configs = new ArrayList<ILaunchConfiguration>(); 
