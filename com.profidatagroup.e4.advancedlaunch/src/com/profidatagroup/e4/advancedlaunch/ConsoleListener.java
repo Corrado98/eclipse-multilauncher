@@ -31,7 +31,7 @@ public class ConsoleListener implements IPatternMatchListener {
 
 	@Override
 	public String getPattern() {
-		return checkRegex; /*".*successfully.*";*/
+		return checkRegex; /*".*successfully.*"*/
 	}
 
 	@Override

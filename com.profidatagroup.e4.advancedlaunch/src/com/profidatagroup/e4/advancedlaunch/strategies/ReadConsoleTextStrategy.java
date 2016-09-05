@@ -25,16 +25,15 @@ import com.profidatagroup.e4.advancedlaunch.ConsoleListener;
  * No correct working solution atm.
  * 
  */
-public class ReadConsoleTextStrategy extends AbstractLaunchStrategy implements IPatternMatchListenerDelegate {
+public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
+	
+	private String regEx;
 
 	@Override
 	public void launchSelectedStrategy(ILaunchConfiguration iLaunchConfiguration, String mode, String param) {
-		try {
-			iLaunchConfiguration.launch(mode, null);
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		
+		regEx = param;
 		
 		IConsoleManager manager = ConsolePlugin.getDefault().getConsoleManager();
 
@@ -61,36 +60,21 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy implements I
 					if(consoles[i] instanceof TextConsole) {				
 						System.out.println(consoles[i].getName() + " ADDED");
 						TextConsole textConsole = (TextConsole) consoles[i];
-						/*
-						 * CONTINUE HERE!
-						 * 
-						 * 
-						 * 
-						 */
-						String a = "";
-						textConsole.addPatternMatchListener(new ConsoleListener(a));
+						textConsole.addPatternMatchListener(new ConsoleListener(regEx));
 					}
 					
 				}
 
 			}
 		});
-	}
+		
+		try {
+			iLaunchConfiguration.launch(mode, null);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 
-	@Override
-	public void connect(TextConsole console) {
 		
 	}
-
-	@Override
-	public void disconnect() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void matchFound(PatternMatchEvent event) {
-		System.out.println("MATCH FOUND");
-	}
-
+	
 }

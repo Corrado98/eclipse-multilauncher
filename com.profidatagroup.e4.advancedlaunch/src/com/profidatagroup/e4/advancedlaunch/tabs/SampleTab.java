@@ -124,10 +124,11 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 					// gets selected launchconfigurations from chooser
 					// (selection dialog)
-					for (ILaunchConfiguration a : multiLaunchConfigurationSelectionDialog
+					for (ILaunchConfiguration iLaunchConfiguration : multiLaunchConfigurationSelectionDialog
 							.getSelectedLaunchConfigurations()) {
-						System.out.println(a.getName());
-						launchConfigurationDataList.add(new LaunchConfigurationBean(a.getName(),
+						System.out.println(iLaunchConfiguration.getName());
+						System.out.println(String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
+						launchConfigurationDataList.add(new LaunchConfigurationBean(iLaunchConfiguration.getName(),
 								multiLaunchConfigurationSelectionDialog.getMode(),
 								LaunchElement.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()),
 								String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
