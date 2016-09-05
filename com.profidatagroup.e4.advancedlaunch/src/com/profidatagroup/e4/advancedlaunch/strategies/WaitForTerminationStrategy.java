@@ -13,12 +13,12 @@ import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 
-public class WaitUntilPriorConfigTerminatedStrategy extends AbstractLaunchStrategy {
+public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 
 	private List<Set<IProcess>> processesToWait = Collections.synchronizedList(new ArrayList<>());
 
 	@Override
-	protected void waitForLaunch(ILaunch launch, String param) {
+	protected void waitForLaunch(ILaunch launch) {
 		DebugPlugin debugPlugin = DebugPlugin.getDefault();
 		IDebugEventSetListener debugEventSetListener = null;
 		

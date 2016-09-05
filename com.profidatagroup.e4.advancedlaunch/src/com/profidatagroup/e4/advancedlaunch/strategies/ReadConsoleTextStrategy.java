@@ -17,12 +17,18 @@ import com.profidatagroup.e4.advancedlaunch.strategies.console.ConsoleRemoveList
  * Launches a {@link ILaunchConfiguration} and waits for a regular expression in the console.
  */
 public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
+	
+	private String regEx;
+	
+	public ReadConsoleTextStrategy(String userConsoleStringToWaitFor) {
+		this.regEx = userConsoleStringToWaitFor;
+	}
 
 	@Override
-	protected void waitForLaunch(ILaunch launch, String param) {
+	protected void waitForLaunch(ILaunch launch) {
 		TextConsole console = findTextConsole(launch);
 		if (console != null) {
-			waitForConsolePatternMatch(console, param);
+			waitForConsolePatternMatch(console, regEx);
 		}
 	}
 
