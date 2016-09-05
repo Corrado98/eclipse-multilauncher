@@ -20,6 +20,7 @@ import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.ui.DebugUITools;
 
+import com.profidatagroup.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
 import com.profidatagroup.e4.advancedlaunch.strategies.DelayStrategy;
 import com.profidatagroup.e4.advancedlaunch.strategies.EmptyStrategy;
 import com.profidatagroup.e4.advancedlaunch.strategies.ReadConsoleTextStrategy;
@@ -27,8 +28,6 @@ import com.profidatagroup.e4.advancedlaunch.strategies.WaitUntilPriorConfigTermi
 import com.profidatagroup.e4.advancedlaunch.tabs.SampleTab;
 
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
-
-	private List<Set<IProcess>> processesToWait = Collections.synchronizedList(new ArrayList<>());
 
 	private ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 	private ILaunchConfigurationType type = manager
@@ -50,31 +49,29 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 			for (ILaunchConfiguration iLaunchConfiguration : configurations) {
 				
 				if (bean.getName().equals(iLaunchConfiguration.getName())) {
-					switch (bean.getPostLaunchAction()) {
-					
-					case "Wait until terminated":						
-						new WaitUntilPriorConfigTerminatedStrategy().launchAndWait(iLaunchConfiguration, bean.getMode(), bean.getParam());
-						break;
-
-					case "Delay":
-						new DelayStrategy().launchAndWait(iLaunchConfiguration, bean.getMode(), bean.getParam());
-						break;
-
-					case "Wait for Console-String":
-						new ReadConsoleTextStrategy().launchAndWait(iLaunchConfiguration, bean.getMode(), bean.getParam());
-						break;
-
-					case "None":
-						new EmptyStrategy().launchAndWait(iLaunchConfiguration, bean.getMode(), bean.getParam());
-						break;
-
-					default:
-						System.out.println("Fatal Error");
-						break;
-					}
+					AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(bean);
+					launchAndWaitStrategy.launchAndWait(iLaunchConfiguration, bean.getMode(), bean.getParam());
 				}
 				
 			}
 		}
+	}
+
+	private AbstractLaunchStrategy createLaunchAndWaitStrategy(LaunchConfigurationBean launchConfigurationBean) {
+		switch (launchConfigurationBean.getPostLaunchAction()) {
+		case "Wait until terminated":						
+			return new WaitUntilPriorConfigTerminatedStrategy();
+
+		case "Delay":
+			return new DelayStrategy();
+
+		case "Wait for Console-String":
+			return new ReadConsoleTextStrategy();
+
+		case "None":
+			return new EmptyStrategy();
+		}
+		
+		throw new IllegalArgumentException("Unknown launch and wait strategy: " + launchConfigurationBean.getPostLaunchAction());
 	}
 }
