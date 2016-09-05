@@ -251,6 +251,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				final String actionStr = ((Combo) e.widget).getText();
 				action = MultiLaunchConfigurationDelegate.LaunchElement.strToActionEnum(actionStr);
 				showHideDelayAmountWidgets();
+				showHideConsoleStringWidgets();
 				validate();
 			}
 		});
@@ -297,9 +298,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	}
 	
 	private void showHideConsoleStringWidgets() {
-		//final boolean visible = action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING;
-		//fDelayAmountLabel.setVisible(true);
-		consoleStringWidget.setVisible(true);
+		final boolean visible = action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING;
+		//fDelayAmountLabel.setVisible(false);
+		//fDelayAmountWidget.dispose();
+		consoleStringWidget.setVisible(visible);
 	}
 
 
