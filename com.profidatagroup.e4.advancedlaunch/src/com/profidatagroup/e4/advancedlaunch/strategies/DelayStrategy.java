@@ -6,8 +6,8 @@ public class DelayStrategy extends AbstractLaunchStrategy {
 	
 	private int waitingTimeInSeconds;
 	
-	public DelayStrategy(String delayInSeconds) {
-		this.waitingTimeInSeconds = Integer.parseInt(delayInSeconds);
+	public DelayStrategy(int delayInSeconds) {
+		this.waitingTimeInSeconds = delayInSeconds;
 	}
 
 	@Override

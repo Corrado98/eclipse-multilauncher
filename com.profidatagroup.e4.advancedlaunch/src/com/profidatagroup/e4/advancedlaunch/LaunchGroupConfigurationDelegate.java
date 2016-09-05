@@ -63,7 +63,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 			return new WaitForTerminationStrategy();
 
 		case "Delay":
-			return new DelayStrategy(launchConfigurationBean.getParam());
+			return new DelayStrategy(Integer.parseInt(launchConfigurationBean.getParam()));
 
 		case "Wait for Console-String":
 			return new ReadConsoleTextStrategy(launchConfigurationBean.getParam());
