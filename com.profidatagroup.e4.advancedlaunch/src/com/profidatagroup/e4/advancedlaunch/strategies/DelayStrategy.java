@@ -1,17 +1,11 @@
 package com.profidatagroup.e4.advancedlaunch.strategies;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunch;
 
 public class DelayStrategy extends AbstractLaunchStrategy {
 
 	@Override
-	public void launchSelectedStrategy(ILaunchConfiguration iLaunchConfiguration, String mode, String param) {
-		try {
-			iLaunchConfiguration.launch(mode, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
+	protected void waitForLaunch(ILaunch launch, String param) {
 		waitDelay(Integer.parseInt(param));
 	}
 

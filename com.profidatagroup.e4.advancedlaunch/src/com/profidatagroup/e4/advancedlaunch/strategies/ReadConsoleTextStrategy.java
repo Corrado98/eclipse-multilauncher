@@ -19,15 +19,10 @@ import com.profidatagroup.e4.advancedlaunch.strategies.console.ConsoleRemoveList
 public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 
 	@Override
-	public void launchSelectedStrategy(ILaunchConfiguration launchConfiguration, String mode, String param) {
-		try {
-			ILaunch launch = launchConfiguration.launch(mode, null);
-			TextConsole console = findTextConsole(launch);
-			if (console != null) {
-				waitForConsolePatternMatch(console, param);
-			}
-		} catch (CoreException e) {
-			e.printStackTrace();
+	protected void waitForLaunch(ILaunch launch, String param) {
+		TextConsole console = findTextConsole(launch);
+		if (console != null) {
+			waitForConsolePatternMatch(console, param);
 		}
 	}
 

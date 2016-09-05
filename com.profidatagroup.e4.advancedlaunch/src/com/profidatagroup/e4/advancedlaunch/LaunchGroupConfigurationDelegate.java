@@ -53,19 +53,19 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 					switch (bean.getPostLaunchAction()) {
 					
 					case "Wait until terminated":						
-						new WaitUntilPriorConfigTerminatedStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
+						new WaitUntilPriorConfigTerminatedStrategy().launchAndWait(iLaunchConfiguration, bean.getMode(), bean.getParam());
 						break;
 
 					case "Delay":
-						new DelayStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
+						new DelayStrategy().launchAndWait(iLaunchConfiguration, bean.getMode(), bean.getParam());
 						break;
 
 					case "Wait for Console-String":
-						new ReadConsoleTextStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
+						new ReadConsoleTextStrategy().launchAndWait(iLaunchConfiguration, bean.getMode(), bean.getParam());
 						break;
 
 					case "None":
-						new EmptyStrategy().launchSelectedStrategy(iLaunchConfiguration, bean.getMode(), bean.getParam());
+						new EmptyStrategy().launchAndWait(iLaunchConfiguration, bean.getMode(), bean.getParam());
 						break;
 
 					default:
