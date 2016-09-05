@@ -1,20 +1,18 @@
 package com.profidatagroup.e4.advancedlaunch.strategies;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.model.IProcess;
-
-import com.profidatagroup.e4.advancedlaunch.tabs.SampleTab;
 
 public abstract class AbstractLaunchStrategy {
 
-	protected abstract void launchSelectedStrategy(ILaunchConfiguration iLaunchConfiguration, String mode, String param);
+	/**
+	 * Launches the specified {@link ILaunchConfiguration} in the given <code>mode</code> and waits until the conditions of this strategy are met.
+	 * 
+	 * This method will only return when conditions of this strategy are met.
+	 * 
+	 * @param launchConfiguration the {@link ILaunchConfiguration}
+	 * @param mode the launch mode, see {@link org.eclipse.debug.core.ILaunchManager}
+	 * @param param the runtime parameter for this strategy (e.g. delay time)
+	 */
+	protected abstract void launchSelectedStrategy(ILaunchConfiguration launchConfiguration, String mode, String param);
 
 }

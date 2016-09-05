@@ -1,13 +1,14 @@
-package com.profidatagroup.e4.advancedlaunch;
+package com.profidatagroup.e4.advancedlaunch.strategies.console;
 
 import org.eclipse.ui.console.IPatternMatchListener;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 
-public class ConsoleListener implements IPatternMatchListener {
+public class ConsolePatternMatchListener implements IPatternMatchListener {
 	private String checkRegex;
+	private volatile boolean consoleStringDetected = false;
 	
-	public ConsoleListener(String checkRegex) {
+	public ConsolePatternMatchListener(String checkRegex) {
 		this.checkRegex = checkRegex;
 	}
 
@@ -25,8 +26,8 @@ public class ConsoleListener implements IPatternMatchListener {
 
 	@Override
 	public void matchFound(PatternMatchEvent event) {
-	System.out.println("NEXT CONFIGURATION STARTED!");
-
+		consoleStringDetected = true;
+		System.out.println("NEXT CONFIGURATION STARTED!");
 	}
 
 	@Override
@@ -44,6 +45,10 @@ public class ConsoleListener implements IPatternMatchListener {
 	public String getLineQualifier() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public boolean getConsoleStringDetected() {
+		return consoleStringDetected;
 	}
 
 }
