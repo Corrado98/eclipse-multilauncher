@@ -21,7 +21,7 @@ public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 	protected void waitForLaunch(ILaunch launch) {
 		DebugPlugin debugPlugin = DebugPlugin.getDefault();
 		IDebugEventSetListener debugEventSetListener = null;
-		
+
 		try {
 			debugEventSetListener = new IDebugEventSetListener() {
 				@Override
@@ -29,7 +29,7 @@ public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 					for (DebugEvent event : events) {
 						Object source = event.getSource();
 						if (source instanceof IProcess && event.getKind() == DebugEvent.TERMINATE) {
-							// TODO check if the process terminating is one you are
+							// check if the process terminating is one i'm
 							// interested in
 							System.out.println("Terminated " + source);
 							for (Set<IProcess> processSet : processesToWait) {
@@ -39,7 +39,7 @@ public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 					}
 				}
 			};
-			
+
 			debugPlugin.addDebugEventListener(debugEventSetListener);
 			waitForProcessesToTerminate(launch.getProcesses());
 		} finally {

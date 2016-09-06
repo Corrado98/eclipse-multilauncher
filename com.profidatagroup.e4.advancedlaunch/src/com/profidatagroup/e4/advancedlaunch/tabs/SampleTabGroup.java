@@ -13,7 +13,7 @@ public class SampleTabGroup extends AbstractLaunchConfigurationTabGroup {
 
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		setTabs(new ILaunchConfigurationTab[] {new SampleTab(), /*new CustomEnvironmentTab(),*/ new CustomCommonTab()});		
+		setTabs(new ILaunchConfigurationTab[] {new SampleTab(), new CustomCommonTab()});		
 	}
 
 

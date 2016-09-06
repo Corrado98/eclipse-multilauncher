@@ -7,7 +7,6 @@ public class LaunchConfigurationBean {
 	private String param;
 	
 	public LaunchConfigurationBean() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public LaunchConfigurationBean(String name, String mode, String postLaunchAction, String param) {

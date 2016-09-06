@@ -14,14 +14,10 @@ public class ConsolePatternMatchListener implements IPatternMatchListener {
 
 	@Override
 	public void connect(TextConsole console) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void disconnect() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -37,13 +33,11 @@ public class ConsolePatternMatchListener implements IPatternMatchListener {
 
 	@Override
 	public int getCompilerFlags() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public String getLineQualifier() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

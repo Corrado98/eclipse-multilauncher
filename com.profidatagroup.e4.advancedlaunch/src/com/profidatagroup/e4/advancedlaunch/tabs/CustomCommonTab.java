@@ -6,10 +6,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
-/*
- * ToDo: Fix Useless class.
+/**
  * 
- * 
+ * TODO: Edit the CommonTab by removing unused functionality. 
+ *
  */
 public class CustomCommonTab extends CommonTab {
 	
