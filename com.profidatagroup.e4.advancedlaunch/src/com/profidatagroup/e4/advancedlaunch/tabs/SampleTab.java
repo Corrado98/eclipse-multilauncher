@@ -3,6 +3,7 @@ package com.profidatagroup.e4.advancedlaunch.tabs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.cdt.launch.internal.MultiLaunchConfigurationDelegate;
 import org.eclipse.cdt.launch.internal.MultiLaunchConfigurationDelegate.LaunchElement;
 import org.eclipse.cdt.launch.internal.MultiLaunchConfigurationDelegate.LaunchElement.EPostLaunchAction;
 import org.eclipse.cdt.launch.internal.ui.MultiLaunchConfigurationSelectionDialog;
@@ -142,20 +143,44 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			@Override
 			public void handleEvent(Event event) {
 				multiLaunchConfigurationSelectionDialog.setFforEditing(true);
-				
-				multiLaunchConfigurationSelectionDialog
-						.setMode(selectedConfiguration.getMode());
-				
+
+				multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
+
 				multiLaunchConfigurationSelectionDialog
 						.setAction(LaunchElement.strToActionEnum(selectedConfiguration.getPostLaunchAction()));
-				
-				
+
 				System.out.println(selectedConfiguration.getParam());
-//				//multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam().toString());
-//				if(multiLaunchConfigurationSelectionDialog.getFDelayAmountWidget() != null || multiLaunchConfigurationSelectionDialog.getFDelayAmountWidget().isDisposed() == false) {
-//					multiLaunchConfigurationSelectionDialog.getFDelayAmountWidget().setText("asasdasdsad");
-//				}
-				multiLaunchConfigurationSelectionDialog.open();
+				// //multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam().toString());
+				// if(multiLaunchConfigurationSelectionDialog.getFDelayAmountWidget()
+				// != null) {
+				// multiLaunchConfigurationSelectionDialog.getFDelayAmountWidget().setText("asasdasdsad");
+				// }
+
+				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
+					
+					System.out.println(String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
+
+					ILaunchConfiguration[] configurations = multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfigurations();
+					ILaunchConfiguration configuration = configurations[0];
+					
+					
+//					multiLaunchConfigurationSelectionDialog.setInitialSelection();
+					
+					launchConfigurationDataList.add(launchConfigurationDataList.indexOf(selectedConfiguration),
+							new LaunchConfigurationBean(configuration.getName(),
+									multiLaunchConfigurationSelectionDialog.getMode(),
+									LaunchElement.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()),
+									String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
+					launchConfigurationDataList.remove(selectedConfiguration);
+
+					if (launchConfigurationDataList != null) {
+						viewer.setInput(launchConfigurationDataList);
+						viewer.refresh();
+						setDirty(true);
+						updateLaunchConfigurationDialog();
+					}
+
+				}
 			}
 
 		});

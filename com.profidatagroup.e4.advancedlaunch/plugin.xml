@@ -44,19 +44,30 @@
           <command
                 commandId="com.profidatagroup.e4.advancedlaunch.command1"
                 label="terminate run/debugmode configurations"
+                icon="icons/full/obj16/terminate_all_co.gif"
                 style="push">
           </command>
        </toolbar>
     </menuContribution>
  </extension>
+ 
  <extension
        point="org.eclipse.ui.commands">
     <command
           defaultHandler="com.profidatagroup.e4.advancedlaunch.TerminateConfigurations"
           id="com.profidatagroup.e4.advancedlaunch.command1"
-          name="terminate">
+          name="terminate run/debugmode configurations">
     </command>
  </extension>
+ 
+ <extension
+        point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+    <launchConfigurationTypeImage
+            id="com.profidatagroup.e4.advancedlaunch.launchConfigurationTypeImage"
+            configTypeID="com.profidatagroup.e4.advancedlaunch.launchConfigurationType"
+            icon="icons/full/obj16/lrun_obj.gif">
+    </launchConfigurationTypeImage>
+</extension> 
 	
 
 </plugin>
