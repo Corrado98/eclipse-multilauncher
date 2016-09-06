@@ -142,6 +142,14 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 
 			@Override
 			public void handleEvent(Event event) {
+				/*
+				 *
+				 * load the beans value into the dialog
+				 * open the dialog
+				 */
+				
+				//editMultiLaunchConfigurationSelectionDialog.get
+		
 				editMultiLaunchConfigurationSelectionDialog.open();
 			}
 
