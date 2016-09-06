@@ -103,6 +103,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			}
 		};
 	}
+	
+	public void setFforEditing(boolean forEditing) {
+		this.fForEditing = forEditing;
+	}
 
 	protected ILaunchManager getLaunchManager() {
 		return DebugPlugin.getDefault().getLaunchManager();
@@ -221,12 +225,14 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				validate();
 			}
 		});
+		
 		combo.setText(MultiLaunchConfigurationDelegate.LaunchElement.actionEnumToStr(action));
 
 		fDelayAmountLabel = new Label(comp, SWT.NONE);
 		fDelayAmountLabel.setText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_9);
 
 		fDelayAmountWidget = new Text(comp, SWT.SINGLE | SWT.BORDER);
+		
 		// consoleStringWidget = new Text(comp, SWT.SINGLE | SWT.BORDER);
 		GridData gridData = new GridData();
 		gridData.widthHint = convertWidthInCharsToPixels(20);
@@ -250,12 +256,17 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				}
 			}
 		});
+		
 		if (actionParam instanceof Integer) {
 			fDelayAmountWidget.setText(((Integer) actionParam).toString());
 		}
 
 		showHideDelayAmountWidgets();
 		// showHideConsoleStringWidgets();
+	}
+	
+	public Text getFDelayAmountWidget() {
+		return fDelayAmountWidget;
 	}
 
 	// public Combo getCombo() {
@@ -310,13 +321,25 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	public String getMode() {
 		return isDefaultMode ? MultiLaunchConfigurationDelegate.DEFAULT_MODE : mode;
 	}
+	
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
 
 	public EPostLaunchAction getAction() {
 		return action;
 	}
+	
+	public void setAction(EPostLaunchAction action) {
+		this.action = action;
+	}
 
 	public Object getActionParam() {
 		return actionParam;
+	}
+	
+	public void setActionParam(String actionParam) {
+		this.actionParam = (String) actionParam;
 	}
 
 	public static MultiLaunchConfigurationSelectionDialog createDialog(Shell shell, String groupId,

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.cdt.launch.internal.MultiLaunchConfigurationDelegate.LaunchElement;
+import org.eclipse.cdt.launch.internal.MultiLaunchConfigurationDelegate.LaunchElement.EPostLaunchAction;
 import org.eclipse.cdt.launch.internal.ui.MultiLaunchConfigurationSelectionDialog;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -50,8 +51,6 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	private Composite buttonComposite;
 	private MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
 			getShell(), "debug", false);
-	private MultiLaunchConfigurationSelectionDialog editMultiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
-			getShell(), "debug", true);
 	// public static List<String> selectedConfigurationsNameList = new
 	// ArrayList<>();
 	public static List<LaunchConfigurationBean> launchConfigurationDataList = new ArrayList<>();
@@ -107,7 +106,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		btnAdd.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-
+				multiLaunchConfigurationSelectionDialog.setFforEditing(false);
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 					// gets selected launchconfigurations from chooser
 					// (selection dialog)
@@ -142,15 +141,21 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 
 			@Override
 			public void handleEvent(Event event) {
-				/*
-				 *
-				 * load the beans value into the dialog
-				 * open the dialog
-				 */
+				multiLaunchConfigurationSelectionDialog.setFforEditing(true);
 				
-				//editMultiLaunchConfigurationSelectionDialog.get
-		
-				editMultiLaunchConfigurationSelectionDialog.open();
+				multiLaunchConfigurationSelectionDialog
+						.setMode(selectedConfiguration.getMode());
+				
+				multiLaunchConfigurationSelectionDialog
+						.setAction(LaunchElement.strToActionEnum(selectedConfiguration.getPostLaunchAction()));
+				
+				
+				System.out.println(selectedConfiguration.getParam());
+//				//multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam().toString());
+//				if(multiLaunchConfigurationSelectionDialog.getFDelayAmountWidget() != null || multiLaunchConfigurationSelectionDialog.getFDelayAmountWidget().isDisposed() == false) {
+//					multiLaunchConfigurationSelectionDialog.getFDelayAmountWidget().setText("asasdasdsad");
+//				}
+				multiLaunchConfigurationSelectionDialog.open();
 			}
 
 		});
