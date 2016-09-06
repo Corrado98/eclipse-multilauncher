@@ -75,10 +75,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private ComboControlledStackComposite fStackComposite;
 	private Label fDelayAmountLabel;
 	private Text fDelayAmountWidget; // in seconds
-	// private Text consoleStringWidget; //as String
 	private boolean fForEditing; // true if dialog was opened to edit an entry,
 									// otherwise it was opened to add one
-	// private Combo combo;
 
 	public MultiLaunchConfigurationSelectionDialog(Shell shell, String initMode, boolean forEditing) {
 		super(shell);
@@ -105,20 +103,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			}
 		};
 	}
-
-	// public Text getfDelayAmountWidget() {
-	// return fDelayAmountWidget;
-	// }
-	//
-	// public int getUserDelay() {
-	// int userNumber = 0;
-	// try {
-	// userNumber = Integer.parseInt(fDelayAmountWidget.getText());
-	// } catch(NumberFormatException nfe) {
-	// System.out.println("no letters allowed!");
-	// }
-	// return userNumber;
-	// }
 
 	protected ILaunchManager getLaunchManager() {
 		return DebugPlugin.getDefault().getLaunchManager();
@@ -210,20 +194,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				mode = ((Combo) e.widget).getText();
 			}
 		});
-		// "Use default mode" checkbox. Use a parent composite to provide
-		// consistent left-side padding
-		Composite checkboxComp = new Composite(comp, SWT.NONE);
-		checkboxComp.setLayout(new GridLayout(1, false));
-		checkboxComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		Button checkBox = new Button(checkboxComp, SWT.CHECK);
-		checkBox.setText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_5);
-		checkBox.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				isDefaultMode = ((Button) e.widget).getSelection();
-			}
-		});
-		checkBox.setSelection(isDefaultMode);
 
 		createPostLaunchControl(comp);
 		return comp;
@@ -248,7 +218,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				final String actionStr = ((Combo) e.widget).getText();
 				action = MultiLaunchConfigurationDelegate.LaunchElement.strToActionEnum(actionStr);
 				showHideDelayAmountWidgets();
-				// showHideConsoleStringWidgets();
 				validate();
 			}
 		});
@@ -267,16 +236,16 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			@Override
 			public void modifyText(ModifyEvent e) {
 				String userInput = ((Text) e.widget).getText();
-				if(action == EPostLaunchAction.DELAY) {
-				try {
-					actionParam = Integer.valueOf(userInput);
-				} catch (NumberFormatException exc) {
-					actionParam = null;
+				if (action == EPostLaunchAction.DELAY) {
+					try {
+						actionParam = Integer.valueOf(userInput);
+					} catch (NumberFormatException exc) {
+						actionParam = null;
+					}
+					validate();
 				}
-				validate();
-				}
-				if(action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING) {
-					//validate();
+				if (action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+					// validate();
 					actionParam = userInput;
 				}
 			}

@@ -133,7 +133,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 		});
 
 	}
-	
+
 	private void createEditButtonWithListener() {
 		btnEdit = new Button(buttonComposite, SWT.None);
 		btnEdit.setText("Edit");
@@ -144,7 +144,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			public void handleEvent(Event event) {
 				editMultiLaunchConfigurationSelectionDialog.open();
 			}
-			
+
 		});
 	}
 
@@ -156,20 +156,21 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 				Object selectedElement = selection.getFirstElement();
 				// do something with it
 				selectedConfiguration = (LaunchConfigurationBean) selectedElement;
-				
+
 				/*
-				 * Detect multiple items selected and disable edit button. NOT WORKING ATM.
+				 * TODO Detect multiple items selected and disable edit button.
+				 * NOT WORKING ATM.
 				 * 
 				 */
-				
-//				Object [] selections = selection.toArray();
-//			
-//				if(selections != null) {
-//					btnEdit.setEnabled(false);
-//				} else {
-//					btnEdit.setEnabled(true);
-//				}
-				
+
+				// Object [] selections = selection.toArray();
+				//
+				// if(selections != null) {
+				// btnEdit.setEnabled(false);
+				// } else {
+				// btnEdit.setEnabled(true);
+				// }
+
 				if (selectedElement != null) {
 					btnRemove.setEnabled(true);
 					btnUp.setEnabled(true);
@@ -216,8 +217,8 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 					// up than that, therefore return
 					if (index > 0) {
 						int indexBefore = index - 1;
-						LaunchConfigurationBean temp = launchConfigurationDataList.get(index); // 5
-						LaunchConfigurationBean temp2 = launchConfigurationDataList.get(indexBefore); // 10
+						LaunchConfigurationBean temp = launchConfigurationDataList.get(index);
+						LaunchConfigurationBean temp2 = launchConfigurationDataList.get(indexBefore);
 						LaunchConfigurationBean temp3 = null; //
 						temp3 = temp;
 						temp = temp2;
