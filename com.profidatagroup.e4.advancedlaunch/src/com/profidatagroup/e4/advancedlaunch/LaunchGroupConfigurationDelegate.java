@@ -31,8 +31,9 @@ import com.profidatagroup.e4.advancedlaunch.tabs.SampleTab;
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
 
 	private ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-	private ILaunchConfigurationType type = manager
-			.getLaunchConfigurationType("org.eclipse.jdt.launching.localJavaApplication");
+	// private ILaunchConfigurationType type = manager
+	// .getLaunchConfigurationType("org.eclipse.jdt.launching.localJavaApplication");
+	private ILaunchConfigurationType[] allTypes = manager.getLaunchConfigurationTypes();
 
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
@@ -43,23 +44,25 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 			return;
 		}
 
-		ILaunchConfiguration[] configurations = manager.getLaunchConfigurations(type);
+		for (ILaunchConfigurationType type : allTypes) {
+			ILaunchConfiguration[] configurations = manager.getLaunchConfigurations(type);
 
-		for (LaunchConfigurationBean bean : SampleTab.launchConfigurationDataList) {
-			for (ILaunchConfiguration iLaunchConfiguration : configurations) {
-				
-				if (bean.getName().equals(iLaunchConfiguration.getName())) {
-					AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(bean);
-					launchAndWaitStrategy.launchAndWait(iLaunchConfiguration, bean.getMode());
+			for (LaunchConfigurationBean bean : SampleTab.launchConfigurationDataList) {
+				for (ILaunchConfiguration iLaunchConfiguration : configurations) {
+
+					if (bean.getName().equals(iLaunchConfiguration.getName())) {
+						AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(bean);
+						launchAndWaitStrategy.launchAndWait(iLaunchConfiguration, bean.getMode());
+					}
+
 				}
-				
 			}
 		}
 	}
 
 	private AbstractLaunchStrategy createLaunchAndWaitStrategy(LaunchConfigurationBean launchConfigurationBean) {
 		switch (launchConfigurationBean.getPostLaunchAction()) {
-		case "Wait until terminated":						
+		case "Wait until terminated":
 			return new WaitForTerminationStrategy();
 
 		case "Delay":
@@ -71,7 +74,8 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		case "None":
 			return new EmptyStrategy();
 		}
-		
-		throw new IllegalArgumentException("Unknown launch and wait strategy: " + launchConfigurationBean.getPostLaunchAction());
+
+		throw new IllegalArgumentException(
+				"Unknown launch and wait strategy: " + launchConfigurationBean.getPostLaunchAction());
 	}
 }

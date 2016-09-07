@@ -162,14 +162,13 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 				// }
 
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
-					
 					//System.out.println(String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
 
 					ILaunchConfiguration[] configurations = multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfigurations();
 					ILaunchConfiguration configuration = configurations[0];
 					
 					
-//					multiLaunchConfigurationSelectionDialog.setInitialSelection();
+					multiLaunchConfigurationSelectionDialog.getfTree().getViewer().setSelection(multiLaunchConfigurationSelectionDialog.getfSelection());
 					
 					launchConfigurationDataList.add(launchConfigurationDataList.indexOf(selectedConfiguration),
 							new LaunchConfigurationBean(configuration.getName(),
@@ -184,7 +183,6 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 						setDirty(true);
 						updateLaunchConfigurationDialog();
 					}
-
 				}
 			}
 

@@ -67,6 +67,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
  * Dialog to select launch configuration(s)
  */
 public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog implements ISelectionChangedListener {
+	private LaunchConfigurationFilteredTree fTree;
 	private ViewerFilter[] fFilters = null;
 	private ISelection fSelection;
 	private ILaunchGroup[] launchGroups;
@@ -163,7 +164,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		for (Iterator<String> iterator = modes.keySet().iterator(); iterator.hasNext();) {
 			String mode = iterator.next();
 			ILaunchGroup launchGroup = modes.get(mode);
-			LaunchConfigurationFilteredTree fTree = new LaunchConfigurationFilteredTree(
+			fTree = new LaunchConfigurationFilteredTree(
 					fStackComposite.getStackParent(), SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
 					new PatternFilter(), launchGroup, fFilters);
 			String label = mode;
@@ -355,6 +356,14 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	public void setActionParam(String actionParam) {
 		this.actionParam = actionParam;
 	}
+	
+	public LaunchConfigurationFilteredTree getfTree() {
+		return fTree;
+	}
+	
+	public ISelection getfSelection() {
+		return fSelection;
+	}
 
 	public static MultiLaunchConfigurationSelectionDialog createDialog(Shell shell, String groupId,
 			boolean forEditing) {
@@ -433,6 +442,11 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				isValid = (actionParam instanceof Integer) && ((Integer) actionParam > 0);
 				setErrorMessage(isValid ? null : LaunchMessages.MultiLaunchConfigurationSelectionDialog_10);
 			}
+//			if (action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+//				isValid = (!(actionParam.toString().equals("")));
+//				setErrorMessage(isValid ? null : LaunchMessages.MultiLaunchConfigurationSelectionDialog_10);
+//			}
+			
 		}
 
 		if (ok_button != null)
