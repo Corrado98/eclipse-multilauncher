@@ -20,6 +20,9 @@ import org.eclipse.cdt.launch.internal.MultiLaunchConfigurationDelegate;
 import org.eclipse.cdt.launch.internal.MultiLaunchConfigurationDelegate.LaunchElement;
 import org.eclipse.cdt.launch.internal.MultiLaunchConfigurationDelegate.LaunchElement.EPostLaunchAction;
 import org.eclipse.cdt.launch.ui.ComboControlledStackComposite;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.PojoProperties;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -30,6 +33,7 @@ import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationFil
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchGroupFilter;
 import org.eclipse.debug.ui.ILaunchGroup;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -103,7 +107,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			}
 		};
 	}
-	
+
 	public void setFforEditing(boolean forEditing) {
 		this.fForEditing = forEditing;
 	}
@@ -225,14 +229,14 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				validate();
 			}
 		});
-		
+
 		combo.setText(MultiLaunchConfigurationDelegate.LaunchElement.actionEnumToStr(action));
 
 		fDelayAmountLabel = new Label(comp, SWT.NONE);
 		fDelayAmountLabel.setText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_9);
 
 		fDelayAmountWidget = new Text(comp, SWT.SINGLE | SWT.BORDER);
-		
+
 		// consoleStringWidget = new Text(comp, SWT.SINGLE | SWT.BORDER);
 		GridData gridData = new GridData();
 		gridData.widthHint = convertWidthInCharsToPixels(20);
@@ -256,15 +260,25 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				}
 			}
 		});
-		
+
 		if (actionParam instanceof Integer) {
 			fDelayAmountWidget.setText(((Integer) actionParam).toString());
 		}
 
+		// Do the actual binding and conversion
+		DataBindingContext dbc = new DataBindingContext();
+
+		// create the observables, which should be bound
+		IObservableValue<Text> fDelayAmountWidgetTarget = WidgetProperties.text(SWT.Modify).observe(fDelayAmountWidget);
+		IObservableValue<Object> actionParamModel = PojoProperties.value("actionParam").observe(this);
+
+		// bind observables together
+		dbc.bindValue(fDelayAmountWidgetTarget, actionParamModel);
+
 		showHideDelayAmountWidgets();
 		// showHideConsoleStringWidgets();
 	}
-	
+
 	public Text getFDelayAmountWidget() {
 		return fDelayAmountWidget;
 	}
@@ -321,7 +335,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	public String getMode() {
 		return isDefaultMode ? MultiLaunchConfigurationDelegate.DEFAULT_MODE : mode;
 	}
-	
+
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
@@ -329,7 +343,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	public EPostLaunchAction getAction() {
 		return action;
 	}
-	
+
 	public void setAction(EPostLaunchAction action) {
 		this.action = action;
 	}
@@ -337,9 +351,9 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	public Object getActionParam() {
 		return actionParam;
 	}
-	
+
 	public void setActionParam(String actionParam) {
-		this.actionParam = (String) actionParam;
+		this.actionParam = actionParam;
 	}
 
 	public static MultiLaunchConfigurationSelectionDialog createDialog(Shell shell, String groupId,

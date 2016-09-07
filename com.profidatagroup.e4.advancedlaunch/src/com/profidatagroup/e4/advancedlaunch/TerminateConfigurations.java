@@ -37,8 +37,10 @@ public class TerminateConfigurations extends AbstractHandler {
 					}
 				}
 		}
-		MessageDialog.openInformation(HandlerUtil.getActiveWorkbenchWindow(event).getShell(), "Info",
-				"terminated all running configurations from last to first.");
+		//Optional
+		
+//		MessageDialog.openInformation(HandlerUtil.getActiveWorkbenchWindow(event).getShell(), "Info",
+//				"terminated all running configurations from last to first.");
 		return null;
 	}
 }

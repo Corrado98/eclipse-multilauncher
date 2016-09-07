@@ -108,13 +108,19 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			@Override
 			public void handleEvent(Event event) {
 				multiLaunchConfigurationSelectionDialog.setFforEditing(false);
+
+				multiLaunchConfigurationSelectionDialog.setMode("debug");
+
+				multiLaunchConfigurationSelectionDialog
+						.setAction(LaunchElement.strToActionEnum("none"));
+				
+				multiLaunchConfigurationSelectionDialog.setActionParam("");
+				
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 					// gets selected launchconfigurations from chooser
 					// (selection dialog)
 					for (ILaunchConfiguration iLaunchConfiguration : multiLaunchConfigurationSelectionDialog
 							.getSelectedLaunchConfigurations()) {
-						System.out.println(iLaunchConfiguration.getName());
-						System.out.println(String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
 						launchConfigurationDataList.add(new LaunchConfigurationBean(iLaunchConfiguration.getName(),
 								multiLaunchConfigurationSelectionDialog.getMode(),
 								LaunchElement.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()),
@@ -149,8 +155,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 				multiLaunchConfigurationSelectionDialog
 						.setAction(LaunchElement.strToActionEnum(selectedConfiguration.getPostLaunchAction()));
 
-				System.out.println(selectedConfiguration.getParam());
-				// //multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam().toString());
+				multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
 				// if(multiLaunchConfigurationSelectionDialog.getFDelayAmountWidget()
 				// != null) {
 				// multiLaunchConfigurationSelectionDialog.getFDelayAmountWidget().setText("asasdasdsad");
@@ -158,7 +163,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 					
-					System.out.println(String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
+					//System.out.println(String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
 
 					ILaunchConfiguration[] configurations = multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfigurations();
 					ILaunchConfiguration configuration = configurations[0];
