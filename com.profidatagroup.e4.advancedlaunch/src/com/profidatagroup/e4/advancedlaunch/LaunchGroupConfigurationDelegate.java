@@ -20,24 +20,20 @@ import com.profidatagroup.e4.advancedlaunch.tabs.SampleTab;
 
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
 
-	private ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-	private ILaunchConfigurationType[] allTypes = manager.getLaunchConfigurationTypes();
 
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
 
 		List<LaunchConfigurationBean> launchConfigurationDataList = SampleTab.loadLaunchConfigurations(configuration);
+		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+		ILaunchConfiguration[] configurations = manager.getLaunchConfigurations();
 
-		for (ILaunchConfigurationType type : allTypes) {
-			ILaunchConfiguration[] configurations = manager.getLaunchConfigurations(type);
-
-			for (LaunchConfigurationBean bean : launchConfigurationDataList) {
-				for (ILaunchConfiguration launchConfiguration : configurations) {
-					if (bean.getName().equals(launchConfiguration.getName())) {
-						AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(bean);
-						launchAndWaitStrategy.launchAndWait(launchConfiguration, bean.getMode());
-					}
+		for (LaunchConfigurationBean bean : launchConfigurationDataList) {
+			for (ILaunchConfiguration launchConfiguration : configurations) {
+				if (bean.getName().equals(launchConfiguration.getName())) {
+					AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(bean);
+					launchAndWaitStrategy.launchAndWait(launchConfiguration, bean.getMode());
 				}
 			}
 		}
