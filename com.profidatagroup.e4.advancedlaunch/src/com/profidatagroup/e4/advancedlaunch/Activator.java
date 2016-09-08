@@ -9,6 +9,8 @@ import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.profidatagroup.e4.advancedlaunch.tabs.SampleTab;
+
 /**
  * The activator class controls the plug-in life cycle
  */
