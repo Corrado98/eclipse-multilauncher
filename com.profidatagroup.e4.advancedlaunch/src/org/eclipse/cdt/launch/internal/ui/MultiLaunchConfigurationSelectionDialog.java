@@ -79,7 +79,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private IStructuredSelection fInitialSelection;
 	private ComboControlledStackComposite fStackComposite;
 	private Label fDelayAmountLabel;
-	private Text fDelayAmountWidget; // in seconds
+	private Text paramTextWidget;
 	private boolean fForEditing; // true if dialog was opened to edit an entry,
 									// otherwise it was opened to add one
 
@@ -234,13 +234,13 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		fDelayAmountLabel = new Label(comp, SWT.NONE);
 		fDelayAmountLabel.setText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_9);
 
-		fDelayAmountWidget = new Text(comp, SWT.SINGLE | SWT.BORDER);
+		paramTextWidget = new Text(comp, SWT.SINGLE | SWT.BORDER);
 
 		GridData gridData = new GridData();
 		gridData.widthHint = convertWidthInCharsToPixels(20);
-		fDelayAmountWidget.setLayoutData(gridData);
+		paramTextWidget.setLayoutData(gridData);
 		// consoleStringWidget.setLayoutData(gridData);
-		fDelayAmountWidget.addModifyListener(new ModifyListener() {
+		paramTextWidget.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
 				String userInput = ((Text) e.widget).getText();
@@ -254,12 +254,13 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				}
 				if (action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING) {
 					actionParam = userInput;
+					validate();
 				}
 			}
 		});
 
 		if (actionParam instanceof Integer) {
-			fDelayAmountWidget.setText(((Integer) actionParam).toString());
+			paramTextWidget.setText(((Integer) actionParam).toString());
 		}
 
 		initActionParamDatabinding();
@@ -271,7 +272,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		DataBindingContext dbc = new DataBindingContext();
 
 		// create the observables, which should be bound
-		IObservableValue<Text> fDelayAmountWidgetTarget = WidgetProperties.text(SWT.Modify).observe(fDelayAmountWidget);
+		IObservableValue<Text> fDelayAmountWidgetTarget = WidgetProperties.text(SWT.Modify).observe(paramTextWidget);
 		IObservableValue<Object> actionParamModel = PojoProperties.value("actionParam").observe(this);
 
 		// bind observables together
@@ -279,7 +280,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	}
 
 	public Text getFDelayAmountWidget() {
-		return fDelayAmountWidget;
+		return paramTextWidget;
 	}
 
 	private void showHideDelayAmountWidgets() {
@@ -287,20 +288,20 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		case DELAY:
 			fDelayAmountLabel.setText("Seconds:");
 			fDelayAmountLabel.setVisible(true);
-			fDelayAmountWidget.setVisible(true);
+			paramTextWidget.setVisible(true);
 			break;
 		case WAIT_FOR_CONSOLESTRING:
 			fDelayAmountLabel.setText("RegEx:");
 			fDelayAmountLabel.setVisible(true);
-			fDelayAmountWidget.setVisible(true);
+			paramTextWidget.setVisible(true);
 			break;
 		case WAIT_FOR_TERMINATION:
 			fDelayAmountLabel.setVisible(false);
-			fDelayAmountWidget.setVisible(false);
+			paramTextWidget.setVisible(false);
 			break;
 		case NONE:
 			fDelayAmountLabel.setVisible(false);
-			fDelayAmountWidget.setVisible(false);
+			paramTextWidget.setVisible(false);
 			break;
 		}
 	}
@@ -402,11 +403,13 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				isValid = (actionParam instanceof Integer) && ((Integer) actionParam > 0);
 				setErrorMessage(isValid ? null : LaunchMessages.MultiLaunchConfigurationSelectionDialog_10);
 			}
-			// if (action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING) {
-			// isValid = (!(actionParam.toString().equals("")));
-			// setErrorMessage(isValid ? null :
-			// LaunchMessages.MultiLaunchConfigurationSelectionDialog_10);
-			// }
+			 if (action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+			 if(actionParam.toString().isEmpty()) {
+				 isValid = false;
+			 }
+			 setErrorMessage(isValid ? null :
+			 LaunchMessages.MultiLaunchConfigurationSelectionDialog_10_2);
+			 }
 
 		}
 
