@@ -104,10 +104,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			public void handleEvent(Event event) {
 				MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
 						getShell());
-				multiLaunchConfigurationSelectionDialog.setFforEditing(false);
-				multiLaunchConfigurationSelectionDialog.setMode("debug");
-				multiLaunchConfigurationSelectionDialog.setAction(LaunchElement.strToActionEnum("none"));
-				multiLaunchConfigurationSelectionDialog.setActionParam("");
+				initAddConfigurationSelectionDialog(multiLaunchConfigurationSelectionDialog);
 
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 					launchConfigurationDataList.add(new LaunchConfigurationBean(
@@ -125,7 +122,14 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				}
 			}
 		});
+	}
 
+	private void initAddConfigurationSelectionDialog(
+			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
+		multiLaunchConfigurationSelectionDialog.setFforEditing(false);
+		multiLaunchConfigurationSelectionDialog.setMode("debug");
+		multiLaunchConfigurationSelectionDialog.setAction(LaunchElement.strToActionEnum("none"));
+		multiLaunchConfigurationSelectionDialog.setActionParam("");
 	}
 
 	private void createEditButtonWithListener() {
@@ -138,11 +142,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			public void handleEvent(Event event) {
 				MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
 						getShell());
-				multiLaunchConfigurationSelectionDialog.setFforEditing(true);
-				multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
-				multiLaunchConfigurationSelectionDialog
-						.setAction(LaunchElement.strToActionEnum(selectedConfiguration.getPostLaunchAction()));
-				multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
+				loadExistingConfigurationData(multiLaunchConfigurationSelectionDialog);
 
 				ILaunchConfiguration launchConfiguration;
 				try {
@@ -174,6 +174,15 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		});
 	}
 
+	private void loadExistingConfigurationData(
+			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
+		multiLaunchConfigurationSelectionDialog.setFforEditing(true);
+		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
+		multiLaunchConfigurationSelectionDialog
+				.setAction(LaunchElement.strToActionEnum(selectedConfiguration.getPostLaunchAction()));
+		multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
+	}
+
 	private void addTableViewerSelectionChangedListener() {
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
@@ -181,7 +190,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				Object selectedElement = selection.getFirstElement();
 				selectedConfiguration = (LaunchConfigurationBean) selectedElement;
-				
+
 				if (selectedElement != null) {
 					btnRemove.setEnabled(true);
 					btnUp.setEnabled(true);
