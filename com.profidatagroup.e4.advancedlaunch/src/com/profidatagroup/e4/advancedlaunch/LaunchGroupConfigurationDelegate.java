@@ -13,7 +13,7 @@ import com.profidatagroup.e4.advancedlaunch.strategies.DelayStrategy;
 import com.profidatagroup.e4.advancedlaunch.strategies.EmptyStrategy;
 import com.profidatagroup.e4.advancedlaunch.strategies.ReadConsoleTextStrategy;
 import com.profidatagroup.e4.advancedlaunch.strategies.WaitForTerminationStrategy;
-import com.profidatagroup.e4.advancedlaunch.tabs.SampleTab;
+import com.profidatagroup.e4.advancedlaunch.tabs.LaunchTab;
 
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
 

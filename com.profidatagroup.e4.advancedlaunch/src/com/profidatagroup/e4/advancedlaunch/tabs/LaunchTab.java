@@ -38,7 +38,7 @@ import com.profidatagroup.e4.advancedlaunch.LaunchUtils;
  * 
  * @author PaCo
  */
-public class SampleTab extends AbstractLaunchConfigurationTab {
+public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private Text text;
 	private Button btnAdd;

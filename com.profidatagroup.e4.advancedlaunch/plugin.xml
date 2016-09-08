@@ -16,7 +16,7 @@
 	<extension
 	    point="org.eclipse.debug.ui.launchConfigurationTabGroups">
 	    <launchConfigurationTabGroup
-	        class="com.profidatagroup.e4.advancedlaunch.tabs.SampleTabGroup"
+	        class="com.profidatagroup.e4.advancedlaunch.tabs.LaunchTabGroup"
 	        id="com.profidatagroup.e4.advancedlaunch.launchConfigurationTabGroup"
 	        type="com.profidatagroup.e4.advancedlaunch.launchConfigurationType">
 	    </launchConfigurationTabGroup>

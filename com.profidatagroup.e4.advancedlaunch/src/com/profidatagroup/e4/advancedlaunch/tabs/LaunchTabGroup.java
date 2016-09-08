@@ -9,11 +9,11 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
 
-public class SampleTabGroup extends AbstractLaunchConfigurationTabGroup {
+public class LaunchTabGroup extends AbstractLaunchConfigurationTabGroup {
 
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		setTabs(new ILaunchConfigurationTab[] {new SampleTab(), new CustomCommonTab()});		
+		setTabs(new ILaunchConfigurationTab[] {new LaunchTab(), new CustomCommonTab()});		
 	}
 
 
