@@ -78,7 +78,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void initTableViewer() {
 		viewer = new TableViewer(mainComposite,
-				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
 		Table table3 = viewer.getTable();
 		table3.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -99,7 +99,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void createAddBtnWithListener() {
-		btnAdd = new Button(buttonComposite, SWT.None);
+		Button btnAdd = new Button(buttonComposite, SWT.None);
 		btnAdd.setText("Add..");
 		btnAdd.addListener(SWT.Selection, new Listener() {
 			@Override
@@ -109,16 +109,13 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				multiLaunchConfigurationSelectionDialog.setAction(LaunchElement.strToActionEnum("none"));
 				multiLaunchConfigurationSelectionDialog.setActionParam("");
 
-				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
-
-					// foreach launchconfig in userSelected launchconfigs
-					for (ILaunchConfiguration launchConfiguration : multiLaunchConfigurationSelectionDialog
-							.getSelectedLaunchConfigurations()) {
-						launchConfigurationDataList.add(new LaunchConfigurationBean(launchConfiguration.getName(),
-								multiLaunchConfigurationSelectionDialog.getMode(),
-								LaunchElement.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()),
-								String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
-					}
+				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {		
+					launchConfigurationDataList.add(new LaunchConfigurationBean(
+							multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(),
+							multiLaunchConfigurationSelectionDialog.getMode(),
+							LaunchElement.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()),
+							String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
+					
 					if (launchConfigurationDataList != null) {
 						viewer.setInput(launchConfigurationDataList);
 						viewer.refresh();
@@ -156,9 +153,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 
-					ILaunchConfiguration[] configurations = multiLaunchConfigurationSelectionDialog
-							.getSelectedLaunchConfigurations();
-					ILaunchConfiguration configuration = configurations[0];
+					ILaunchConfiguration configuration = multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration();
 
 					launchConfigurationDataList.add(launchConfigurationDataList.indexOf(selectedConfiguration),
 							new LaunchConfigurationBean(configuration.getName(),
@@ -184,7 +179,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				Object selectedElement = selection.getFirstElement();
-				// do something with it
 				selectedConfiguration = (LaunchConfigurationBean) selectedElement;
 
 				/*
@@ -243,7 +237,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null) {
 					int index = launchConfigurationDataList.indexOf(selectedConfiguration);
-					// If first element of table is selected, cant move it further
+					// If first element of table is selected, cant move it
+					// further
 					// up than that, therefore return.
 					if (index > 0) {
 						int indexBefore = index - 1;
@@ -375,12 +370,9 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void createBeansFromAttributes(ILaunchConfiguration configuration) {
 		try {
-
 			launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
-
 			viewer.setInput(launchConfigurationDataList);
 			viewer.refresh();
-
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
