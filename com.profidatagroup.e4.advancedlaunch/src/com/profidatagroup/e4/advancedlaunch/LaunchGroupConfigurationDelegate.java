@@ -4,11 +4,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 
 import com.profidatagroup.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
@@ -25,20 +22,17 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
 
-		List<LaunchConfigurationBean> launchConfigurationDataList = SampleTab.loadLaunchConfigurations(configuration);
-		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-		ILaunchConfiguration[] configurations = manager.getLaunchConfigurations();
+		List<LaunchConfigurationBean> launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
 
 		for (LaunchConfigurationBean bean : launchConfigurationDataList) {
-			for (ILaunchConfiguration launchConfiguration : configurations) {
-				if (bean.getName().equals(launchConfiguration.getName())) {
-					AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(bean);
-					launchAndWaitStrategy.launchAndWait(launchConfiguration, bean.getMode());
-				}
+			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(bean.getName());
+			if (launchConfiguration != null) {
+				AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(bean);
+				launchAndWaitStrategy.launchAndWait(launchConfiguration, bean.getMode());
 			}
 		}
 	}
-
+	
 	private AbstractLaunchStrategy createLaunchAndWaitStrategy(LaunchConfigurationBean launchConfigurationBean) {
 		switch (launchConfigurationBean.getPostLaunchAction()) {
 		case "Wait until terminated":

@@ -460,4 +460,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		fInitialSelection = new StructuredSelection(el.data);
 		fSelection = fInitialSelection;
 	}
+	
+	public void setInitialSelection(ILaunchConfiguration launchConfiguration) {
+		fInitialSelection = new StructuredSelection(launchConfiguration);
+	}
 }

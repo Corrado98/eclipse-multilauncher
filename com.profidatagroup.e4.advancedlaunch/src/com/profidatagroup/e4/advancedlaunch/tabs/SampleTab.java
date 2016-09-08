@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
 import com.profidatagroup.e4.advancedlaunch.LaunchConfigurationBean;
+import com.profidatagroup.e4.advancedlaunch.LaunchUtils;
 
 /**
  * 
@@ -144,14 +145,20 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 						.setAction(LaunchElement.strToActionEnum(selectedConfiguration.getPostLaunchAction()));
 				multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
 
+				ILaunchConfiguration hack;
+				try {
+					hack = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
+					multiLaunchConfigurationSelectionDialog.setInitialSelection(hack);
+				} catch (CoreException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 
 					ILaunchConfiguration[] configurations = multiLaunchConfigurationSelectionDialog
 							.getSelectedLaunchConfigurations();
 					ILaunchConfiguration configuration = configurations[0];
-
-					multiLaunchConfigurationSelectionDialog.getfTree().getViewer()
-							.setSelection(new StructuredSelection(selectedConfiguration), true);
 
 					launchConfigurationDataList.add(launchConfigurationDataList.indexOf(selectedConfiguration),
 							new LaunchConfigurationBean(configuration.getName(),
@@ -369,7 +376,7 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 	private void createBeansFromAttributes(ILaunchConfiguration configuration) {
 		try {
 
-			launchConfigurationDataList = loadLaunchConfigurations(configuration);
+			launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
 
 			viewer.setInput(launchConfigurationDataList);
 			viewer.refresh();
@@ -378,26 +385,6 @@ public class SampleTab extends AbstractLaunchConfigurationTab {
 			e.printStackTrace();
 		}
 
-	}
-
-	public static List<LaunchConfigurationBean> loadLaunchConfigurations(ILaunchConfiguration configuration) throws CoreException {
-		List<String> names = new ArrayList<>();
-		List<String> modes = new ArrayList<>();
-		List<String> postLaunchActions = new ArrayList<>();
-		List<String> params = new ArrayList<>();
-
-		List<LaunchConfigurationBean> launchConfigurationDataList = new ArrayList<>();
-
-		names = configuration.getAttribute("names", new ArrayList<String>());
-		modes = configuration.getAttribute("modes", new ArrayList<String>());
-		postLaunchActions = configuration.getAttribute("postLaunchActions", new ArrayList<String>());
-		params = configuration.getAttribute("params", new ArrayList<String>());
-
-		for (int i = 0; i < names.size(); i++) {
-			launchConfigurationDataList.add(new LaunchConfigurationBean(names.get(i), modes.get(i),
-					postLaunchActions.get(i), params.get(i)));
-		}
-		return launchConfigurationDataList;
 	}
 
 	@Override
