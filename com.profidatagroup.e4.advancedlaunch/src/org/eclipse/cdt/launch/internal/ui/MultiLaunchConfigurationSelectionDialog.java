@@ -71,7 +71,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private LaunchConfigurationBean launchConfigurationBean;
 	private ViewerFilter[] fFilters = null;
 	private ISelection fSelection;
-	private ILaunchGroup[] launchGroups;
 	private String mode = "run";
 	private EPostLaunchAction action = EPostLaunchAction.NONE;
 	private Object actionParam;
@@ -90,9 +89,18 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
 		this.launchConfigurationBean = launchConfigurationBean;
-		launchGroups = manager.getLaunchGroups();
+		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
 		fForEditing = forEditing;
 		fFilters = null;
+		createEmptyTypeFilter();
+	}
+	
+	public MultiLaunchConfigurationSelectionDialog(Shell shell) {
+		super(shell);
+		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
+		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
+		fFilters = null;
+		setShellStyle(getShellStyle() | SWT.RESIZE);
 		createEmptyTypeFilter();
 	}
 
@@ -115,31 +123,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		};
 	}
 
-	public MultiLaunchConfigurationSelectionDialog(Shell shell, String initMode, boolean forEditing) {
-		super(shell);
-		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
-		launchGroups = manager.getLaunchGroups();
-		mode = initMode;
-		fForEditing = forEditing;
-		fFilters = null;
-		setShellStyle(getShellStyle() | SWT.RESIZE);
-		emptyTypeFilter = new ViewerFilter() {
-			@Override
-			public boolean select(Viewer viewer, Object parentElement, Object element) {
-				if (element instanceof ILaunchConfigurationType) {
-					try {
-						ILaunchConfigurationType type = (ILaunchConfigurationType) element;
-						return getLaunchManager().getLaunchConfigurations(type).length > 0;
-					} catch (CoreException e) {
-						return false;
-					}
-				} else if (element instanceof ILaunchConfiguration) {
-					return MultiLaunchConfigurationDelegate.isValidLaunchReference((ILaunchConfiguration) element);
-				}
-				return true;
-			}
-		};
-	}
 
 	public void setFforEditing(boolean forEditing) {
 		this.fForEditing = forEditing;
@@ -171,6 +154,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 
 		fStackComposite = new ComboControlledStackComposite(comp, SWT.NONE);
 		HashMap<String, ILaunchGroup> modes = new HashMap<String, ILaunchGroup>();
+		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
+		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
 		for (ILaunchGroup launchGroup : launchGroups) {
 			if (!modes.containsKey(launchGroup.getMode())) {
 				modes.put(launchGroup.getMode(), launchGroup);

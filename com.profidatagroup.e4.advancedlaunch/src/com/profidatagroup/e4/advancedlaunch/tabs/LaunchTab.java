@@ -50,8 +50,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private LaunchConfigurationBean selectedConfiguration;
 	private Composite mainComposite;
 	private Composite buttonComposite;
-	private MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
-			getShell(), "debug", false);
 	private List<LaunchConfigurationBean> launchConfigurationDataList = new ArrayList<>();
 
 	@Override
@@ -104,18 +102,20 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		btnAdd.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
+				MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
+						getShell());
 				multiLaunchConfigurationSelectionDialog.setFforEditing(false);
 				multiLaunchConfigurationSelectionDialog.setMode("debug");
 				multiLaunchConfigurationSelectionDialog.setAction(LaunchElement.strToActionEnum("none"));
 				multiLaunchConfigurationSelectionDialog.setActionParam("");
 
-				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {		
+				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 					launchConfigurationDataList.add(new LaunchConfigurationBean(
 							multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(),
 							multiLaunchConfigurationSelectionDialog.getMode(),
 							LaunchElement.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()),
 							String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
-					
+
 					if (launchConfigurationDataList != null) {
 						viewer.setInput(launchConfigurationDataList);
 						viewer.refresh();
@@ -136,24 +136,25 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 			@Override
 			public void handleEvent(Event event) {
+				MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
+						getShell());
 				multiLaunchConfigurationSelectionDialog.setFforEditing(true);
 				multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
 				multiLaunchConfigurationSelectionDialog
 						.setAction(LaunchElement.strToActionEnum(selectedConfiguration.getPostLaunchAction()));
 				multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
 
-				ILaunchConfiguration hack;
+				ILaunchConfiguration launchConfiguration;
 				try {
-					hack = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
-					multiLaunchConfigurationSelectionDialog.setInitialSelection(hack);
+					launchConfiguration = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
+					multiLaunchConfigurationSelectionDialog.setInitialSelection(launchConfiguration);
 				} catch (CoreException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
-
-					ILaunchConfiguration configuration = multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration();
+					ILaunchConfiguration configuration = multiLaunchConfigurationSelectionDialog
+							.getSelectedLaunchConfiguration();
 
 					launchConfigurationDataList.add(launchConfigurationDataList.indexOf(selectedConfiguration),
 							new LaunchConfigurationBean(configuration.getName(),
@@ -180,21 +181,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				Object selectedElement = selection.getFirstElement();
 				selectedConfiguration = (LaunchConfigurationBean) selectedElement;
-
-				/*
-				 * TODO Detect multiple items selected and disable edit button.
-				 * NOT WORKING ATM.
-				 * 
-				 */
-
-				// Object [] selections = selection.toArray();
-				//
-				// if(selections != null) {
-				// btnEdit.setEnabled(false);
-				// } else {
-				// btnEdit.setEnabled(true);
-				// }
-
+				
 				if (selectedElement != null) {
 					btnRemove.setEnabled(true);
 					btnUp.setEnabled(true);
@@ -268,50 +255,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	}
 
-	private void createColumns(TableViewer viewer2) {
-
-		// create a column for the launchconfiguration NAME
-		TableViewerColumn colLaunchConfigurationName = new TableViewerColumn(viewer, SWT.NONE);
-		colLaunchConfigurationName.getColumn().setWidth(200);
-		colLaunchConfigurationName.getColumn().setText("Name");
-		colLaunchConfigurationName.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				// ILaunchConfiguration ilc = (ILaunchConfiguration) element;
-				// return ilc.getName();
-				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
-				return lcb.getName();
-			}
-		});
-
-		// create a column for the launchconfiguration MODE
-		TableViewerColumn colLaunchConfigurationMode = new TableViewerColumn(viewer, SWT.NONE);
-		colLaunchConfigurationMode.getColumn().setWidth(200);
-		colLaunchConfigurationMode.getColumn().setText("Mode");
-		colLaunchConfigurationMode.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
-				return lcb.getMode();
-			}
-		});
-
-		// create a column for the launchconfiguration ACTION
-		TableViewerColumn colLaunchConfigurationAction = new TableViewerColumn(viewer, SWT.NONE);
-		colLaunchConfigurationAction.getColumn().setWidth(200);
-		colLaunchConfigurationAction.getColumn().setText("Action");
-		colLaunchConfigurationAction.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				// ILaunchConfiguration ilc = (ILaunchConfiguration) element;
-				// ilc.getWorkingCopy().setAttribute(ACTION, ssss);
-				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
-				return lcb.getPostLaunchAction();
-			}
-		});
-
-	}
-
 	private void createDownButtonWithListener() {
 		btnDown = new Button(buttonComposite, SWT.None);
 		btnDown.setText("Down");
@@ -322,8 +265,9 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null) {
 					int index = launchConfigurationDataList.indexOf(selectedConfiguration);
-					// If last element of table is selected, cant move it more
-					// down than that, therefore return
+					// If last element of table is selected, cant move it
+					// further
+					// down than that, therefore return.
 					if (index + 1 < launchConfigurationDataList.size()) {
 						int indexAfter = index + 1;
 						LaunchConfigurationBean temp = launchConfigurationDataList.get(index); // 5
@@ -348,6 +292,46 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 			}
 		});
+	}
+
+	private void createColumns(TableViewer viewer2) {
+
+		// create a column for the launchconfiguration NAME
+		TableViewerColumn colLaunchConfigurationName = new TableViewerColumn(viewer, SWT.NONE);
+		colLaunchConfigurationName.getColumn().setWidth(200);
+		colLaunchConfigurationName.getColumn().setText("Name");
+		colLaunchConfigurationName.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
+				return lcb.getName();
+			}
+		});
+
+		// create a column for the launchconfiguration MODE
+		TableViewerColumn colLaunchConfigurationMode = new TableViewerColumn(viewer, SWT.NONE);
+		colLaunchConfigurationMode.getColumn().setWidth(200);
+		colLaunchConfigurationMode.getColumn().setText("Mode");
+		colLaunchConfigurationMode.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
+				return lcb.getMode();
+			}
+		});
+
+		// create a column for the launchconfiguration ACTION
+		TableViewerColumn colLaunchConfigurationAction = new TableViewerColumn(viewer, SWT.NONE);
+		colLaunchConfigurationAction.getColumn().setWidth(200);
+		colLaunchConfigurationAction.getColumn().setText("Action");
+		colLaunchConfigurationAction.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
+				return lcb.getPostLaunchAction();
+			}
+		});
+
 	}
 
 	@Override
