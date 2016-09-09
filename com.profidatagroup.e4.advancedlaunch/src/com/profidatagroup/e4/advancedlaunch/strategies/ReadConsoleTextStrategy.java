@@ -1,5 +1,7 @@
 package com.profidatagroup.e4.advancedlaunch.strategies;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -19,6 +21,7 @@ import com.profidatagroup.e4.advancedlaunch.strategies.console.ConsoleRemoveList
 public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 	
 	private String regEx;
+	private boolean terminationDetection = false;
 	
 	public ReadConsoleTextStrategy(String userConsoleStringToWaitFor) {
 		this.regEx = userConsoleStringToWaitFor;
@@ -28,11 +31,11 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 	protected void waitForLaunch(ILaunch launch) {
 		TextConsole console = findTextConsole(launch);
 		if (console != null) {
-			waitForConsolePatternMatch(console, regEx);
+			waitForConsolePatternMatch(console, regEx, launch);
 		}
 	}
 
-	private void waitForConsolePatternMatch(TextConsole console, String regEx) {
+	private void waitForConsolePatternMatch(TextConsole console, String regEx, ILaunch launch) {
 		// TODO should stop waiting if process exits
 		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		ConsolePatternMatchListener consoleListener = null;
@@ -45,8 +48,10 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 			consoleRemoveListener = new ConsoleRemoveListener(console);
 			consoleManager.addConsoleListener(consoleRemoveListener);
 			
-			while (!consoleRemoveListener.isRemoved() && !consoleListener.getConsoleStringDetected()) {
+			//if a condition turns true, breaks out of method.
+			while (!consoleRemoveListener.isRemoved() && !consoleListener.getConsoleStringDetected() && !terminationDetection) {
 				sleep();
+				detectProcessTermination(launch);
 			}
 		} finally {
 			System.out.println("Finished waiting");
@@ -60,12 +65,21 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 		}
 	}
 
+	private void detectProcessTermination(ILaunch launch) {
+		IProcess[] processes = launch.getProcesses();
+		System.out.println("processes array: " + Arrays.toString(processes));
+		for (IProcess process : processes) {
+			if(process.isTerminated()) {
+				terminationDetection = true;
+			}
+		}
+	}
+
 	private void sleep() {
 		try {
 			System.out.println("Still waiting..");
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
