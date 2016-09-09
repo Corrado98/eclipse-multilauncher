@@ -2,6 +2,7 @@ package ch.parisi.e4.advancedlaunch.tabs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -306,50 +307,35 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void createColumns(TableViewer viewer2) {
 
 		// create a column for the launchconfiguration NAME
-		TableViewerColumn colLaunchConfigurationName = new TableViewerColumn(viewer, SWT.NONE);
-		colLaunchConfigurationName.getColumn().setWidth(200);
-		colLaunchConfigurationName.getColumn().setText("Name");
-		colLaunchConfigurationName.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
-				return lcb.getName();
-			}
-		});
+		addTableColumn("Name", lcb -> lcb.getName());
 
 		// create a column for the launchconfiguration MODE
-		TableViewerColumn colLaunchConfigurationMode = new TableViewerColumn(viewer, SWT.NONE);
-		colLaunchConfigurationMode.getColumn().setWidth(200);
-		colLaunchConfigurationMode.getColumn().setText("Mode");
-		colLaunchConfigurationMode.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
-				return lcb.getMode();
-			}
-		});
+		addTableColumn("Mode", lcb -> lcb.getMode());
+		
+		// create a column for the launchconfiguration POST-ACTION
+		addTableColumn("Action", lcb -> lcb.getPostLaunchAction());
+		
+		// create a column for the launchconfiguration PARAM
+		addTableColumn("Param", lcb -> lcb.getParam());
 
-		// create a column for the launchconfiguration ACTION
+	}
+
+	private void addTableColumn(String name, Function<LaunchConfigurationBean, String> actionTextFetcher) {
 		TableViewerColumn colLaunchConfigurationAction = new TableViewerColumn(viewer, SWT.NONE);
 		colLaunchConfigurationAction.getColumn().setWidth(200);
-		colLaunchConfigurationAction.getColumn().setText("Action");
+		colLaunchConfigurationAction.getColumn().setText(name);
 		colLaunchConfigurationAction.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
 				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
-				return lcb.getPostLaunchAction();
+				return actionTextFetcher.apply(lcb);
 			}
 		});
-
 	}
 
 	@Override
 	public String getName() {
 		return "Launches";
-	}
-
-	private void insertPlaceHolder() {
-		new Label(mainComposite, SWT.None);
 	}
 
 	@Override
