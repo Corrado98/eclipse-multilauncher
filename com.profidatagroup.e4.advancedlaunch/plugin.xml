@@ -6,7 +6,7 @@
 	   <launchConfigurationType
 	   	   id="com.profidatagroup.e4.advancedlaunch.launchConfigurationType"
 		   name="Launch Group"
-		   delegate="com.profidatagroup.e4.advancedlaunch.LaunchGroupConfigurationDelegate"
+		   delegate="ch.parisi.e4.advancedlaunch.LaunchGroupConfigurationDelegate"
 		   modes= "run, debug"
 		   sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
 	       sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
@@ -16,7 +16,7 @@
 	<extension
 	    point="org.eclipse.debug.ui.launchConfigurationTabGroups">
 	    <launchConfigurationTabGroup
-	        class="com.profidatagroup.e4.advancedlaunch.tabs.LaunchTabGroup"
+	        class="ch.parisi.e4.advancedlaunch.tabs.LaunchTabGroup"
 	        id="com.profidatagroup.e4.advancedlaunch.launchConfigurationTabGroup"
 	        type="com.profidatagroup.e4.advancedlaunch.launchConfigurationType">
 	    </launchConfigurationTabGroup>
@@ -25,7 +25,7 @@
 	<extension
 	     point="org.eclipse.ui.console.consolePatternMatchListeners">
 		  <consolePatternMatchListener
-			        class="com.profidatagroup.e4.advancedlaunch.strategies.ReadConsoleTextStrategy"
+			        class="ch.parisi.e4.advancedlaunch.strategies.ReadConsoleTextStrategy"
 			        id="com.profidatagroup.e4.advancedlaunch.strategies.ReadConsoleTextStrategy"
 			        regex="*foo*">
 					     <enablement>
@@ -54,7 +54,7 @@
  <extension
        point="org.eclipse.ui.commands">
     <command
-          defaultHandler="com.profidatagroup.e4.advancedlaunch.TerminateConfigurations"
+          defaultHandler="ch.parisi.e4.advancedlaunch.TerminateConfigurations"
           id="com.profidatagroup.e4.advancedlaunch.command1"
           name="terminate run/debugmode configurations">
     </command>

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Advancedlaunch
 Bundle-SymbolicName: com.profidatagroup.e4.advancedlaunch;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: com.profidatagroup.e4.advancedlaunch.Activator
+Bundle-Activator: ch.parisi.e4.advancedlaunch.Activator
 Bundle-Vendor: PROFIDATAGROUP
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
