@@ -1,5 +1,10 @@
 package ch.parisi.e4.advancedlaunch;
 
+/**
+ * Bean-class which contains user-defined information of a launch. 
+ * @author PaCo
+ *
+ */
 public class LaunchConfigurationBean {
 	private String name;
 	private String mode;

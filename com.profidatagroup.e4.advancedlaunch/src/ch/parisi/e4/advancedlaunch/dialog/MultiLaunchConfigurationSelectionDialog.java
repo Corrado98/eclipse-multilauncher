@@ -57,7 +57,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
-import ch.parisi.e4.advancedlaunch.LaunchConfigurationBean;
 import ch.parisi.e4.advancedlaunch.MultiLaunchConfigurationDelegate;
 import ch.parisi.e4.advancedlaunch.MultiLaunchConfigurationDelegate.LaunchElement;
 import ch.parisi.e4.advancedlaunch.MultiLaunchConfigurationDelegate.LaunchElement.EPostLaunchAction;
@@ -65,10 +64,10 @@ import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
 /**
  * Dialog to select launch configuration(s)
+ * This class was taken from CDT and was modified by the author of this project.
  */
 public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog implements ISelectionChangedListener {
 	private LaunchConfigurationFilteredTree fTree;
-	private LaunchConfigurationBean launchConfigurationBean;
 	private ViewerFilter[] fFilters = null;
 	private ISelection fSelection;
 	private String mode = "run";
@@ -78,23 +77,11 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private ViewerFilter emptyTypeFilter;
 	private IStructuredSelection fInitialSelection;
 	private ComboControlledStackComposite fStackComposite;
-	private Label fDelayAmountLabel;
+	private Label paramLabel;
 	private Text paramTextWidget;
 	private boolean fForEditing; // true if dialog was opened to edit an entry,
-									// otherwise it was opened to add one
+									// otherwise it was opened to add one.
 
-	public MultiLaunchConfigurationSelectionDialog(Shell shell, LaunchConfigurationBean launchConfigurationBean,
-			boolean forEditing) {
-		super(shell);
-		setShellStyle(getShellStyle() | SWT.RESIZE);
-		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
-		this.launchConfigurationBean = launchConfigurationBean;
-		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
-		fForEditing = forEditing;
-		fFilters = null;
-		createEmptyTypeFilter();
-	}
-	
 	public MultiLaunchConfigurationSelectionDialog(Shell shell) {
 		super(shell);
 		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
@@ -122,7 +109,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			}
 		};
 	}
-
 
 	public void setFforEditing(boolean forEditing) {
 		this.fForEditing = forEditing;
@@ -181,7 +167,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				fStackComposite.setSelection(label);
 			}
 			if (fInitialSelection != null) {
-
 				fTree.getViewer().setSelection(fInitialSelection, true);
 			}
 		}
@@ -231,15 +216,14 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 
 		combo.setText(MultiLaunchConfigurationDelegate.LaunchElement.actionEnumToStr(action));
 
-		fDelayAmountLabel = new Label(comp, SWT.NONE);
-		fDelayAmountLabel.setText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_9);
+		paramLabel = new Label(comp, SWT.NONE);
+		paramLabel.setText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_9);
 
 		paramTextWidget = new Text(comp, SWT.SINGLE | SWT.BORDER);
 
 		GridData gridData = new GridData();
 		gridData.widthHint = convertWidthInCharsToPixels(20);
 		paramTextWidget.setLayoutData(gridData);
-		// consoleStringWidget.setLayoutData(gridData);
 		paramTextWidget.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
@@ -286,21 +270,21 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private void showHideDelayAmountWidgets() {
 		switch (action) {
 		case DELAY:
-			fDelayAmountLabel.setText("Seconds:");
-			fDelayAmountLabel.setVisible(true);
+			paramLabel.setText("Seconds:");
+			paramLabel.setVisible(true);
 			paramTextWidget.setVisible(true);
 			break;
 		case WAIT_FOR_CONSOLESTRING:
-			fDelayAmountLabel.setText("RegEx:");
-			fDelayAmountLabel.setVisible(true);
+			paramLabel.setText("RegEx:");
+			paramLabel.setVisible(true);
 			paramTextWidget.setVisible(true);
 			break;
 		case WAIT_FOR_TERMINATION:
-			fDelayAmountLabel.setVisible(false);
+			paramLabel.setVisible(false);
 			paramTextWidget.setVisible(false);
 			break;
 		case NONE:
-			fDelayAmountLabel.setVisible(false);
+			paramLabel.setVisible(false);
 			paramTextWidget.setVisible(false);
 			break;
 		}
@@ -311,7 +295,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			IStructuredSelection selection = (IStructuredSelection) fSelection;
 			return (ILaunchConfiguration) selection.getFirstElement();
 		}
-		System.out.println("No Selection!");
 		return null;
 	}
 
@@ -403,13 +386,12 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				isValid = (actionParam instanceof Integer) && ((Integer) actionParam > 0);
 				setErrorMessage(isValid ? null : LaunchMessages.MultiLaunchConfigurationSelectionDialog_10);
 			}
-			 if (action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING) {
-			 if(actionParam.toString().isEmpty()) {
-				 isValid = false;
-			 }
-			 setErrorMessage(isValid ? null :
-			 LaunchMessages.MultiLaunchConfigurationSelectionDialog_10_2);
-			 }
+			if (action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+				if (actionParam.toString().isEmpty()) {
+					isValid = false;
+				}
+				setErrorMessage(isValid ? null : LaunchMessages.MultiLaunchConfigurationSelectionDialog_10_2);
+			}
 
 		}
 

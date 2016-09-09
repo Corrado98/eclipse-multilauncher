@@ -35,6 +35,8 @@ import org.eclipse.swt.widgets.Shell;
  * the project. We want to let the user know what specific build configuration
  * is having a build error when the configuration is not the active one.
  * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=309126#c11
+ * 
+ * This class was taken from CDT and was modified by the author of this project.
  */
 public class BuildErrPrompter implements IStatusHandler {
 

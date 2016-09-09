@@ -14,6 +14,10 @@ package ch.parisi.e4.advancedlaunch.messages;
 
 import org.eclipse.osgi.util.NLS;
 
+/**
+ * This class was taken from CDT and was modified by the author of this project.
+ *
+ */
 public class LaunchMessages extends NLS {
 	public static String AbstractCLaunchDelegate_Debugger_not_installed;
 	public static String AbstractCLaunchDelegate_C_Project_not_specified;
