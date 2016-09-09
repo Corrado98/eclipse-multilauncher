@@ -20,7 +20,7 @@
 	        id="com.profidatagroup.e4.advancedlaunch.launchConfigurationTabGroup"
 	        type="com.profidatagroup.e4.advancedlaunch.launchConfigurationType">
 	    </launchConfigurationTabGroup>
-	</extension> 
+	</extension>
 	
 	<extension
 	     point="org.eclipse.ui.console.consolePatternMatchListeners">

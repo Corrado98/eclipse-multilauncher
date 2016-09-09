@@ -36,7 +36,6 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 	}
 
 	private void waitForConsolePatternMatch(TextConsole console, String regEx, ILaunch launch) {
-		// TODO should stop waiting if process exits
 		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		ConsolePatternMatchListener consoleListener = null;
 		ConsoleRemoveListener consoleRemoveListener = null;
@@ -67,7 +66,6 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 
 	private void detectProcessTermination(ILaunch launch) {
 		IProcess[] processes = launch.getProcesses();
-		System.out.println("processes array: " + Arrays.toString(processes));
 		for (IProcess process : processes) {
 			if(process.isTerminated()) {
 				terminationDetection = true;
