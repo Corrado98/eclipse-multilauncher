@@ -29,8 +29,6 @@ import ch.parisi.e4.advancedlaunch.strategies.WaitForTerminationStrategy;
  */
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
 
-	private boolean infiniteLoopDetection = true;
-
 	/**
 	 * This method iterates through all configurations in a user-created one
 	 * (LaunchGroup) and starts them.
@@ -38,7 +36,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
-		
+
 		List<LaunchConfigurationBean> launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
 
 		for (LaunchConfigurationBean bean : launchConfigurationDataList) {
@@ -76,12 +74,4 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		throw new IllegalArgumentException(
 				"Unknown launch and wait strategy: " + launchConfigurationBean.getPostLaunchAction());
 	}
-
-	/**
-	 * This method checks if the user nested configurations that will call
-	 * themselves recursively in an infinite loop.
-	 * 
-	 * @return true if an infinite-loop is detected.
-	 */
-
 }

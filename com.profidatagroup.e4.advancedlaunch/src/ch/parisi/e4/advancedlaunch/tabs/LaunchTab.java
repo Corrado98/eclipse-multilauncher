@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import javax.swing.ImageIcon;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -96,7 +94,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 		// set the content provider
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
-
+		
 		// create the columns
 		createColumns();
 
@@ -136,7 +134,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void initAddConfigurationSelectionDialog(
 			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
-		multiLaunchConfigurationSelectionDialog.setFforEditing(false);
+		multiLaunchConfigurationSelectionDialog.setForEditing(false);
 		multiLaunchConfigurationSelectionDialog.setMode("debug");
 		multiLaunchConfigurationSelectionDialog.setAction(EnumController.strToActionEnum("none"));
 		multiLaunchConfigurationSelectionDialog.setActionParam("");
@@ -198,7 +196,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void loadExistingConfigurationData(
 			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
-		multiLaunchConfigurationSelectionDialog.setFforEditing(true);
+		multiLaunchConfigurationSelectionDialog.setForEditing(true);
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog
 				.setAction(EnumController.strToActionEnum(selectedConfiguration.getPostLaunchAction()));

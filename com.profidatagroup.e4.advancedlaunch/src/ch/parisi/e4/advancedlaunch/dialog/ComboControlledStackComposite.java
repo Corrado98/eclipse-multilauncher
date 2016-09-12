@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * Stack Composite - Switch between panes controlled by combo box
+ * This class was taken from CDT and was modified by the author of this project.
  * @since 6.0
  */
 public class ComboControlledStackComposite extends Composite {

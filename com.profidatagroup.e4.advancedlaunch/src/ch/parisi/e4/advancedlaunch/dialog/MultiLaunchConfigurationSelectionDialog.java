@@ -57,9 +57,9 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
-import ch.parisi.e4.advancedlaunch.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.EnumController;
 import ch.parisi.e4.advancedlaunch.EnumController.PostLaunchAction;
+import ch.parisi.e4.advancedlaunch.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
 /**
@@ -78,8 +78,12 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private ComboControlledStackComposite fStackComposite;
 	private Label paramLabel;
 	private Text paramTextWidget;
-	private boolean fForEditing; // true if dialog was opened to edit an entry,
-									// otherwise it was opened to add one.
+	
+	/**
+	 * true if the dialog was opened to <b>edit</b> an entry,
+	 * false if it was opened to <b>add</b> an entry.
+	 */
+	private boolean forEditing;
 
 	public MultiLaunchConfigurationSelectionDialog(Shell shell) {
 		super(shell);
@@ -109,8 +113,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		};
 	}
 
-	public void setFforEditing(boolean forEditing) {
-		this.fForEditing = forEditing;
+	public void setForEditing(boolean forEditing) {
+		this.forEditing = forEditing;
 	}
 
 	protected ILaunchManager getLaunchManager() {
@@ -130,11 +134,11 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		Composite comp = (Composite) super.createDialogArea(parent2);
 
 		// title bar
-		getShell().setText(fForEditing ? LaunchMessages.MultiLaunchConfigurationSelectionDialog_13
+		getShell().setText(forEditing ? LaunchMessages.MultiLaunchConfigurationSelectionDialog_13
 				: LaunchMessages.MultiLaunchConfigurationSelectionDialog_12);
 
 		// dialog message area (not title bar)
-		setTitle(fForEditing ? LaunchMessages.MultiLaunchConfigurationSelectionDialog_15
+		setTitle(forEditing ? LaunchMessages.MultiLaunchConfigurationSelectionDialog_15
 				: LaunchMessages.MultiLaunchConfigurationSelectionDialog_14);
 
 		fStackComposite = new ComboControlledStackComposite(comp, SWT.NONE);
