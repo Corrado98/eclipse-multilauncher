@@ -5,10 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import javax.swing.ImageIcon;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -16,19 +20,17 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -39,7 +41,6 @@ import ch.parisi.e4.advancedlaunch.LaunchConfigurationBean;
 import ch.parisi.e4.advancedlaunch.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
-import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
 
 /**
  * The LaunchConfiguration Tab, which contains the user-customizable
@@ -430,5 +431,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			e.printStackTrace();
 		}
 		return true;
+	}
+	
+	@Override
+	public Image getImage() {
+		return DebugPluginImages.getImage(IDebugUIConstants.IMG_ACT_RUN);
 	}
 }
