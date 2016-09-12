@@ -41,14 +41,6 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		
 		List<LaunchConfigurationBean> launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
 
-		if (isInfiniteLoop(configuration, launch, launchConfigurationDataList)) {
-			if (infiniteLoopDetection) {
-				showInfiniteLoopErrorMessage(configuration);
-				infiniteLoopDetection = false;
-			}
-			return;
-		}
-
 		for (LaunchConfigurationBean bean : launchConfigurationDataList) {
 			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(bean.getName());
 			if (launchConfiguration != null) {
@@ -91,24 +83,5 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	 * 
 	 * @return true if an infinite-loop is detected.
 	 */
-	private boolean isInfiniteLoop(ILaunchConfiguration configuration, ILaunch launch,
-			List<LaunchConfigurationBean> launchConfigurationDataList) throws DebugException {
-		for (LaunchConfigurationBean bean : launchConfigurationDataList) {
-			if (configuration.getName().equals(bean.getName())) {
-				return true;
-			}
-		}
-		return false;
-	}
 
-	private void showInfiniteLoopErrorMessage(ILaunchConfiguration configuration) {
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-						LaunchMessages.LaunchUIPlugin_Error,
-						NLS.bind(LaunchMessages.MultiLaunchConfigurationDelegate_Loop, configuration.getName()));
-			}
-		});
-	}
 }
