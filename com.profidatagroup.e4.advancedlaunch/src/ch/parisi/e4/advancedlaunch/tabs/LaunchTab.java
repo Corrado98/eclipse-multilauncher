@@ -1,5 +1,6 @@
 package ch.parisi.e4.advancedlaunch.tabs;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -30,12 +31,15 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
+import ch.parisi.e4.advancedlaunch.EnumController;
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationBean;
 import ch.parisi.e4.advancedlaunch.LaunchUtils;
-import ch.parisi.e4.advancedlaunch.MultiLaunchConfigurationDelegate.LaunchElement;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
+import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
 /**
+ * The LaunchConfiguration Tab, which contains the user-customizable
+ * TableViewer.
  * 
  * @author PaCo
  */
@@ -89,7 +93,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
 
 		// create the columns
-		createColumns(viewer);
+		createColumns();
 
 		// make lines and header visible
 		final Table table = viewer.getTable();
@@ -111,7 +115,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					launchConfigurationDataList.add(new LaunchConfigurationBean(
 							multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(),
 							multiLaunchConfigurationSelectionDialog.getMode(),
-							LaunchElement.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()),
+							EnumController.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()),
 							String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
 
 					if (launchConfigurationDataList != null) {
@@ -129,7 +133,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setFforEditing(false);
 		multiLaunchConfigurationSelectionDialog.setMode("debug");
-		multiLaunchConfigurationSelectionDialog.setAction(LaunchElement.strToActionEnum("none"));
+		multiLaunchConfigurationSelectionDialog.setAction(EnumController.strToActionEnum("none"));
 		multiLaunchConfigurationSelectionDialog.setActionParam("");
 	}
 
@@ -148,6 +152,11 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				ILaunchConfiguration launchConfiguration;
 				try {
 					launchConfiguration = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
+
+					if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
+						return;
+					}
+
 					multiLaunchConfigurationSelectionDialog.setInitialSelection(launchConfiguration);
 				} catch (CoreException e) {
 					e.printStackTrace();
@@ -160,7 +169,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					launchConfigurationDataList.add(launchConfigurationDataList.indexOf(selectedConfiguration),
 							new LaunchConfigurationBean(configuration.getName(),
 									multiLaunchConfigurationSelectionDialog.getMode(),
-									LaunchElement.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()),
+									EnumController.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()),
 									String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
 					launchConfigurationDataList.remove(selectedConfiguration);
 
@@ -180,7 +189,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		multiLaunchConfigurationSelectionDialog.setFforEditing(true);
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog
-				.setAction(LaunchElement.strToActionEnum(selectedConfiguration.getPostLaunchAction()));
+				.setAction(EnumController.strToActionEnum(selectedConfiguration.getPostLaunchAction()));
 		multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
 	}
 
@@ -304,17 +313,17 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		});
 	}
 
-	private void createColumns(TableViewer viewer2) {
+	private void createColumns() {
 
 		// create a column for the launchconfiguration NAME
 		addTableColumn("Name", lcb -> lcb.getName());
 
 		// create a column for the launchconfiguration MODE
 		addTableColumn("Mode", lcb -> lcb.getMode());
-		
+
 		// create a column for the launchconfiguration POST-ACTION
 		addTableColumn("Action", lcb -> lcb.getPostLaunchAction());
-		
+
 		// create a column for the launchconfiguration PARAM
 		addTableColumn("Param", lcb -> lcb.getParam());
 

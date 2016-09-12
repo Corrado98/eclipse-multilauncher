@@ -38,7 +38,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
-
+		
 		List<LaunchConfigurationBean> launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
 
 		if (isInfiniteLoop(configuration, launch, launchConfigurationDataList)) {

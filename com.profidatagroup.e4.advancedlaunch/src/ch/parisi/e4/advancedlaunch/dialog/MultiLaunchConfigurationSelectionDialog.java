@@ -57,9 +57,9 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
-import ch.parisi.e4.advancedlaunch.MultiLaunchConfigurationDelegate;
-import ch.parisi.e4.advancedlaunch.MultiLaunchConfigurationDelegate.LaunchElement;
-import ch.parisi.e4.advancedlaunch.MultiLaunchConfigurationDelegate.LaunchElement.EPostLaunchAction;
+import ch.parisi.e4.advancedlaunch.LaunchUtils;
+import ch.parisi.e4.advancedlaunch.EnumController;
+import ch.parisi.e4.advancedlaunch.EnumController.PostLaunchAction;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
 /**
@@ -71,9 +71,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private ViewerFilter[] fFilters = null;
 	private ISelection fSelection;
 	private String mode = "run";
-	private EPostLaunchAction action = EPostLaunchAction.NONE;
+	private PostLaunchAction action = PostLaunchAction.NONE;
 	private Object actionParam;
-	private boolean isDefaultMode;
 	private ViewerFilter emptyTypeFilter;
 	private IStructuredSelection fInitialSelection;
 	private ComboControlledStackComposite fStackComposite;
@@ -103,7 +102,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 						return false;
 					}
 				} else if (element instanceof ILaunchConfiguration) {
-					return MultiLaunchConfigurationDelegate.isValidLaunchReference((ILaunchConfiguration) element);
+					return LaunchUtils.isValidLaunchReference((ILaunchConfiguration) element);
 				}
 				return true;
 			}
@@ -199,22 +198,22 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		Label label = new Label(comp, SWT.NONE);
 		label.setText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_8);
 		Combo combo = new Combo(comp, SWT.READ_ONLY);
-		combo.add(LaunchElement.actionEnumToStr(EPostLaunchAction.NONE));
-		combo.add(LaunchElement.actionEnumToStr(EPostLaunchAction.WAIT_FOR_TERMINATION));
-		combo.add(LaunchElement.actionEnumToStr(EPostLaunchAction.DELAY));
-		combo.add(LaunchElement.actionEnumToStr(EPostLaunchAction.WAIT_FOR_CONSOLESTRING));
+		combo.add(EnumController.actionEnumToStr(PostLaunchAction.NONE));
+		combo.add(EnumController.actionEnumToStr(PostLaunchAction.WAIT_FOR_TERMINATION));
+		combo.add(EnumController.actionEnumToStr(PostLaunchAction.DELAY));
+		combo.add(EnumController.actionEnumToStr(PostLaunchAction.WAIT_FOR_CONSOLESTRING));
 
 		combo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final String actionStr = ((Combo) e.widget).getText();
-				action = MultiLaunchConfigurationDelegate.LaunchElement.strToActionEnum(actionStr);
+				action = EnumController.strToActionEnum(actionStr);
 				showHideDelayAmountWidgets();
 				validate();
 			}
 		});
 
-		combo.setText(MultiLaunchConfigurationDelegate.LaunchElement.actionEnumToStr(action));
+		combo.setText(EnumController.actionEnumToStr(action));
 
 		paramLabel = new Label(comp, SWT.NONE);
 		paramLabel.setText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_9);
@@ -228,7 +227,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			@Override
 			public void modifyText(ModifyEvent e) {
 				String userInput = ((Text) e.widget).getText();
-				if (action == EPostLaunchAction.DELAY) {
+				if (action == PostLaunchAction.DELAY) {
 					try {
 						actionParam = Integer.valueOf(userInput);
 					} catch (NumberFormatException exc) {
@@ -236,7 +235,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 					}
 					validate();
 				}
-				if (action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+				if (action == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
 					actionParam = userInput;
 					validate();
 				}
@@ -299,18 +298,18 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	}
 
 	public String getMode() {
-		return isDefaultMode ? MultiLaunchConfigurationDelegate.DEFAULT_MODE : mode;
+		return mode;
 	}
 
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
 
-	public EPostLaunchAction getAction() {
+	public PostLaunchAction getAction() {
 		return action;
 	}
 
-	public void setAction(EPostLaunchAction action) {
+	public void setAction(PostLaunchAction action) {
 		this.action = action;
 	}
 
@@ -382,11 +381,11 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		boolean isValid = true;
 
 		if (isValid) {
-			if (action == EPostLaunchAction.DELAY) {
+			if (action == PostLaunchAction.DELAY) {
 				isValid = (actionParam instanceof Integer) && ((Integer) actionParam > 0);
 				setErrorMessage(isValid ? null : LaunchMessages.MultiLaunchConfigurationSelectionDialog_10);
 			}
-			if (action == EPostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+			if (action == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
 				if (actionParam.toString().isEmpty()) {
 					isValid = false;
 				}

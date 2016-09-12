@@ -7,6 +7,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.ui.activities.WorkbenchActivityHelper;
 
 public class LaunchUtils {
 
@@ -41,6 +43,18 @@ public class LaunchUtils {
 					postLaunchActions.get(i), params.get(i)));
 		}
 		return launchConfigurationDataList;
+	}
+	
+	/**
+	 * Test if a launch configuration is a valid reference.
+	 * 
+	 * @param config
+	 *            configuration reference
+	 * @return <code>true</code> if it is a valid reference, <code>false</code>
+	 *         if launch configuration should be filtered
+	 */
+	public static boolean isValidLaunchReference(ILaunchConfiguration config) {
+		return DebugUIPlugin.doLaunchConfigurationFiltering(config) && !WorkbenchActivityHelper.filterItem(config);
 	}
 
 }
