@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -19,6 +20,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -30,12 +32,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import ch.parisi.e4.advancedlaunch.EnumController;
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationBean;
 import ch.parisi.e4.advancedlaunch.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
+import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
 
 /**
  * The LaunchConfiguration Tab, which contains the user-customizable
@@ -154,6 +158,13 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					launchConfiguration = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
 
 					if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
+						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+							@Override
+							public void run() {
+								MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+										"Error", "invalid reference.");
+							}
+						});
 						return;
 					}
 
@@ -385,5 +396,39 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute("modes", modes);
 		configuration.setAttribute("postLaunchActions", postLaunchActions);
 		configuration.setAttribute("params", params);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.debug.ui.AbstractLaunchConfigurationTab#isValid(org.eclipse.
+	 * debug.core.ILaunchConfiguration)
+	 */
+	@Override
+	public boolean isValid(ILaunchConfiguration launchConfig) {
+		setMessage(null);
+		setErrorMessage(null);
+
+		List<LaunchConfigurationBean> launchConfigurationDataList;
+		try {
+			launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(launchConfig);
+
+			for (LaunchConfigurationBean bean : launchConfigurationDataList) {
+				ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(bean.getName());
+				if (launchConfiguration == null) {
+					setErrorMessage(MessageFormat.format(LaunchMessages.MultiLaunchConfigurationTabGroup_14, 
+							bean.getName()));
+					return false;
+				} else if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
+					setErrorMessage(MessageFormat.format(LaunchMessages.MultiLaunchConfigurationTabGroup_15, 
+							bean.getName()));
+					return false;
+				}
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 }
