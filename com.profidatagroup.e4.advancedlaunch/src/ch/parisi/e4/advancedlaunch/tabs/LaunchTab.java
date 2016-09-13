@@ -70,13 +70,13 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void initComposites(Composite parent) {
-		mainComposite = new Group(parent, SWT.BORDER);
+		mainComposite = new Group(parent, SWT.NONE);
 		mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		mainComposite.setLayout(new FillLayout());
+		mainComposite.setLayout(new FillLayout(SWT.VERTICAL));
 		setControl(mainComposite);
 		buttonComposite = new Composite(mainComposite, SWT.BORDER_DOT);
-		buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonComposite.setLayout(new FillLayout());
+		buttonComposite.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 1, 1));
+		buttonComposite.setLayout(new FillLayout(SWT.VERTICAL));
 		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(mainComposite);
 	}
 
@@ -84,7 +84,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		viewer = new TableViewer(mainComposite,
 				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
-		viewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
+		viewer.getTable().setLayoutData(new GridData(SWT.NONE, SWT.FILL, true, true, 1, 1));
 
 		// gets user selected element in the table and works with it.
 		addTableViewerSelectionChangedListener();
@@ -103,7 +103,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void createAddBtnWithListener() {
 		Button btnAdd = new Button(buttonComposite, SWT.None);
-		btnAdd.setText("Add..");
+		btnAdd.setText(LaunchMessages.LaunchGroupConfiguration_Add);
 		btnAdd.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
@@ -139,7 +139,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void createEditButtonWithListener() {
 		btnEdit = new Button(buttonComposite, SWT.None);
-		btnEdit.setText("Edit");
+		btnEdit.setText(LaunchMessages.LaunchGroupConfiguration_Edit);
 		btnEdit.setEnabled(false);
 		btnEdit.addListener(SWT.Selection, new Listener() {
 
@@ -226,7 +226,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void createRemoveButtonWithListener() {
 		btnRemove = new Button(buttonComposite, SWT.None);
-		btnRemove.setText("Remove..");
+		btnRemove.setText(LaunchMessages.LaunchGroupConfiguration_Remove);
 		btnRemove.setEnabled(false);
 		btnRemove.addListener(SWT.Selection, new Listener() {
 			@Override
@@ -242,7 +242,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void createUpButtonWithListener() {
 		btnUp = new Button(buttonComposite, SWT.None);
-		btnUp.setText("Up");
+		btnUp.setText(LaunchMessages.LaunchGroupConfiguration_Up);
 		btnUp.setEnabled(false);
 		btnUp.addListener(SWT.Selection, new Listener() {
 
@@ -268,14 +268,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 						setDirty(true);
 						updateLaunchConfigurationDialog();
 
-					} else {
-						System.out.println("UP ERROR");
-						return;
 					}
-				} else {
-					System.out.println("selectedConfiguration IS NULL");
 				}
-
 			}
 		});
 
@@ -283,7 +277,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void createDownButtonWithListener() {
 		btnDown = new Button(buttonComposite, SWT.None);
-		btnDown.setText("Down");
+		btnDown.setText(LaunchMessages.LaunchGroupConfiguration_Down);
 		btnDown.setEnabled(false);
 		btnDown.addListener(SWT.Selection, new Listener() {
 
@@ -308,14 +302,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 						viewer.refresh();
 						setDirty(true);
 						updateLaunchConfigurationDialog();
-					} else {
-						System.out.println("DOWN ERROR");
-						return;
 					}
-				} else {
-					System.out.println("selectedConfiguration IS NULL");
 				}
-
 			}
 		});
 	}
@@ -324,7 +312,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 		// create a column for the launchconfiguration NAME
 		addTableColumn("Name", lcb -> lcb.getName());
-		
+
 		// create a column for the launchconfiguration MODE
 		addTableColumn("Mode", lcb -> lcb.getMode());
 
@@ -421,12 +409,12 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				// invalid reference.
 				else if (launchConfiguration == null) {
 					setErrorMessage(
-							MessageFormat.format(LaunchMessages.LaunchGroupConfigurationTabGroup_14, bean.getName()));
+							MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_14, bean.getName()));
 					return false;
 					// invalid reference.
 				} else if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
 					setErrorMessage(
-							MessageFormat.format(LaunchMessages.LaunchGroupConfigurationTabGroup_15, bean.getName()));
+							MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_15, bean.getName()));
 					return false;
 				}
 			}

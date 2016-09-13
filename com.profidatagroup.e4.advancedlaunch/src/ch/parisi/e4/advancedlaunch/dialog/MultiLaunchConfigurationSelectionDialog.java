@@ -30,13 +30,9 @@ import org.eclipse.debug.ui.ILaunchGroup;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -72,14 +68,14 @@ import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
  */
 public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog implements ISelectionChangedListener {
 	private LaunchConfigurationFilteredTree fTree;
-	private ViewerFilter[] fFilters = null;
+	private ViewerFilter[] filters = null;
 	private ISelection fSelection;
 	private String mode = "run";
 	private PostLaunchAction action = PostLaunchAction.NONE;
 	private Object actionParam;
 	private ViewerFilter emptyTypeFilter;
 	private IStructuredSelection fInitialSelection;
-	private ComboControlledStackComposite fStackComposite;
+	private ComboControlledStackComposite stackComposite;
 	private Label paramLabel;
 	private Text paramTextWidget;
 	
@@ -93,7 +89,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		super(shell);
 		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
 		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
-		fFilters = null;
+		filters = null;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		createEmptyTypeFilter();
 	}
@@ -117,8 +113,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		};
 	}
 
-	public void setForEditing(boolean forEditing) {
-		this.editMode = forEditing;
+	public void setForEditing(boolean editMode) {
+		this.editMode = editMode;
 	}
 
 	protected ILaunchManager getLaunchManager() {
@@ -145,7 +141,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		setTitle(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_15
 				: LaunchMessages.LaunchGroupConfigurationSelectionDialog_14);
 
-		fStackComposite = new ComboControlledStackComposite(comp, SWT.NONE);
+		stackComposite = new ComboControlledStackComposite(comp, SWT.NONE);
 		HashMap<String, ILaunchGroup> modes = new HashMap<String, ILaunchGroup>();
 		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
 		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
@@ -157,9 +153,9 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		for (Iterator<String> iterator = modes.keySet().iterator(); iterator.hasNext();) {
 			String mode = iterator.next();
 			ILaunchGroup launchGroup = modes.get(mode);
-			fTree = new LaunchConfigurationFilteredTree(fStackComposite.getStackParent(),
-					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), launchGroup, fFilters);
-			fStackComposite.addItem(mode, fTree);
+			fTree = new LaunchConfigurationFilteredTree(stackComposite.getStackParent(),
+					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), launchGroup, filters);
+			stackComposite.addItem(mode, fTree);
 			fTree.createViewControl();
 			ViewerFilter[] filters = fTree.getViewer().getFilters();
 			for (ViewerFilter viewerFilter : filters) {
@@ -171,24 +167,24 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			fTree.getViewer().addSelectionChangedListener(this);
 			
 			if (launchGroup.getMode().equals(this.mode)) {
-				fStackComposite.setSelection(mode);
+				stackComposite.setSelection(mode);
 			}
 			if (fInitialSelection != null) {
 				fTree.getViewer().setSelection(fInitialSelection, true);
 			}
 		}
-		fStackComposite.setLabelText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_4);
-		fStackComposite.pack();
-		Rectangle bounds = fStackComposite.getBounds();
+		stackComposite.setLabelText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_4);
+		stackComposite.pack();
+		Rectangle bounds = stackComposite.getBounds();
 		// adjust size
-		GridData data = ((GridData) fStackComposite.getLayoutData());
+		GridData data = ((GridData) stackComposite.getLayoutData());
 		if (data == null) {
 			data = new GridData(GridData.FILL_BOTH);
-			fStackComposite.setLayoutData(data);
+			stackComposite.setLayoutData(data);
 		}
 		data.heightHint = Math.max(convertHeightInCharsToPixels(15), bounds.height);
 		data.widthHint = Math.max(convertWidthInCharsToPixels(40), bounds.width);
-		fStackComposite.getCombo().addSelectionListener(new SelectionAdapter() {
+		stackComposite.getCombo().addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				mode = ((Combo) e.widget).getText();
@@ -356,7 +352,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		// matters--the visible one.
 
 		Tree topTree = null;
-		final Control topControl = fStackComposite.getTopControl();
+		final Control topControl = stackComposite.getTopControl();
 		if (topControl instanceof FilteredTree) {
 			final TreeViewer viewer = ((FilteredTree) topControl).getViewer();
 			if (viewer != null) {

@@ -35,20 +35,16 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfigurationSelectionDialog_13;
 	public static String LaunchGroupConfigurationSelectionDialog_14;
 	public static String LaunchGroupConfigurationSelectionDialog_15;
-	public static String LaunchGroupConfigurationTabGroup_1;
-	public static String LaunchGroupConfigurationTabGroup_2;
-	public static String LaunchGroupConfigurationTabGroup_3;
-	public static String LaunchGroupConfigurationTabGroup_4;
-	public static String LaunchGroupConfigurationTabGroup_5;
-	public static String LaunchGroupConfigurationTabGroup_6;
-	public static String LaunchGroupConfigurationTabGroup_7;
-	public static String LaunchGroupConfigurationTabGroup_10;
-	public static String LaunchGroupConfigurationTabGroup_11;
-	public static String LaunchGroupConfigurationTabGroup_12;
-	public static String LaunchGroupConfigurationTabGroup_13;
-	public static String LaunchGroupConfigurationTabGroup_14;
-	public static String LaunchGroupConfigurationTabGroup_15;
-	public static String LaunchGroupConfigurationTabGroup_16;
+	public static String LaunchGroupConfiguration_Up;
+	public static String LaunchGroupConfiguration_Down;
+	public static String LaunchGroupConfiguration_Edit;
+	public static String LaunchGroupConfiguration_Add;
+	public static String LaunchGroupConfiguration_Remove;
+	public static String LaunchGroupConfiguration_Name;
+	public static String LaunchGroupConfiguration_Mode;
+	public static String LaunchGroupConfiguration_Launches;
+	public static String LaunchGroupConfiguration_14;
+	public static String LaunchGroupConfiguration_15;
 	private LaunchMessages() {
 	}
 
