@@ -2,19 +2,27 @@ package ch.parisi.e4.advancedlaunch.tabs;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.internal.core.commands.ForEachCommand;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -86,15 +94,14 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		viewer = new TableViewer(mainComposite,
 				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
-		Table table3 = viewer.getTable();
-		table3.setLayoutData(new GridData(GridData.FILL_BOTH));
+		viewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		// gets user selected element in the table and works with it.
 		addTableViewerSelectionChangedListener();
 
 		// set the content provider
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
-		
+
 		// create the columns
 		createColumns();
 
@@ -327,7 +334,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 		// create a column for the launchconfiguration NAME
 		addTableColumn("Name", lcb -> lcb.getName());
-
+		
 		// create a column for the launchconfiguration MODE
 		addTableColumn("Mode", lcb -> lcb.getMode());
 
@@ -414,22 +421,22 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(launchConfig);
 
 			for (LaunchConfigurationBean bean : launchConfigurationDataList) {
-				//infinite loop.
+				// infinite loop.
 				ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(bean.getName());
-				if(launchConfig.getName().equals(bean.getName())) {
-					setErrorMessage(MessageFormat.format(LaunchMessages.MultiLaunchConfigurationDelegate_Loop, 
-							bean.getName()));
+				if (launchConfig.getName().equals(bean.getName())) {
+					setErrorMessage(
+							MessageFormat.format(LaunchMessages.MultiLaunchConfigurationDelegate_Loop, bean.getName()));
 					return false;
 				}
-				//invalid reference.
+				// invalid reference.
 				else if (launchConfiguration == null) {
-					setErrorMessage(MessageFormat.format(LaunchMessages.MultiLaunchConfigurationTabGroup_14, 
-							bean.getName()));
+					setErrorMessage(
+							MessageFormat.format(LaunchMessages.MultiLaunchConfigurationTabGroup_14, bean.getName()));
 					return false;
-				//invalid reference.
+					// invalid reference.
 				} else if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
-					setErrorMessage(MessageFormat.format(LaunchMessages.MultiLaunchConfigurationTabGroup_15, 
-							bean.getName()));
+					setErrorMessage(
+							MessageFormat.format(LaunchMessages.MultiLaunchConfigurationTabGroup_15, bean.getName()));
 					return false;
 				}
 			}
@@ -438,7 +445,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public Image getImage() {
 		return DebugPluginImages.getImage(IDebugUIConstants.IMG_ACT_RUN);
