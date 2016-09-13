@@ -12,6 +12,7 @@ import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -60,8 +61,9 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void createControl(Composite parent) {
-		initComposites(parent);
+		initMainComposite(parent);
 		initTableViewer();
+		initButtonComposite();
 		createAddBtnWithListener();
 		createRemoveButtonWithListener();
 		createUpButtonWithListener();
@@ -69,22 +71,26 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		createEditButtonWithListener();
 	}
 
-	private void initComposites(Composite parent) {
+	private void initMainComposite(Composite parent) {
 		mainComposite = new Group(parent, SWT.NONE);
-		mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		mainComposite.setLayout(new FillLayout(SWT.VERTICAL));
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(mainComposite);
 		setControl(mainComposite);
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(mainComposite);	
+	}
+
+	private void initButtonComposite() {
 		buttonComposite = new Composite(mainComposite, SWT.BORDER_DOT);
-		buttonComposite.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 1, 1));
-		buttonComposite.setLayout(new FillLayout(SWT.VERTICAL));
-		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(mainComposite);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).applyTo(buttonComposite);
+		FillLayout fillLayout = new FillLayout(SWT.VERTICAL);
+		fillLayout.spacing = 5;
+		buttonComposite.setLayout(fillLayout);
 	}
 
 	private void initTableViewer() {
 		viewer = new TableViewer(mainComposite,
 				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
-		viewer.getTable().setLayoutData(new GridData(SWT.NONE, SWT.FILL, true, true, 1, 1));
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(viewer.getTable());
 
 		// gets user selected element in the table and works with it.
 		addTableViewerSelectionChangedListener();
@@ -102,7 +108,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void createAddBtnWithListener() {
-		Button btnAdd = new Button(buttonComposite, SWT.None);
+		btnAdd = new Button(buttonComposite, SWT.None);
 		btnAdd.setText(LaunchMessages.LaunchGroupConfiguration_Add);
 		btnAdd.addListener(SWT.Selection, new Listener() {
 			@Override
@@ -311,22 +317,22 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void createColumns() {
 
 		// create a column for the launchconfiguration NAME
-		addTableColumn("Name", lcb -> lcb.getName());
+		addTableColumn("Name", 100, lcb -> lcb.getName());
 
 		// create a column for the launchconfiguration MODE
-		addTableColumn("Mode", lcb -> lcb.getMode());
+		addTableColumn("Mode", 100, lcb -> lcb.getMode());
 
 		// create a column for the launchconfiguration POST-ACTION
-		addTableColumn("Action", lcb -> lcb.getPostLaunchAction());
+		addTableColumn("Action", 100, lcb -> lcb.getPostLaunchAction());
 
 		// create a column for the launchconfiguration PARAM
-		addTableColumn("Param", lcb -> lcb.getParam());
+		addTableColumn("Param", 150, lcb -> lcb.getParam());
 
 	}
 
-	private void addTableColumn(String name, Function<LaunchConfigurationBean, String> actionTextFetcher) {
+	private void addTableColumn(String name, int width, Function<LaunchConfigurationBean, String> actionTextFetcher) {
 		TableViewerColumn colLaunchConfigurationAction = new TableViewerColumn(viewer, SWT.NONE);
-		colLaunchConfigurationAction.getColumn().setWidth(200);
+		colLaunchConfigurationAction.getColumn().setWidth(width);
 		colLaunchConfigurationAction.getColumn().setText(name);
 		colLaunchConfigurationAction.setLabelProvider(new ColumnLabelProvider() {
 			@Override
