@@ -37,16 +37,16 @@ public class EnumController {
 	public static String actionEnumToStr(PostLaunchAction action) {
 		switch (action) {
 		case NONE:
-			return LaunchMessages.MultiLaunchConfigurationDelegate_Action_None;
+			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_None;
 		case WAIT_FOR_TERMINATION:
-			return LaunchMessages.MultiLaunchConfigurationDelegate_Action_WaitUntilTerminated;
+			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitUntilTerminated;
 		case DELAY:
-			return LaunchMessages.MultiLaunchConfigurationDelegate_Action_Delay;
+			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay;
 		case WAIT_FOR_CONSOLESTRING:
-			return LaunchMessages.MultiLaunchConfigurationDelegate_Action_WaitForConsoleString;
+			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString;
 		default:
 			assert false : "new post launch action type is missing logic"; //$NON-NLS-1$
-			return LaunchMessages.MultiLaunchConfigurationDelegate_Action_None;
+			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_None;
 		}
 	}
 
@@ -55,13 +55,13 @@ public class EnumController {
 	 * representation in the GUI
 	 */
 	public static PostLaunchAction strToActionEnum(String str) {
-		if (str.equals(LaunchMessages.MultiLaunchConfigurationDelegate_Action_None)) {
+		if (str.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_None)) {
 			return PostLaunchAction.NONE;
-		} else if (str.equals(LaunchMessages.MultiLaunchConfigurationDelegate_Action_WaitUntilTerminated)) {
+		} else if (str.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitUntilTerminated)) {
 			return PostLaunchAction.WAIT_FOR_TERMINATION;
-		} else if (str.equals(LaunchMessages.MultiLaunchConfigurationDelegate_Action_Delay)) {
+		} else if (str.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay)) {
 			return PostLaunchAction.DELAY;
-		} else if (str.equals(LaunchMessages.MultiLaunchConfigurationDelegate_Action_WaitForConsoleString)) {
+		} else if (str.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString)) {
 			return PostLaunchAction.WAIT_FOR_CONSOLESTRING;
 		} else {
 			assert false : "new post launch action type is missing logic"; //$NON-NLS-1$

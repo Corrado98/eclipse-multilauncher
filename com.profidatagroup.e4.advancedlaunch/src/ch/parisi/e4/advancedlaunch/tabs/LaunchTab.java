@@ -415,18 +415,18 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(bean.getName());
 				if (launchConfig.getName().equals(bean.getName())) {
 					setErrorMessage(
-							MessageFormat.format(LaunchMessages.MultiLaunchConfigurationDelegate_Loop, bean.getName()));
+							MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, bean.getName()));
 					return false;
 				}
 				// invalid reference.
 				else if (launchConfiguration == null) {
 					setErrorMessage(
-							MessageFormat.format(LaunchMessages.MultiLaunchConfigurationTabGroup_14, bean.getName()));
+							MessageFormat.format(LaunchMessages.LaunchGroupConfigurationTabGroup_14, bean.getName()));
 					return false;
 					// invalid reference.
 				} else if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
 					setErrorMessage(
-							MessageFormat.format(LaunchMessages.MultiLaunchConfigurationTabGroup_15, bean.getName()));
+							MessageFormat.format(LaunchMessages.LaunchGroupConfigurationTabGroup_15, bean.getName()));
 					return false;
 				}
 			}

@@ -138,12 +138,12 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		Composite comp = (Composite) super.createDialogArea(parent2);
 
 		// title bar
-		getShell().setText(editMode ? LaunchMessages.MultiLaunchConfigurationSelectionDialog_13
-				: LaunchMessages.MultiLaunchConfigurationSelectionDialog_12);
+		getShell().setText(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_13
+				: LaunchMessages.LaunchGroupConfigurationSelectionDialog_12);
 
 		// dialog message area (not title bar)
-		setTitle(editMode ? LaunchMessages.MultiLaunchConfigurationSelectionDialog_15
-				: LaunchMessages.MultiLaunchConfigurationSelectionDialog_14);
+		setTitle(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_15
+				: LaunchMessages.LaunchGroupConfigurationSelectionDialog_14);
 
 		fStackComposite = new ComboControlledStackComposite(comp, SWT.NONE);
 		HashMap<String, ILaunchGroup> modes = new HashMap<String, ILaunchGroup>();
@@ -159,8 +159,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			ILaunchGroup launchGroup = modes.get(mode);
 			fTree = new LaunchConfigurationFilteredTree(fStackComposite.getStackParent(),
 					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), launchGroup, fFilters);
-			String label = mode;
-			fStackComposite.addItem(label, fTree);
+			fStackComposite.addItem(mode, fTree);
 			fTree.createViewControl();
 			ViewerFilter[] filters = fTree.getViewer().getFilters();
 			for (ViewerFilter viewerFilter : filters) {
@@ -172,13 +171,13 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			fTree.getViewer().addSelectionChangedListener(this);
 			
 			if (launchGroup.getMode().equals(this.mode)) {
-				fStackComposite.setSelection(label);
+				fStackComposite.setSelection(mode);
 			}
 			if (fInitialSelection != null) {
 				fTree.getViewer().setSelection(fInitialSelection, true);
 			}
 		}
-		fStackComposite.setLabelText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_4);
+		fStackComposite.setLabelText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_4);
 		fStackComposite.pack();
 		Rectangle bounds = fStackComposite.getBounds();
 		// adjust size
@@ -205,7 +204,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		comp.setLayout(new GridLayout(4, false));
 		comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		Label label = new Label(comp, SWT.NONE);
-		label.setText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_8);
+		label.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_8);
 		Combo combo = new Combo(comp, SWT.READ_ONLY);
 		combo.add(EnumController.actionEnumToStr(PostLaunchAction.NONE));
 		combo.add(EnumController.actionEnumToStr(PostLaunchAction.WAIT_FOR_TERMINATION));
@@ -225,7 +224,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		combo.setText(EnumController.actionEnumToStr(action));
 
 		paramLabel = new Label(comp, SWT.NONE);
-		paramLabel.setText(LaunchMessages.MultiLaunchConfigurationSelectionDialog_9);
+		paramLabel.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_9);
 
 		paramTextWidget = new Text(comp, SWT.SINGLE | SWT.BORDER);
 
@@ -392,13 +391,13 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		if (isValid) {
 			if (action == PostLaunchAction.DELAY) {
 				isValid = (actionParam instanceof Integer) && ((Integer) actionParam > 0);
-				setErrorMessage(isValid ? null : LaunchMessages.MultiLaunchConfigurationSelectionDialog_10);
+				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10);
 			}
 			if (action == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
 				if (actionParam.toString().isEmpty()) {
 					isValid = false;
 				}
-				setErrorMessage(isValid ? null : LaunchMessages.MultiLaunchConfigurationSelectionDialog_10_2);
+				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10_2);
 			}
 
 		}
