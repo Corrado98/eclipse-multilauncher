@@ -84,10 +84,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private Text paramTextWidget;
 	
 	/**
-	 * true if the dialog was opened to <b>edit</b> an entry,
-	 * false if it was opened to <b>add</b> an entry.
+	 * <code>true</code> if the dialog was opened to <b>edit</b> an entry,
+	 * <code>false</code> if it was opened to <b>add</b> an entry.
 	 */
-	private boolean forEditing;
+	private boolean editMode;
 
 	public MultiLaunchConfigurationSelectionDialog(Shell shell) {
 		super(shell);
@@ -118,7 +118,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	}
 
 	public void setForEditing(boolean forEditing) {
-		this.forEditing = forEditing;
+		this.editMode = forEditing;
 	}
 
 	protected ILaunchManager getLaunchManager() {
@@ -138,11 +138,11 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		Composite comp = (Composite) super.createDialogArea(parent2);
 
 		// title bar
-		getShell().setText(forEditing ? LaunchMessages.MultiLaunchConfigurationSelectionDialog_13
+		getShell().setText(editMode ? LaunchMessages.MultiLaunchConfigurationSelectionDialog_13
 				: LaunchMessages.MultiLaunchConfigurationSelectionDialog_12);
 
 		// dialog message area (not title bar)
-		setTitle(forEditing ? LaunchMessages.MultiLaunchConfigurationSelectionDialog_15
+		setTitle(editMode ? LaunchMessages.MultiLaunchConfigurationSelectionDialog_15
 				: LaunchMessages.MultiLaunchConfigurationSelectionDialog_14);
 
 		fStackComposite = new ComboControlledStackComposite(comp, SWT.NONE);

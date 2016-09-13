@@ -22,6 +22,10 @@ import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
  * This class was taken from CDT and was modified by the author of this project.
  */
 public class EnumController {
+
+	/**
+	 * The strategies each launch has to wait for, to start the next one.
+	 */
 	public static enum PostLaunchAction {
 		NONE, WAIT_FOR_TERMINATION, DELAY, WAIT_FOR_CONSOLESTRING
 	};
@@ -39,7 +43,7 @@ public class EnumController {
 		case DELAY:
 			return LaunchMessages.MultiLaunchConfigurationDelegate_Action_Delay;
 		case WAIT_FOR_CONSOLESTRING:
-			return "Wait for Console-String";
+			return LaunchMessages.MultiLaunchConfigurationDelegate_Action_WaitForConsoleString;
 		default:
 			assert false : "new post launch action type is missing logic"; //$NON-NLS-1$
 			return LaunchMessages.MultiLaunchConfigurationDelegate_Action_None;
@@ -57,7 +61,7 @@ public class EnumController {
 			return PostLaunchAction.WAIT_FOR_TERMINATION;
 		} else if (str.equals(LaunchMessages.MultiLaunchConfigurationDelegate_Action_Delay)) {
 			return PostLaunchAction.DELAY;
-		} else if (str.equals("Wait for Console-String")) {
+		} else if (str.equals(LaunchMessages.MultiLaunchConfigurationDelegate_Action_WaitForConsoleString)) {
 			return PostLaunchAction.WAIT_FOR_CONSOLESTRING;
 		} else {
 			assert false : "new post launch action type is missing logic"; //$NON-NLS-1$

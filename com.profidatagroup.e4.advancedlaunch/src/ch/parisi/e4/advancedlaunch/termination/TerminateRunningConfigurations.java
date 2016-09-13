@@ -1,4 +1,4 @@
-package ch.parisi.e4.advancedlaunch;
+package ch.parisi.e4.advancedlaunch.termination;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,10 +11,11 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.handlers.HandlerUtil;
 
-public class TerminateConfigurations extends AbstractHandler {
+/**
+ * This class terminates all running {@link IProcess}es from the back. 
+ */
+public class TerminateRunningConfigurations extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {

@@ -49,7 +49,7 @@ public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 		}
 	}
 
-	// Adds the processes I launched in a List (Set)
+	// Adds the launched processes in a List (Set)
 	private void waitForProcessesToTerminate(IProcess[] processes) {
 		Set<IProcess> processSet = Collections.synchronizedSet(new HashSet<>(Arrays.asList(processes)));
 		System.out.println("Waiting for processes: " + processSet);

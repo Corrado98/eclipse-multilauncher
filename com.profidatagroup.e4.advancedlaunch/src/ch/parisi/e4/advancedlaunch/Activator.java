@@ -1,15 +1,7 @@
 package ch.parisi.e4.advancedlaunch;
 
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleListener;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.PatternMatchEvent;
-import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
-import ch.parisi.e4.advancedlaunch.tabs.LaunchTab;
 
 /**
  * The activator class controls the plug-in life cycle

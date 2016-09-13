@@ -165,8 +165,8 @@ public class LaunchMessages extends NLS {
 	public static String MultiLaunchConfigurationDelegate_Loop;
 	public static String MultiLaunchConfigurationDelegate_Action_None;
 	public static String MultiLaunchConfigurationDelegate_Action_WaitUntilTerminated;
+	public static String MultiLaunchConfigurationDelegate_Action_WaitForConsoleString;
 	public static String MultiLaunchConfigurationDelegate_Action_Delay;
-	public static String MultiLaunchConfigurationDelegate_Action_WaitingForTermination;
 	public static String MultiLaunchConfigurationDelegate_Action_Delaying;
 	public static String MultiLaunchConfigurationSelectionDialog_0;
 	public static String MultiLaunchConfigurationSelectionDialog_4;
@@ -174,6 +174,7 @@ public class LaunchMessages extends NLS {
 	public static String MultiLaunchConfigurationSelectionDialog_7;
 	public static String MultiLaunchConfigurationSelectionDialog_8;
 	public static String MultiLaunchConfigurationSelectionDialog_9;
+	public static String MultiLaunchConfigurationSelectionDialog_9_2;
 	public static String MultiLaunchConfigurationSelectionDialog_10;
 	public static String MultiLaunchConfigurationSelectionDialog_10_2;
 	public static String MultiLaunchConfigurationSelectionDialog_11;

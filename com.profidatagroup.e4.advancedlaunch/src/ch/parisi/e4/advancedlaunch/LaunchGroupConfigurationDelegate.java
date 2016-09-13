@@ -4,15 +4,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.PlatformUI;
 
-import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.DelayStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.EmptyStrategy;
@@ -23,15 +18,12 @@ import ch.parisi.e4.advancedlaunch.strategies.WaitForTerminationStrategy;
  * Class which handles the launch of each configuration, while respecting it`s
  * corresponding launch-strategy with possible params and the selected launch
  * mode: see {@link org.eclipse.debug.core.ILaunchManager}
- * 
- * @author PaCo
- *
  */
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
 
 	/**
-	 * This method iterates through all configurations in a user-created one
-	 * (LaunchGroup) and starts them.
+	 * This method iterates through all user-selected configurations and starts
+	 * them.
 	 */
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)

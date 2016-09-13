@@ -1,5 +1,7 @@
 package ch.parisi.e4.advancedlaunch;
 
+import ch.parisi.e4.advancedlaunch.EnumController.PostLaunchAction;
+
 /**
  * Bean-class which contains user-defined information of a launch. 
  * @author PaCo
@@ -8,8 +10,12 @@ package ch.parisi.e4.advancedlaunch;
 public class LaunchConfigurationBean {
 	private String name;
 	private String mode;
-	private String postLaunchAction;
 	private String param;
+	
+	/**
+	 * {@link PostLaunchAction}.
+	 */
+	private String postLaunchAction;
 	
 	public LaunchConfigurationBean() {
 	}
@@ -47,5 +53,4 @@ public class LaunchConfigurationBean {
 	public void setParam(String param) {
 		this.param = param;
 	}
-	
 }

@@ -54,7 +54,7 @@
  <extension
        point="org.eclipse.ui.commands">
     <command
-          defaultHandler="ch.parisi.e4.advancedlaunch.TerminateConfigurations"
+          defaultHandler="ch.parisi.e4.advancedlaunch.termination.TerminateRunningConfigurations"
           id="com.profidatagroup.e4.advancedlaunch.command1"
           name="terminate run/debugmode configurations">
     </command>
