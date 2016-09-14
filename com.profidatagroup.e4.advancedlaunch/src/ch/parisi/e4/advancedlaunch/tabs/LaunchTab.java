@@ -2,20 +2,15 @@ package ch.parisi.e4.advancedlaunch.tabs;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -35,7 +30,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.PlatformUI;
 
 import ch.parisi.e4.advancedlaunch.EnumController;
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationBean;
@@ -268,7 +262,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 						viewer.refresh();
 						setDirty(true);
 						updateLaunchConfigurationDialog();
-
 					}
 				}
 			}
@@ -381,70 +374,91 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute("params", params);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.debug.ui.AbstractLaunchConfigurationTab#isValid(org.eclipse.
-	 * debug.core.ILaunchConfiguration)
-	 */
 	@Override
 	public boolean isValid(ILaunchConfiguration launchConfig) {
+		/*
+		 * This method decides recursively whether a custom-configuration can
+		 * launch or not. An invalid launch-reference or an infinite loop at any
+		 * nesting-depth will cause this method to return <code>false</code>.
+		 */
+
 		setMessage(null);
 		setErrorMessage(null);
 
 		List<LaunchConfigurationBean> launchConfigurationDataList;
 		try {
+			// all sublaunches of method-param: 'launchConfig'
 			launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(launchConfig);
-			
-			for (LaunchConfigurationBean bean : launchConfigurationDataList) {
 
-				// only used for invalid reference detection.
+			if (isRecursiveLaunchConfiguration(launchConfig.getName(), launchConfigurationDataList)) {
+				setErrorMessage(
+						MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, launchConfig.getName()));
+				return false;
+			}
+
+			for (LaunchConfigurationBean bean : launchConfigurationDataList) {
 				ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(bean.getName());
-				
-				// invalid reference to a configuration.
+
+				// invalid launch reference.
 				if (launchConfiguration == null) {
 					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_14, bean.getName()));
 					return false;
-				// invalid reference.
+					// invalid launch reference.
 				} else if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
 					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_15, bean.getName()));
 					return false;
 				}
 
-				// simple infinite loop. If configurationA tries to call
-				// itself.
-				if (launchConfig.getName().equals(bean.getName())) { 
-					setErrorMessage(
-							MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, bean.getName()));
-					return false;
-				}
-
-				// look for possible, nested infinite loop
-				else if (!(launchConfig.getName().equals(bean.getName()))) { 
-					List<LaunchConfigurationBean> tempLaunchConfigurationDataList = LaunchUtils
-							.loadLaunchConfigurations(LaunchUtils.findLaunchConfiguration(bean.getName()));
-
-					for (LaunchConfigurationBean launchConfigurationBean :  tempLaunchConfigurationDataList) { 	
-						// if a configurationA stores a configurationB, which could call configurationA again.
-						if (launchConfig.getName().equals(launchConfigurationBean.getName())) {
-							setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop,
-									bean.getName()));
-							return false;
-						}
-					}
-				}
-				//if configurationA stores an already invalid LaunchConfiguration.
-				if(!isValid(launchConfiguration)) {
-					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Error,
-							launchConfiguration.getName()));
-					return false;
-				}
+				// simple infinite loop detection. If configurationA tries to
+				// call itself.
+//				if (launchConfig.getName().equals(bean.getName())) {
+//					setErrorMessage(
+//							MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, bean.getName()));
+//					return false;
+//				}
+//
+//				// look for possible, nested infinite loop
+//				else if (!(launchConfig.getName().equals(bean.getName()))) {
+//					List<LaunchConfigurationBean> tempLaunchConfigurationDataList = LaunchUtils
+//							.loadLaunchConfigurations(LaunchUtils.findLaunchConfiguration(bean.getName()));
+//
+//					for (LaunchConfigurationBean launchConfigurationBean : tempLaunchConfigurationDataList) {
+//						// if a configurationA stores a configurationB, which
+//						// could call configurationA again.
+//						if (launchConfig.getName().equals(launchConfigurationBean.getName())) {
+//							setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop,
+//									bean.getName()));
+//							return false;
+//						}
+//					}
+//				}
+//				// if configurationA stores an already invalid
+//				// LaunchConfiguration.
+//				if (!isValid(launchConfiguration)) {
+//					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Error,
+//							launchConfiguration.getName()));
+//					return false;
+//				}
 			}
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 		return true;
+	}
+
+	private boolean isRecursiveLaunchConfiguration(String launchName, List<LaunchConfigurationBean> launchConfigurationBeans) throws CoreException {
+		for (LaunchConfigurationBean launchConfigurationBean : launchConfigurationBeans) {
+			if (launchName.equals(launchConfigurationBean.getName())) {
+				return true;
+			}
+			
+			List<LaunchConfigurationBean> childLaunchConfigurationBeans = LaunchUtils.loadLaunchConfigurations(LaunchUtils.findLaunchConfiguration(launchConfigurationBean.getName()));
+			if (isRecursiveLaunchConfiguration(launchName, childLaunchConfigurationBeans)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	@Override
