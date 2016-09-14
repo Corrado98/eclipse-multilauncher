@@ -23,7 +23,7 @@ public class LaunchUtils {
 	 * 
 	 * @param name
 	 *            the name of the <code>ILaunchConfiguration</code>.
-	 * @return the <code>ILaunchConfiguration</code>
+	 * @return the <code>ILaunchConfiguration</code> or <code>null</code> if not found
 	 * @throws CoreException
 	 */
 	public static ILaunchConfiguration findLaunchConfiguration(String name) throws CoreException {
