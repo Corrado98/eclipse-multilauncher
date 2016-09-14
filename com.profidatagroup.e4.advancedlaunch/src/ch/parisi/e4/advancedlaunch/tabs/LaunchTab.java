@@ -9,6 +9,7 @@ import java.util.function.Function;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
@@ -137,7 +138,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void initAddConfigurationSelectionDialog(
-		MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
+			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(false);
 		multiLaunchConfigurationSelectionDialog.setMode("debug");
 		multiLaunchConfigurationSelectionDialog.setAction(EnumController.strToActionEnum("none"));
@@ -161,17 +162,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					launchConfiguration = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
 
 					if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
-						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-							@Override
-							public void run() {
-								MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-										"Error", "invalid reference.");
-							}
-						});
-						return;
+						// select nothing
+					} else {
+						multiLaunchConfigurationSelectionDialog.setInitialSelection(launchConfiguration);
 					}
-
-					multiLaunchConfigurationSelectionDialog.setInitialSelection(launchConfiguration);
 				} catch (CoreException e) {
 					e.printStackTrace();
 				}
@@ -402,36 +396,48 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		List<LaunchConfigurationBean> launchConfigurationDataList;
 		try {
 			launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(launchConfig);
-
+			
 			for (LaunchConfigurationBean bean : launchConfigurationDataList) {
-				// infinite loop.
+
+				// only used for invalid reference detection.
 				ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(bean.getName());
-				if (launchConfig.getName().equals(bean.getName())) {
+				
+				// invalid reference to a configuration.
+				if (launchConfiguration == null) {
+					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_14, bean.getName()));
+					return false;
+				// invalid reference.
+				} else if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
+					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_15, bean.getName()));
+					return false;
+				}
+
+				// simple infinite loop. If configurationA tries to call
+				// itself.
+				if (launchConfig.getName().equals(bean.getName())) { 
 					setErrorMessage(
 							MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, bean.getName()));
 					return false;
 				}
-				else if(!(launchConfig.getName().equals(bean.getName()))) {
-					ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-					ILaunchConfiguration [] configs = manager.getLaunchConfigurations();
-					List<LaunchConfigurationBean> launchConfigurationDataList2 = LaunchUtils.loadLaunchConfigurations(LaunchUtils.findLaunchConfiguration(bean.getName()));
-					
-					for (Iterator iterator = launchConfigurationDataList2.iterator(); iterator.hasNext();) {
-						LaunchConfigurationBean launchConfigurationBean = (LaunchConfigurationBean) iterator.next();
-						if(launchConfig.getName().equals(launchConfigurationBean.getName())) {
-							setErrorMessage(
-									MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, bean.getName()));
+
+				// look for possible, nested infinite loop
+				else if (!(launchConfig.getName().equals(bean.getName()))) { 
+					List<LaunchConfigurationBean> tempLaunchConfigurationDataList = LaunchUtils
+							.loadLaunchConfigurations(LaunchUtils.findLaunchConfiguration(bean.getName()));
+
+					for (LaunchConfigurationBean launchConfigurationBean :  tempLaunchConfigurationDataList) { 	
+						// if a configurationA stores a configurationB, which could call configurationA again.
+						if (launchConfig.getName().equals(launchConfigurationBean.getName())) {
+							setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop,
+									bean.getName()));
 							return false;
 						}
 					}
 				}
-				// invalid reference.
-				else if (launchConfiguration == null) {
-					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_14, bean.getName()));
-					return false;
-					// invalid reference.
-				} else if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
-					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_15, bean.getName()));
+				//if configurationA stores an already invalid LaunchConfiguration.
+				if(!isValid(launchConfiguration)) {
+					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Error,
+							launchConfiguration.getName()));
 					return false;
 				}
 			}

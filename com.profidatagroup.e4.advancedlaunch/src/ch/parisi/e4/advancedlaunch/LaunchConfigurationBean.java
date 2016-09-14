@@ -3,9 +3,7 @@ package ch.parisi.e4.advancedlaunch;
 import ch.parisi.e4.advancedlaunch.EnumController.PostLaunchAction;
 
 /**
- * Bean-class which contains user-defined information of a launch. 
- * @author PaCo
- *
+ * Bean-class which contains user-defined information of a launch.
  */
 public class LaunchConfigurationBean {
 	private String name;

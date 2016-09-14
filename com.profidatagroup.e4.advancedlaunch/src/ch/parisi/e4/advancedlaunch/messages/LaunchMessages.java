@@ -19,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfigurationDelegate_Loop;
+	public static String LaunchGroupConfigurationDelegate_Error;
 	public static String LaunchGroupConfigurationDelegate_Action_None;
 	public static String LaunchGroupConfigurationDelegate_Action_WaitUntilTerminated;
 	public static String LaunchGroupConfigurationDelegate_Action_Delay;

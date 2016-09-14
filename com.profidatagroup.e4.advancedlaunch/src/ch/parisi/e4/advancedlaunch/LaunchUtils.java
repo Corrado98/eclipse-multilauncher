@@ -1,5 +1,6 @@
 package ch.parisi.e4.advancedlaunch;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
 
+import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
+
 /**
  * Utility class with methods, that can be accessed throughout the entire code.
  */
@@ -18,7 +21,8 @@ public class LaunchUtils {
 	/**
 	 * This method finds a {@link ILaunchConfiguration} by name.
 	 * 
-	 * @param name the name of the <code>ILaunchConfiguration</code>.
+	 * @param name
+	 *            the name of the <code>ILaunchConfiguration</code>.
 	 * @return the <code>ILaunchConfiguration</code>
 	 * @throws CoreException
 	 */
@@ -52,12 +56,12 @@ public class LaunchUtils {
 		List<String> params = new ArrayList<>();
 
 		List<LaunchConfigurationBean> launchConfigurationDataList = new ArrayList<>();
-
-		names = configuration.getAttribute("names", new ArrayList<String>());
-		modes = configuration.getAttribute("modes", new ArrayList<String>());
-		postLaunchActions = configuration.getAttribute("postLaunchActions", new ArrayList<String>());
-		params = configuration.getAttribute("params", new ArrayList<String>());
-
+		
+			names = configuration.getAttribute("names", new ArrayList<String>());
+			modes = configuration.getAttribute("modes", new ArrayList<String>());
+			postLaunchActions = configuration.getAttribute("postLaunchActions", new ArrayList<String>());
+			params = configuration.getAttribute("params", new ArrayList<String>());
+		
 		for (int i = 0; i < names.size(); i++) {
 			launchConfigurationDataList.add(
 					new LaunchConfigurationBean(names.get(i), modes.get(i), postLaunchActions.get(i), params.get(i)));
@@ -68,9 +72,10 @@ public class LaunchUtils {
 	/**
 	 * Test if a launch configuration has a valid reference.
 	 * 
-	 * @param config configuration reference
-	 * @return <code>true</code> if it is a valid reference, 
-	 * 		   <code>false</code> if launch configuration should be filtered.
+	 * @param config
+	 *            configuration reference
+	 * @return <code>true</code> if it is a valid reference, <code>false</code>
+	 *         if launch configuration should be filtered.
 	 */
 	public static boolean isValidLaunchReference(ILaunchConfiguration config) {
 		return DebugUIPlugin.doLaunchConfigurationFiltering(config) && !WorkbenchActivityHelper.filterItem(config);
