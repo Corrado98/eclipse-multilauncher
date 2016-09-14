@@ -36,6 +36,8 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 			if (launchConfiguration != null) {
 				AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(bean);
 				launchAndWaitStrategy.launchAndWait(launchConfiguration, bean.getMode());
+			} else {
+				// TODO error: launch configuration not found 
 			}
 		}
 	}
