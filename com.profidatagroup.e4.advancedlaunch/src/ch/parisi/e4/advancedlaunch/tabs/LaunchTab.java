@@ -2,12 +2,15 @@ package ch.parisi.e4.advancedlaunch.tabs;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -25,14 +28,12 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import ch.parisi.e4.advancedlaunch.EnumController;
@@ -75,7 +76,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		mainComposite = new Group(parent, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(mainComposite);
 		setControl(mainComposite);
-		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(mainComposite);	
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(mainComposite);
 	}
 
 	private void initButtonComposite() {
@@ -136,7 +137,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void initAddConfigurationSelectionDialog(
-			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
+		MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(false);
 		multiLaunchConfigurationSelectionDialog.setMode("debug");
 		multiLaunchConfigurationSelectionDialog.setAction(EnumController.strToActionEnum("none"));
@@ -315,19 +316,17 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void createColumns() {
-
 		// create a column for the launchconfiguration NAME
-		addTableColumn("Name", 100, lcb -> lcb.getName());
+		addTableColumn("Name", 175, lcb -> lcb.getName());
 
 		// create a column for the launchconfiguration MODE
-		addTableColumn("Mode", 100, lcb -> lcb.getMode());
+		addTableColumn("Mode", 175, lcb -> lcb.getMode());
 
 		// create a column for the launchconfiguration POST-ACTION
-		addTableColumn("Action", 100, lcb -> lcb.getPostLaunchAction());
+		addTableColumn("Action", 175, lcb -> lcb.getPostLaunchAction());
 
 		// create a column for the launchconfiguration PARAM
-		addTableColumn("Param", 150, lcb -> lcb.getParam());
-
+		addTableColumn("Param", 120, lcb -> lcb.getParam());
 	}
 
 	private void addTableColumn(String name, int width, Function<LaunchConfigurationBean, String> actionTextFetcher) {
@@ -345,7 +344,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public String getName() {
-		return "Launches";
+		return LaunchMessages.LaunchGroupConfiguration_Launches;
 	}
 
 	@Override
@@ -412,15 +411,27 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 							MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, bean.getName()));
 					return false;
 				}
+				else if(!(launchConfig.getName().equals(bean.getName()))) {
+					ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+					ILaunchConfiguration [] configs = manager.getLaunchConfigurations();
+					List<LaunchConfigurationBean> launchConfigurationDataList2 = LaunchUtils.loadLaunchConfigurations(LaunchUtils.findLaunchConfiguration(bean.getName()));
+					
+					for (Iterator iterator = launchConfigurationDataList2.iterator(); iterator.hasNext();) {
+						LaunchConfigurationBean launchConfigurationBean = (LaunchConfigurationBean) iterator.next();
+						if(launchConfig.getName().equals(launchConfigurationBean.getName())) {
+							setErrorMessage(
+									MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, bean.getName()));
+							return false;
+						}
+					}
+				}
 				// invalid reference.
 				else if (launchConfiguration == null) {
-					setErrorMessage(
-							MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_14, bean.getName()));
+					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_14, bean.getName()));
 					return false;
 					// invalid reference.
 				} else if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
-					setErrorMessage(
-							MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_15, bean.getName()));
+					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_15, bean.getName()));
 					return false;
 				}
 			}
