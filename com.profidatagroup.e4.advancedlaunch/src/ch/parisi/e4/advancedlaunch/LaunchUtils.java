@@ -41,10 +41,10 @@ public class LaunchUtils {
 
 	/**
 	 * This method loads all the sublaunches of an already existing
-	 * custom-launch, into a list.
+	 * custom-launch into a list.
 	 * 
 	 * @param configuration
-	 *            the custom-launch
+	 *            the custom-launch. <b>Cannot</b> be {@code null}.
 	 * @return the sublaunches as a list of {@link LaunchConfigurationBean}s.
 	 * @throws CoreException
 	 */
@@ -68,12 +68,32 @@ public class LaunchUtils {
 		}
 		return launchConfigurationDataList;
 	}
+	
+	public static boolean isRecursiveLaunchConfiguration(String launchName, List<LaunchConfigurationBean> launchConfigurationBeans) throws CoreException {
+		for (LaunchConfigurationBean launchConfigurationBean : launchConfigurationBeans) {
+			if (launchName.equals(launchConfigurationBean.getName())) {
+				return true;
+			}
+			
+			ILaunchConfiguration childLaunchConfiguration = LaunchUtils.findLaunchConfiguration(launchConfigurationBean.getName());
+			if (childLaunchConfiguration != null) {
+				List<LaunchConfigurationBean> childLaunchConfigurationBeans = LaunchUtils.loadLaunchConfigurations(childLaunchConfiguration);
+				if (isRecursiveLaunchConfiguration(launchName, childLaunchConfigurationBeans)) {
+					return true;
+				}
+			} else {
+				System.out.println("NOOOOOOO! " + launchConfigurationBean.getName());
+			}
+		}
+		
+		return false;
+	}
 
 	/**
 	 * Test if a launch configuration has a valid reference.
 	 * 
 	 * @param config
-	 *            configuration reference
+	 *            configuration reference <b>Cannot</b> be {@code null}.
 	 * @return <code>true</code> if it is a valid reference, <code>false</code>
 	 *         if launch configuration should be filtered.
 	 */

@@ -394,7 +394,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		setErrorMessage(null);
 
 		try {
-			if (isRecursiveLaunchConfiguration(launchName, launchConfigurationDataList)) {
+			if (LaunchUtils.isRecursiveLaunchConfiguration(launchName, launchConfigurationDataList)) {
 				setErrorMessage(
 						MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, launchName));
 				return false;
@@ -417,26 +417,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			e.printStackTrace();
 		}
 		return true;
-	}
-
-	private static boolean isRecursiveLaunchConfiguration(String launchName, List<LaunchConfigurationBean> launchConfigurationBeans) throws CoreException {
-		for (LaunchConfigurationBean launchConfigurationBean : launchConfigurationBeans) {
-			if (launchName.equals(launchConfigurationBean.getName())) {
-				return true;
-			}
-			
-			ILaunchConfiguration childLaunchConfiguration = LaunchUtils.findLaunchConfiguration(launchConfigurationBean.getName());
-			if (childLaunchConfiguration != null) {
-				List<LaunchConfigurationBean> childLaunchConfigurationBeans = LaunchUtils.loadLaunchConfigurations(childLaunchConfiguration);
-				if (isRecursiveLaunchConfiguration(launchName, childLaunchConfigurationBeans)) {
-					return true;
-				}
-			} else {
-				System.out.println("NOOOOOOO! " + launchConfigurationBean.getName());
-			}
-		}
-		
-		return false;
 	}
 
 	@Override
