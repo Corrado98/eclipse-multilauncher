@@ -393,7 +393,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		setErrorMessage(null);
 
 		try {
-			validate();
+			validateRecursive(launchName, "", launchConfigurationDataList);
 			return true;
 		} catch (LaunchValidationException launchValidationException) {
 			setErrorMessage(launchValidationException.getMessage());
@@ -401,22 +401,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	private void validate() throws CoreException {
-		for (LaunchConfigurationBean bean : launchConfigurationDataList) {
-			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(bean.getName());
-
-			// invalid launch-reference.
-			if (launchConfiguration == null) {
-				throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_14, bean.getName()));
-				// invalid launch-reference.
-			} else if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
-				throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_15, bean.getName()));
-			}
-		}
-
-		validateRecursive(launchName, "", launchConfigurationDataList);
 	}
 
 	private void validateRecursive(String launchName, String launchPath, List<LaunchConfigurationBean> launchConfigurationBeans) throws CoreException {

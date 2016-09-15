@@ -30,11 +30,13 @@ import org.eclipse.debug.ui.ILaunchGroup;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -177,6 +179,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				fTree.getViewer().setSelection(fInitialSelection, true);
 			}
 		}
+
 		stackComposite.setLabelText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_4);
 		stackComposite.pack();
 		Rectangle bounds = stackComposite.getBounds();
@@ -199,6 +202,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		return comp;
 	}
 
+	
+	
 	private void createPostLaunchControl(Composite parent) {
 		Composite comp = new Composite(parent, SWT.NONE);
 		comp.setLayout(new GridLayout(4, false));
@@ -258,6 +263,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		showHideDelayAmountWidgets();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initActionParamDatabinding() {
 		// Do the actual binding and conversion
 		DataBindingContext dbc = new DataBindingContext();
