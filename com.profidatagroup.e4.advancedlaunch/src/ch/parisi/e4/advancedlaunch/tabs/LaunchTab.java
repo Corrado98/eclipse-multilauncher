@@ -11,18 +11,18 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.PlatformUI;
 
 import ch.parisi.e4.advancedlaunch.EnumController;
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationBean;
@@ -88,7 +87,15 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void initTableViewer() {
 		tableViewer = new TableViewer(mainComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-
+		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+			
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				editLaunchConfiguration();
+			}
+		});
+		
+		
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(tableViewer.getTable());
 
 		// gets user selected element in the table and works with it.
@@ -146,39 +153,43 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 			@Override
 			public void handleEvent(Event event) {
-				MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(getShell());
-				loadExistingConfigurationData(multiLaunchConfigurationSelectionDialog);
-
-				ILaunchConfiguration launchConfiguration;
-				try {
-					launchConfiguration = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
-
-					if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
-						// select nothing
-					} else {
-						multiLaunchConfigurationSelectionDialog.setInitialSelection(launchConfiguration);
-					}
-				} catch (CoreException e) {
-					e.printStackTrace();
-				}
-
-				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
-					ILaunchConfiguration configuration = multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration();
-
-					launchConfigurationDataList.add(launchConfigurationDataList.indexOf(selectedConfiguration),
-							new LaunchConfigurationBean(configuration.getName(), multiLaunchConfigurationSelectionDialog.getMode(),
-									EnumController.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
-					launchConfigurationDataList.remove(selectedConfiguration);
-
-					if (launchConfigurationDataList != null) {
-						tableViewer.setInput(launchConfigurationDataList);
-						tableViewer.refresh();
-						setDirty(true);
-						updateLaunchConfigurationDialog();
-					}
-				}
+				editLaunchConfiguration();
 			}
 		});
+	}
+	
+	private void editLaunchConfiguration() {
+		MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(getShell());
+		loadExistingConfigurationData(multiLaunchConfigurationSelectionDialog);
+
+		ILaunchConfiguration launchConfiguration;
+		try {
+			launchConfiguration = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
+
+			if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
+				// select nothing
+			} else {
+				multiLaunchConfigurationSelectionDialog.setInitialSelection(launchConfiguration);
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+
+		if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
+			ILaunchConfiguration configuration = multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration();
+
+			launchConfigurationDataList.add(launchConfigurationDataList.indexOf(selectedConfiguration),
+					new LaunchConfigurationBean(configuration.getName(), multiLaunchConfigurationSelectionDialog.getMode(),
+							EnumController.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
+			launchConfigurationDataList.remove(selectedConfiguration);
+
+			if (launchConfigurationDataList != null) {
+				tableViewer.setInput(launchConfigurationDataList);
+				tableViewer.refresh();
+				setDirty(true);
+				updateLaunchConfigurationDialog();
+			}
+		}
 	}
 
 	private void loadExistingConfigurationData(MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
@@ -368,68 +379,69 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public boolean isValid(ILaunchConfiguration launchConfig) {
-		return canSave();
-	}
-
-	@Override
-	public boolean canSave() {
 		/*
 		 * This method decides recursively whether a custom-configuration can
 		 * be saved or launched. An invalid launch-reference or an infinite loop at any
 		 * nesting-depth will cause this method to return <code>false</code>.
 		 */
+		return canSave();
+	}
+
+	@Override
+	public boolean canSave() {
 		setMessage(null);
 		setErrorMessage(null);
 
 		try {
 			validate();
+			return true;
+		} catch (LaunchValidationException launchValidationException) {
+			setErrorMessage(launchValidationException.getMessage());
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-		return true;
+		return false;
 	}
 
-	private boolean validate() throws CoreException {
+	private void validate() throws CoreException {
 		for (LaunchConfigurationBean bean : launchConfigurationDataList) {
 			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(bean.getName());
 
-			// invalid launch reference.
+			// invalid launch-reference.
 			if (launchConfiguration == null) {
-				setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_14, bean.getName()));
-				return false;
-				// invalid launch reference.
+				throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_14, bean.getName()));
+				// invalid launch-reference.
 			} else if (!LaunchUtils.isValidLaunchReference(launchConfiguration)) {
-				setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_15, bean.getName()));
-				return false;
+				throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_15, bean.getName()));
 			}
 		}
 
-		if (validateRecursive(launchName, launchConfigurationDataList)) {
-			return false;
-		}
-
-		return true;
+		validateRecursive(launchName, "", launchConfigurationDataList);
 	}
 
-	private boolean validateRecursive(String launchName, List<LaunchConfigurationBean> launchConfigurationBeans) throws CoreException {
+	private void validateRecursive(String launchName, String launchPath, List<LaunchConfigurationBean> launchConfigurationBeans) throws CoreException {
 		for (LaunchConfigurationBean launchConfigurationBean : launchConfigurationBeans) {
 			if (launchName.equals(launchConfigurationBean.getName())) {
-				return true;
+				throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, launchPath, launchName));
 			}
 
 			ILaunchConfiguration childLaunchConfiguration = LaunchUtils.findLaunchConfiguration(launchConfigurationBean.getName());
 			if (childLaunchConfiguration != null) {
 				List<LaunchConfigurationBean> childLaunchConfigurationBeans = LaunchUtils.loadLaunchConfigurations(childLaunchConfiguration);
-				if (validateRecursive(launchName, childLaunchConfigurationBeans)) {
-					setErrorMessage(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, launchConfigurationBean.getName()));
-					return true;
-				}
+				String childLaunchPath = (launchPath.isEmpty() ? "" : launchPath + ", ") + launchConfigurationBean.getName();
+
+				validateRecursive(launchName, childLaunchPath, childLaunchConfigurationBeans);
 			} else {
-				return true;
+				//invalid launch-reference
+				throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_14, launchConfigurationBean.getName()));
 			}
 		}
+	}
 
-		return false;
+	private static class LaunchValidationException extends RuntimeException {
+		public LaunchValidationException(String message) {
+			super(message);
+		}
 	}
 
 	@Override

@@ -3,7 +3,8 @@ package ch.parisi.e4.advancedlaunch;
 import ch.parisi.e4.advancedlaunch.EnumController.PostLaunchAction;
 
 /**
- * Bean-class which contains user-defined information of a launch.
+ * Bean-class which contains user-defined information 
+ * of one launch within a custom-configuration.
  */
 public class LaunchConfigurationBean {
 	private String name;
@@ -43,11 +44,9 @@ public class LaunchConfigurationBean {
 	public void setPostLaunchAction(String postLaunchAction) {
 		this.postLaunchAction = postLaunchAction;
 	}
-
 	public String getParam() {
 		return param;
 	}
-
 	public void setParam(String param) {
 		this.param = param;
 	}
