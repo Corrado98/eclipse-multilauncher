@@ -88,14 +88,13 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void initTableViewer() {
 		tableViewer = new TableViewer(mainComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
-			
+
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				editLaunchConfiguration();
 			}
 		});
-		
-		
+
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(tableViewer.getTable());
 
 		// gets user selected element in the table and works with it.
@@ -157,7 +156,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			}
 		});
 	}
-	
+
 	private void editLaunchConfiguration() {
 		MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(getShell());
 		loadExistingConfigurationData(multiLaunchConfigurationSelectionDialog);
@@ -393,7 +392,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		setErrorMessage(null);
 
 		try {
-			validateRecursive(launchName, "", launchConfigurationDataList);
+			validateRecursive(launchName, null, launchConfigurationDataList);
 			return true;
 		} catch (LaunchValidationException launchValidationException) {
 			setErrorMessage(launchValidationException.getMessage());
@@ -403,21 +402,25 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		return false;
 	}
 
-	private void validateRecursive(String launchName, String launchPath, List<LaunchConfigurationBean> launchConfigurationBeans) throws CoreException {
+	private void validateRecursive(String rootLaunchName, String firstLevelChildLaunchName, List<LaunchConfigurationBean> launchConfigurationBeans) throws CoreException {
 		for (LaunchConfigurationBean launchConfigurationBean : launchConfigurationBeans) {
-			if (launchName.equals(launchConfigurationBean.getName())) {
-				throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, launchPath, launchName));
+			if (rootLaunchName.equals(launchConfigurationBean.getName())) {
+				throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, firstLevelChildLaunchName));
 			}
 
 			ILaunchConfiguration childLaunchConfiguration = LaunchUtils.findLaunchConfiguration(launchConfigurationBean.getName());
 			if (childLaunchConfiguration != null) {
 				List<LaunchConfigurationBean> childLaunchConfigurationBeans = LaunchUtils.loadLaunchConfigurations(childLaunchConfiguration);
-				String childLaunchPath = (launchPath.isEmpty() ? "" : launchPath + ", ") + launchConfigurationBean.getName();
+				String childLaunchName = launchConfigurationBean.getName();
 
-				validateRecursive(launchName, childLaunchPath, childLaunchConfigurationBeans);
+				validateRecursive(rootLaunchName, firstLevelChildLaunchName == null ? childLaunchName : firstLevelChildLaunchName, childLaunchConfigurationBeans);
 			} else {
 				//invalid launch-reference
-				throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_14, launchConfigurationBean.getName()));
+				if (firstLevelChildLaunchName == null) {
+					throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_NotFound, launchConfigurationBean.getName()));
+				} else {
+					throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_RecursiveNotFound, firstLevelChildLaunchName, launchConfigurationBean.getName()));
+				}
 			}
 		}
 	}

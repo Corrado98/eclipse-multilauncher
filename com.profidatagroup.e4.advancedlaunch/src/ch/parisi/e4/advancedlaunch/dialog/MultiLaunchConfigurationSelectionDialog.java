@@ -112,7 +112,11 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 						return false;
 					}
 				} else if (element instanceof ILaunchConfiguration) {
-					return LaunchUtils.isValidLaunchReference((ILaunchConfiguration) element);
+					try {
+						return LaunchUtils.isValidLaunchReference((ILaunchConfiguration) element);
+					} catch (CoreException e) {
+						e.printStackTrace();
+					}
 				}
 				return true;
 			}

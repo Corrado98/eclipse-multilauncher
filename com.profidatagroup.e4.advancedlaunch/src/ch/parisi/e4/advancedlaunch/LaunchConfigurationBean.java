@@ -16,9 +16,6 @@ public class LaunchConfigurationBean {
 	 */
 	private String postLaunchAction;
 	
-	public LaunchConfigurationBean() {
-	}
-	
 	public LaunchConfigurationBean(String name, String mode, String postLaunchAction, String param) {
 		this.name = name;
 		this.mode = mode;

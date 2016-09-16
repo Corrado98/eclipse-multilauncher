@@ -44,8 +44,8 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfiguration_Name;
 	public static String LaunchGroupConfiguration_Mode;
 	public static String LaunchGroupConfiguration_Launches;
-	public static String LaunchGroupConfiguration_14;
-	public static String LaunchGroupConfiguration_15;
+	public static String LaunchGroupConfiguration_NotFound;
+	public static String LaunchGroupConfiguration_RecursiveNotFound;
 	private LaunchMessages() {
 	}
 
