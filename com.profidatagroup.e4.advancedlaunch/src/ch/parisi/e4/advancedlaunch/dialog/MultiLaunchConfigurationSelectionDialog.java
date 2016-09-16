@@ -84,7 +84,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private ComboControlledStackComposite stackComposite;
 	private Label paramLabel;
 	private Text paramTextWidget;
-	
+
 	/**
 	 * <code>true</code> if the dialog was opened to <b>edit</b> an entry,
 	 * <code>false</code> if it was opened to <b>add</b> an entry.
@@ -144,12 +144,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		Composite comp = (Composite) super.createDialogArea(parent2);
 
 		// title bar
-		getShell().setText(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_13
-				: LaunchMessages.LaunchGroupConfigurationSelectionDialog_12);
+		getShell().setText(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_13 : LaunchMessages.LaunchGroupConfigurationSelectionDialog_12);
 
 		// dialog message area (not title bar)
-		setTitle(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_15
-				: LaunchMessages.LaunchGroupConfigurationSelectionDialog_14);
+		setTitle(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_15 : LaunchMessages.LaunchGroupConfigurationSelectionDialog_14);
 
 		stackComposite = new ComboControlledStackComposite(comp, SWT.NONE);
 		HashMap<String, ILaunchGroup> modes = new HashMap<String, ILaunchGroup>();
@@ -163,8 +161,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		for (Iterator<String> iterator = modes.keySet().iterator(); iterator.hasNext();) {
 			String mode = iterator.next();
 			ILaunchGroup launchGroup = modes.get(mode);
-			fTree = new LaunchConfigurationFilteredTree(stackComposite.getStackParent(),
-					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), launchGroup, filters);
+			fTree = new LaunchConfigurationFilteredTree(stackComposite.getStackParent(), SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), launchGroup, filters);
 			stackComposite.addItem(mode, fTree);
 			fTree.createViewControl();
 			ViewerFilter[] filters = fTree.getViewer().getFilters();
@@ -175,7 +172,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			}
 			fTree.getViewer().addFilter(emptyTypeFilter);
 			fTree.getViewer().addSelectionChangedListener(this);
-			
+
 			if (launchGroup.getMode().equals(this.mode)) {
 				stackComposite.setSelection(mode);
 			}
@@ -206,8 +203,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		return comp;
 	}
 
-	
-	
 	private void createPostLaunchControl(Composite parent) {
 		Composite comp = new Composite(parent, SWT.NONE);
 		comp.setLayout(new GridLayout(4, false));
@@ -395,7 +390,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	}
 
 	protected void validate() {
-		Button ok_button = getButton(IDialogConstants.OK_ID);
+		Button btnOk = getButton(IDialogConstants.OK_ID);
 		boolean isValid = true;
 
 		if (isValid) {
@@ -409,11 +404,23 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				}
 				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10_2);
 			}
-
+			
+			if (fSelection == null) {
+				//nothing selected
+				isValid = false;
+			}
+			
+			IStructuredSelection selection = (IStructuredSelection) fSelection;
+			if (selection != null) {
+				if (selection.getFirstElement() instanceof ILaunchConfigurationType) {
+					//launchconfigurationtype selected
+					isValid = false;
+				}
+			}
 		}
 
-		if (ok_button != null)
-			ok_button.setEnabled(isValid);
+		if (btnOk != null)
+			btnOk.setEnabled(isValid);
 	}
 
 	public void setInitialSelection(ILaunchConfiguration launchConfiguration) {
