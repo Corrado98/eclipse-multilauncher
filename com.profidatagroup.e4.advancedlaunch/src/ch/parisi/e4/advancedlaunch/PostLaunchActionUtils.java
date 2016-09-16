@@ -15,26 +15,20 @@ import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialo
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
 /**
- * This is a helper class for the
- * {@link MultiLaunchConfigurationSelectionDialog}. It contains the enum with
- * the postLaunchActions: {@link PostLaunchAction}.
+ * This is a helper class for the {@link MultiLaunchConfigurationSelectionDialog}.
+ * It contains the enum with the postLaunchActions: {@link PostLaunchAction}.
  * 
  * This class was taken from CDT and was modified by the author of this project.
  */
-public class EnumController {
+public class PostLaunchActionUtils {
 
 	/**
-	 * The strategies each launch has to wait for, to start the next one.
+	 * Converts the specified {@link PostLaunchAction} to the human readable name.
+	 * 
+	 * @param action the {@link PostLaunchAction} to convert
+	 * @return the human readable name
 	 */
-	public static enum PostLaunchAction {
-		NONE, WAIT_FOR_TERMINATION, DELAY, WAIT_FOR_CONSOLESTRING
-	};
-
-	/**
-	 * Allows us decouple the enum identifier in the code from its textual
-	 * representation in the GUI
-	 */
-	public static String actionEnumToStr(PostLaunchAction action) {
+	public static String convertToName(PostLaunchAction action) {
 		switch (action) {
 		case NONE:
 			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_None;
@@ -54,14 +48,14 @@ public class EnumController {
 	 * Allows us decouple the enum identifier in the code from its textual
 	 * representation in the GUI
 	 */
-	public static PostLaunchAction strToActionEnum(String str) {
-		if (str.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_None)) {
+	public static PostLaunchAction convertToPostLaunchAction(String name) {
+		if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_None)) {
 			return PostLaunchAction.NONE;
-		} else if (str.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitUntilTerminated)) {
+		} else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitUntilTerminated)) {
 			return PostLaunchAction.WAIT_FOR_TERMINATION;
-		} else if (str.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay)) {
+		} else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay)) {
 			return PostLaunchAction.DELAY;
-		} else if (str.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString)) {
+		} else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString)) {
 			return PostLaunchAction.WAIT_FOR_CONSOLESTRING;
 		} else {
 			assert false : "new post launch action type is missing logic"; //$NON-NLS-1$

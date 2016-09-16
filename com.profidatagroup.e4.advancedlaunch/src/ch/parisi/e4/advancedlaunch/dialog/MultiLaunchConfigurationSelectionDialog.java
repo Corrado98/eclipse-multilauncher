@@ -63,9 +63,9 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
-import ch.parisi.e4.advancedlaunch.EnumController;
-import ch.parisi.e4.advancedlaunch.EnumController.PostLaunchAction;
+import ch.parisi.e4.advancedlaunch.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.LaunchUtils;
+import ch.parisi.e4.advancedlaunch.PostLaunchAction;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
 /**
@@ -210,22 +210,22 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		Label label = new Label(comp, SWT.NONE);
 		label.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_8);
 		Combo combo = new Combo(comp, SWT.READ_ONLY);
-		combo.add(EnumController.actionEnumToStr(PostLaunchAction.NONE));
-		combo.add(EnumController.actionEnumToStr(PostLaunchAction.WAIT_FOR_TERMINATION));
-		combo.add(EnumController.actionEnumToStr(PostLaunchAction.DELAY));
-		combo.add(EnumController.actionEnumToStr(PostLaunchAction.WAIT_FOR_CONSOLESTRING));
+		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.NONE));
+		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.WAIT_FOR_TERMINATION));
+		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.DELAY));
+		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.WAIT_FOR_CONSOLESTRING));
 
 		combo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final String actionStr = ((Combo) e.widget).getText();
-				action = EnumController.strToActionEnum(actionStr);
+				action = PostLaunchActionUtils.convertToPostLaunchAction(actionStr);
 				showHideDelayAmountWidgets();
 				validate();
 			}
 		});
 
-		combo.setText(EnumController.actionEnumToStr(action));
+		combo.setText(PostLaunchActionUtils.convertToName(action));
 
 		paramLabel = new Label(comp, SWT.NONE);
 		paramLabel.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_9);

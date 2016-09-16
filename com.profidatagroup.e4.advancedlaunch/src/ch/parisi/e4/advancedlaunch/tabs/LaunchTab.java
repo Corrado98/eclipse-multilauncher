@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 
-import ch.parisi.e4.advancedlaunch.EnumController;
+import ch.parisi.e4.advancedlaunch.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationBean;
 import ch.parisi.e4.advancedlaunch.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
@@ -124,7 +124,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 					launchConfigurationDataList
 							.add(new LaunchConfigurationBean(multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(), multiLaunchConfigurationSelectionDialog.getMode(),
-									EnumController.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
+									PostLaunchActionUtils.convertToName(multiLaunchConfigurationSelectionDialog.getAction()), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
 
 					if (launchConfigurationDataList != null) {
 						tableViewer.setInput(launchConfigurationDataList);
@@ -140,7 +140,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void initAddConfigurationSelectionDialog(MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(false);
 		multiLaunchConfigurationSelectionDialog.setMode("debug");
-		multiLaunchConfigurationSelectionDialog.setAction(EnumController.strToActionEnum("none"));
+		multiLaunchConfigurationSelectionDialog.setAction(PostLaunchActionUtils.convertToPostLaunchAction("none"));
 		multiLaunchConfigurationSelectionDialog.setActionParam("");
 	}
 
@@ -179,7 +179,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 			launchConfigurationDataList.add(launchConfigurationDataList.indexOf(selectedConfiguration),
 					new LaunchConfigurationBean(configuration.getName(), multiLaunchConfigurationSelectionDialog.getMode(),
-							EnumController.actionEnumToStr(multiLaunchConfigurationSelectionDialog.getAction()), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
+							PostLaunchActionUtils.convertToName(multiLaunchConfigurationSelectionDialog.getAction()), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
 			launchConfigurationDataList.remove(selectedConfiguration);
 
 			if (launchConfigurationDataList != null) {
@@ -194,7 +194,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void loadExistingConfigurationData(MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(true);
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
-		multiLaunchConfigurationSelectionDialog.setAction(EnumController.strToActionEnum(selectedConfiguration.getPostLaunchAction()));
+		multiLaunchConfigurationSelectionDialog.setAction(PostLaunchActionUtils.convertToPostLaunchAction(selectedConfiguration.getPostLaunchAction()));
 		multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
 	}
 

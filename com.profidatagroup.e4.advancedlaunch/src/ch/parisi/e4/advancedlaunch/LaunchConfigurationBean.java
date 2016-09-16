@@ -1,7 +1,5 @@
 package ch.parisi.e4.advancedlaunch;
 
-import ch.parisi.e4.advancedlaunch.EnumController.PostLaunchAction;
-
 /**
  * Bean-class which contains user-defined information 
  * of one launch within a custom-configuration.
