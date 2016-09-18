@@ -64,6 +64,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		initMainComposite(parent);
 		initTableViewer();
 		initButtonComposite();
+		
+		//just change the method order, to reorder the buttons.
 		createAddBtnWithListener();
 		createEditButtonWithListener();
 		createUpButtonWithListener();
