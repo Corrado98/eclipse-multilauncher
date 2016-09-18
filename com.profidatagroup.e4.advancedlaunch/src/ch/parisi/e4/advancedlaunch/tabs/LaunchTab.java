@@ -65,10 +65,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		initTableViewer();
 		initButtonComposite();
 		createAddBtnWithListener();
-		createRemoveButtonWithListener();
+		createEditButtonWithListener();
 		createUpButtonWithListener();
 		createDownButtonWithListener();
-		createEditButtonWithListener();
+		createRemoveButtonWithListener();
 	}
 
 	private void initMainComposite(Composite parent) {
