@@ -29,9 +29,9 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
 
-		List<LaunchConfigurationBean> launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
+		List<LaunchConfigurationModel> launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
 
-		for (LaunchConfigurationBean bean : launchConfigurationDataList) {
+		for (LaunchConfigurationModel bean : launchConfigurationDataList) {
 			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(bean.getName());
 			if (launchConfiguration != null) {
 				AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(bean);
@@ -52,7 +52,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	 *            to determine the strategy to follow.
 	 * @return the strategy to follow.
 	 */
-	private AbstractLaunchStrategy createLaunchAndWaitStrategy(LaunchConfigurationBean launchConfigurationBean) {
+	private AbstractLaunchStrategy createLaunchAndWaitStrategy(LaunchConfigurationModel launchConfigurationBean) {
 		switch (launchConfigurationBean.getPostLaunchAction()) {
 		case "Wait until terminated":
 			return new WaitForTerminationStrategy();

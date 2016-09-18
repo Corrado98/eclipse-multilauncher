@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 
 import ch.parisi.e4.advancedlaunch.PostLaunchActionUtils;
-import ch.parisi.e4.advancedlaunch.LaunchConfigurationBean;
+import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
@@ -51,12 +51,12 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private Button btnDown;
 	private Button btnEdit;
 	private TableViewer tableViewer;
-	private LaunchConfigurationBean selectedConfiguration;
+	private LaunchConfigurationModel selectedConfiguration;
 	private Composite mainComposite;
 	private Composite buttonComposite;
 
 	private String launchName;
-	private List<LaunchConfigurationBean> launchConfigurationDataList = new ArrayList<>();
+	private List<LaunchConfigurationModel> launchConfigurationDataList = new ArrayList<>();
 
 	@Override
 	public void createControl(Composite parent) {
@@ -123,7 +123,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 					launchConfigurationDataList
-							.add(new LaunchConfigurationBean(multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(), multiLaunchConfigurationSelectionDialog.getMode(),
+							.add(new LaunchConfigurationModel(multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(), multiLaunchConfigurationSelectionDialog.getMode(),
 									PostLaunchActionUtils.convertToName(multiLaunchConfigurationSelectionDialog.getAction()), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
 
 					if (launchConfigurationDataList != null) {
@@ -178,7 +178,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			ILaunchConfiguration configuration = multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration();
 
 			launchConfigurationDataList.add(launchConfigurationDataList.indexOf(selectedConfiguration),
-					new LaunchConfigurationBean(configuration.getName(), multiLaunchConfigurationSelectionDialog.getMode(),
+					new LaunchConfigurationModel(configuration.getName(), multiLaunchConfigurationSelectionDialog.getMode(),
 							PostLaunchActionUtils.convertToName(multiLaunchConfigurationSelectionDialog.getAction()), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
 			launchConfigurationDataList.remove(selectedConfiguration);
 
@@ -204,7 +204,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = tableViewer.getStructuredSelection();
 				Object selectedElement = selection.getFirstElement();
-				selectedConfiguration = (LaunchConfigurationBean) selectedElement;
+				selectedConfiguration = (LaunchConfigurationModel) selectedElement;
 
 				if (selectedElement != null) {
 					btnRemove.setEnabled(true);
@@ -252,9 +252,9 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					// up than that, therefore return.
 					if (index > 0) {
 						int indexBefore = index - 1;
-						LaunchConfigurationBean temp = launchConfigurationDataList.get(index);
-						LaunchConfigurationBean temp2 = launchConfigurationDataList.get(indexBefore);
-						LaunchConfigurationBean temp3 = null; //
+						LaunchConfigurationModel temp = launchConfigurationDataList.get(index);
+						LaunchConfigurationModel temp2 = launchConfigurationDataList.get(indexBefore);
+						LaunchConfigurationModel temp3 = null; //
 						temp3 = temp;
 						temp = temp2;
 						temp2 = temp3;
@@ -285,9 +285,9 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					// down than that, therefore return.
 					if (index + 1 < launchConfigurationDataList.size()) {
 						int indexAfter = index + 1;
-						LaunchConfigurationBean temp = launchConfigurationDataList.get(index); // 5
-						LaunchConfigurationBean temp2 = launchConfigurationDataList.get(indexAfter); // 10
-						LaunchConfigurationBean temp3 = null; //
+						LaunchConfigurationModel temp = launchConfigurationDataList.get(index); // 5
+						LaunchConfigurationModel temp2 = launchConfigurationDataList.get(indexAfter); // 10
+						LaunchConfigurationModel temp3 = null; //
 						temp3 = temp;
 						temp = temp2;
 						temp2 = temp3;
@@ -317,14 +317,14 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		addTableColumn("Param", 120, lcb -> lcb.getParam());
 	}
 
-	private void addTableColumn(String name, int width, Function<LaunchConfigurationBean, String> actionTextFetcher) {
+	private void addTableColumn(String name, int width, Function<LaunchConfigurationModel, String> actionTextFetcher) {
 		TableViewerColumn colLaunchConfigurationAction = new TableViewerColumn(tableViewer, SWT.NONE);
 		colLaunchConfigurationAction.getColumn().setWidth(width);
 		colLaunchConfigurationAction.getColumn().setText(name);
 		colLaunchConfigurationAction.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				LaunchConfigurationBean lcb = (LaunchConfigurationBean) element;
+				LaunchConfigurationModel lcb = (LaunchConfigurationModel) element;
 				return actionTextFetcher.apply(lcb);
 			}
 		});
@@ -363,7 +363,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		List<String> postLaunchActions = new ArrayList<>();
 		List<String> params = new ArrayList<>();
 
-		for (LaunchConfigurationBean launchConfigurationBean : launchConfigurationDataList) {
+		for (LaunchConfigurationModel launchConfigurationBean : launchConfigurationDataList) {
 			names.add(launchConfigurationBean.getName());
 			modes.add(launchConfigurationBean.getMode());
 			postLaunchActions.add(launchConfigurationBean.getPostLaunchAction());
@@ -402,15 +402,15 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		return false;
 	}
 
-	private void validateRecursive(String rootLaunchName, String firstLevelChildLaunchName, List<LaunchConfigurationBean> launchConfigurationBeans) throws CoreException {
-		for (LaunchConfigurationBean launchConfigurationBean : launchConfigurationBeans) {
+	private void validateRecursive(String rootLaunchName, String firstLevelChildLaunchName, List<LaunchConfigurationModel> launchConfigurationBeans) throws CoreException {
+		for (LaunchConfigurationModel launchConfigurationBean : launchConfigurationBeans) {
 			if (rootLaunchName.equals(launchConfigurationBean.getName())) {
 				throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, firstLevelChildLaunchName));
 			}
 
 			ILaunchConfiguration childLaunchConfiguration = LaunchUtils.findLaunchConfiguration(launchConfigurationBean.getName());
 			if (childLaunchConfiguration != null) {
-				List<LaunchConfigurationBean> childLaunchConfigurationBeans = LaunchUtils.loadLaunchConfigurations(childLaunchConfiguration);
+				List<LaunchConfigurationModel> childLaunchConfigurationBeans = LaunchUtils.loadLaunchConfigurations(childLaunchConfiguration);
 				String childLaunchName = launchConfigurationBean.getName();
 
 				validateRecursive(rootLaunchName, firstLevelChildLaunchName == null ? childLaunchName : firstLevelChildLaunchName, childLaunchConfigurationBeans);

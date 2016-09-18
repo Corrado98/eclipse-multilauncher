@@ -1,10 +1,10 @@
 package ch.parisi.e4.advancedlaunch;
 
 /**
- * Bean-class which contains user-defined information 
- * of one launch within a custom-configuration.
+ * Class which contains user-defined information 
+ * of one launch, within a custom-configuration.
  */
-public class LaunchConfigurationBean {
+public class LaunchConfigurationModel {
 	private String name;
 	private String mode;
 	private String param;
@@ -14,7 +14,15 @@ public class LaunchConfigurationBean {
 	 */
 	private String postLaunchAction;
 	
-	public LaunchConfigurationBean(String name, String mode, String postLaunchAction, String param) {
+	/**
+	 * Constructs a {@code LaunchConfigurationModel} with the required arguments.
+	 * 
+	 * @param name the launch-name of the selected launch
+	 * @param mode the chosen launch-mode
+	 * @param postLaunchAction the chosen postLaunchAction
+	 * @param param the chosen runtime-parameter
+	 */
+	public LaunchConfigurationModel(String name, String mode, String postLaunchAction, String param) {
 		this.name = name;
 		this.mode = mode;
 		this.postLaunchAction = postLaunchAction;

@@ -40,16 +40,16 @@ public class LaunchUtils {
 	 * custom-launch into a list.
 	 * 
 	 * @param configuration the custom-launch. <b>Cannot</b> be {@code null}.
-	 * @return the sublaunches as a list of {@link LaunchConfigurationBean}s.
+	 * @return the sublaunches as a list of {@link LaunchConfigurationModel}s.
 	 * @throws CoreException
 	 */
-	public static List<LaunchConfigurationBean> loadLaunchConfigurations(ILaunchConfiguration configuration) throws CoreException {
+	public static List<LaunchConfigurationModel> loadLaunchConfigurations(ILaunchConfiguration configuration) throws CoreException {
 		List<String> names = new ArrayList<>();
 		List<String> modes = new ArrayList<>();
 		List<String> postLaunchActions = new ArrayList<>();
 		List<String> params = new ArrayList<>();
 
-		List<LaunchConfigurationBean> launchConfigurationDataList = new ArrayList<>();
+		List<LaunchConfigurationModel> launchConfigurationDataList = new ArrayList<>();
 
 		names = configuration.getAttribute("names", new ArrayList<String>());
 		modes = configuration.getAttribute("modes", new ArrayList<String>());
@@ -57,7 +57,7 @@ public class LaunchUtils {
 		params = configuration.getAttribute("params", new ArrayList<String>());
 
 		for (int i = 0; i < names.size(); i++) {
-			launchConfigurationDataList.add(new LaunchConfigurationBean(names.get(i), modes.get(i), postLaunchActions.get(i), params.get(i)));
+			launchConfigurationDataList.add(new LaunchConfigurationModel(names.get(i), modes.get(i), postLaunchActions.get(i), params.get(i)));
 		}
 		return launchConfigurationDataList;
 	}
@@ -73,15 +73,15 @@ public class LaunchUtils {
 	 * nesting depth.
 	 * @throws CoreException
 	 */
-	public static boolean isRecursiveLaunchConfiguration(String launchName, List<LaunchConfigurationBean> launchConfigurationBeans) throws CoreException {
-		for (LaunchConfigurationBean launchConfigurationBean : launchConfigurationBeans) {
+	public static boolean isRecursiveLaunchConfiguration(String launchName, List<LaunchConfigurationModel> launchConfigurationBeans) throws CoreException {
+		for (LaunchConfigurationModel launchConfigurationBean : launchConfigurationBeans) {
 			if (launchName.equals(launchConfigurationBean.getName())) {
 				return true;
 			}
 
 			ILaunchConfiguration childLaunchConfiguration = LaunchUtils.findLaunchConfiguration(launchConfigurationBean.getName());
 			if (childLaunchConfiguration != null) {
-				List<LaunchConfigurationBean> childLaunchConfigurationBeans = LaunchUtils.loadLaunchConfigurations(childLaunchConfiguration);
+				List<LaunchConfigurationModel> childLaunchConfigurationBeans = LaunchUtils.loadLaunchConfigurations(childLaunchConfiguration);
 				if (isRecursiveLaunchConfiguration(launchName, childLaunchConfigurationBeans)) {
 					return true;
 				}
