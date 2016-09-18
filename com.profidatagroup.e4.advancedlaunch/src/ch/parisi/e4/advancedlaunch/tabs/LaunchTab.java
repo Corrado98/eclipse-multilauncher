@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Table;
 import ch.parisi.e4.advancedlaunch.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.LaunchUtils;
+import ch.parisi.e4.advancedlaunch.PostLaunchAction;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
@@ -124,7 +125,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 					launchConfigurationDataList
 							.add(new LaunchConfigurationModel(multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(), multiLaunchConfigurationSelectionDialog.getMode(),
-									PostLaunchActionUtils.convertToName(multiLaunchConfigurationSelectionDialog.getAction()), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
+									multiLaunchConfigurationSelectionDialog.getAction(), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
 
 					if (launchConfigurationDataList != null) {
 						tableViewer.setInput(launchConfigurationDataList);
@@ -179,7 +180,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 			launchConfigurationDataList.add(launchConfigurationDataList.indexOf(selectedConfiguration),
 					new LaunchConfigurationModel(configuration.getName(), multiLaunchConfigurationSelectionDialog.getMode(),
-							PostLaunchActionUtils.convertToName(multiLaunchConfigurationSelectionDialog.getAction()), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
+							multiLaunchConfigurationSelectionDialog.getAction(), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
 			launchConfigurationDataList.remove(selectedConfiguration);
 
 			if (launchConfigurationDataList != null) {
@@ -194,7 +195,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void loadExistingConfigurationData(MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(true);
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
-		multiLaunchConfigurationSelectionDialog.setAction(PostLaunchActionUtils.convertToPostLaunchAction(selectedConfiguration.getPostLaunchAction()));
+		multiLaunchConfigurationSelectionDialog.setAction(selectedConfiguration.getPostLaunchAction());
 		multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
 	}
 
@@ -311,7 +312,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		addTableColumn("Mode", 175, lcb -> lcb.getMode());
 
 		// create a column for the launchconfiguration POST-ACTION
-		addTableColumn("Action", 175, lcb -> lcb.getPostLaunchAction());
+		addTableColumn("Action", 175, lcb -> PostLaunchActionUtils.convertToName(lcb.getPostLaunchAction()));
 
 		// create a column for the launchconfiguration PARAM
 		addTableColumn("Param", 120, lcb -> lcb.getParam());
@@ -366,7 +367,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		for (LaunchConfigurationModel launchConfigurationModel : launchConfigurationDataList) {
 			names.add(launchConfigurationModel.getName());
 			modes.add(launchConfigurationModel.getMode());
-			postLaunchActions.add(launchConfigurationModel.getPostLaunchAction());
+			postLaunchActions.add(PostLaunchActionUtils.convertToName(launchConfigurationModel.getPostLaunchAction()));
 			params.add(launchConfigurationModel.getParam());
 		}
 

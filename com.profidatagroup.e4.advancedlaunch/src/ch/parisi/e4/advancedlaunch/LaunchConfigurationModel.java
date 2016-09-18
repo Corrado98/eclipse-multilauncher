@@ -12,7 +12,7 @@ public class LaunchConfigurationModel {
 	/**
 	 * {@link PostLaunchAction}.
 	 */
-	private String postLaunchAction;
+	private PostLaunchAction postLaunchAction;
 	
 	/**
 	 * Constructs a {@code LaunchConfigurationModel} with the required arguments.
@@ -22,7 +22,7 @@ public class LaunchConfigurationModel {
 	 * @param postLaunchAction the chosen postLaunchAction
 	 * @param param the chosen runtime-parameter
 	 */
-	public LaunchConfigurationModel(String name, String mode, String postLaunchAction, String param) {
+	public LaunchConfigurationModel(String name, String mode, PostLaunchAction postLaunchAction, String param) {
 		this.name = name;
 		this.mode = mode;
 		this.postLaunchAction = postLaunchAction;
@@ -41,10 +41,10 @@ public class LaunchConfigurationModel {
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
-	public String getPostLaunchAction() {
+	public PostLaunchAction getPostLaunchAction() {
 		return postLaunchAction;
 	}
-	public void setPostLaunchAction(String postLaunchAction) {
+	public void setPostLaunchAction(PostLaunchAction postLaunchAction) {
 		this.postLaunchAction = postLaunchAction;
 	}
 	public String getParam() {

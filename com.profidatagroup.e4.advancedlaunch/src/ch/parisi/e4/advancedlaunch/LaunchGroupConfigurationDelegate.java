@@ -21,15 +21,15 @@ import ch.parisi.e4.advancedlaunch.strategies.WaitForTerminationStrategy;
  */
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
 
-	
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
 		/*
-		 * This method iterates through all user-selected configurations and starts
-		 * them.
+		 * This method iterates through all user-selected configurations and
+		 * starts them.
 		 */
-		List<LaunchConfigurationModel> launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
+		List<LaunchConfigurationModel> launchConfigurationDataList = LaunchUtils
+				.loadLaunchConfigurations(configuration);
 
 		for (LaunchConfigurationModel model : launchConfigurationDataList) {
 			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(model.getName());
@@ -37,33 +37,36 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 				AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(model);
 				launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
 			}
-			//launchConfiguration can never be null, since an invalid launch cannot be runned. 
+			// launchConfiguration can never be null, since an invalid launch
+			// cannot be runned.
 		}
 	}
 
 	/**
-	 * Creates the waiting-strategy each configuration has to follow.
-	 * The strategy that has to be created, is based on the {@code postLaunchAction}-field of the {@link LaunchConfigurationModel}.
+	 * Creates the waiting-strategy each configuration has to follow. The
+	 * strategy that has to be created, is based on the
+	 * {@code postLaunchAction}-field of the {@link LaunchConfigurationModel}.
 	 * 
-	 * @param launchConfigurationModel the model which stores the postLaunchAction-attribute
+	 * @param launchConfigurationModel
+	 *            the model which stores the postLaunchAction-attribute
 	 * @return the strategy to follow
 	 */
 	private AbstractLaunchStrategy createLaunchAndWaitStrategy(LaunchConfigurationModel launchConfigurationModel) {
 		switch (launchConfigurationModel.getPostLaunchAction()) {
-		case "Wait until terminated":
+		case WAIT_FOR_TERMINATION:
 			return new WaitForTerminationStrategy();
 
-		case "Delay":
+		case DELAY:
 			return new DelayStrategy(Integer.parseInt(launchConfigurationModel.getParam()));
 
-		case "Wait for Console-String":
+		case WAIT_FOR_CONSOLESTRING:
 			return new ReadConsoleTextStrategy(launchConfigurationModel.getParam());
 
-		case "None":
+		case NONE:
 			return new EmptyStrategy();
 		}
 
-		throw new IllegalArgumentException(
-				"Unknown launch and wait strategy: " + launchConfigurationModel.getPostLaunchAction());
+		throw new IllegalArgumentException("Unknown launch and wait strategy: "
+				+ PostLaunchActionUtils.convertToName(launchConfigurationModel.getPostLaunchAction()));
 	}
 }

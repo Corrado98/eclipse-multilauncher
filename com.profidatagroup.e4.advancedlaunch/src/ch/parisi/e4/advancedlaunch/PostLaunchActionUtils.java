@@ -15,8 +15,8 @@ import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialo
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
 /**
- * This is a helper class for the {@link MultiLaunchConfigurationSelectionDialog}.
- * It contains the enum with the postLaunchActions: {@link PostLaunchAction}.
+ * Utility class for the {@link MultiLaunchConfigurationSelectionDialog}.
+ * It contains methods for: {@link PostLaunchAction}.
  * 
  * This class was taken from CDT and was modified by the author of this project.
  */
