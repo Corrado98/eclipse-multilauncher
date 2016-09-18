@@ -363,11 +363,11 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		List<String> postLaunchActions = new ArrayList<>();
 		List<String> params = new ArrayList<>();
 
-		for (LaunchConfigurationModel launchConfigurationBean : launchConfigurationDataList) {
-			names.add(launchConfigurationBean.getName());
-			modes.add(launchConfigurationBean.getMode());
-			postLaunchActions.add(launchConfigurationBean.getPostLaunchAction());
-			params.add(launchConfigurationBean.getParam());
+		for (LaunchConfigurationModel launchConfigurationModel : launchConfigurationDataList) {
+			names.add(launchConfigurationModel.getName());
+			modes.add(launchConfigurationModel.getMode());
+			postLaunchActions.add(launchConfigurationModel.getPostLaunchAction());
+			params.add(launchConfigurationModel.getParam());
 		}
 
 		configuration.setAttribute("names", names);
