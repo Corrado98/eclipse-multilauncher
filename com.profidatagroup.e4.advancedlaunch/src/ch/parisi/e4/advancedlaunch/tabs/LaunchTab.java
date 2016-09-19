@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -205,20 +206,23 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = tableViewer.getStructuredSelection();
-				Object selectedElement = selection.getFirstElement();
-				selectedConfiguration = (LaunchConfigurationModel) selectedElement;
-
-				if (selectedElement != null) {
-					btnRemove.setEnabled(true);
-					btnUp.setEnabled(true);
-					btnDown.setEnabled(true);
-					btnEdit.setEnabled(true);
-				} else {
-					btnRemove.setEnabled(false);
-					btnUp.setEnabled(false);
-					btnDown.setEnabled(false);
-					btnEdit.setEnabled(false);
+				ISelection selection = tableViewer.getSelection();
+				if (selection instanceof IStructuredSelection) {
+					IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+					Object selectedElement = structuredSelection.getFirstElement();
+					selectedConfiguration = (LaunchConfigurationModel) selectedElement;
+					
+					if (selectedElement != null) {
+						btnRemove.setEnabled(true);
+						btnUp.setEnabled(true);
+						btnDown.setEnabled(true);
+						btnEdit.setEnabled(true);
+					} else {
+						btnRemove.setEnabled(false);
+						btnUp.setEnabled(false);
+						btnDown.setEnabled(false);
+						btnEdit.setEnabled(false);
+					}
 				}
 			}
 		});

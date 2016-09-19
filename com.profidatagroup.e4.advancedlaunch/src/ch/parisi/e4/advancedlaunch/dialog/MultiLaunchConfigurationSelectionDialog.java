@@ -270,8 +270,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		DataBindingContext dbc = new DataBindingContext();
 
 		// create the observables, which should be bound
-		IObservableValue<Text> fDelayAmountWidgetTarget = WidgetProperties.text(SWT.Modify).observe(paramTextWidget);
-		IObservableValue<Object> actionParamModel = PojoProperties.value("actionParam").observe(this);
+		IObservableValue fDelayAmountWidgetTarget = WidgetProperties.text(SWT.Modify).observe(paramTextWidget);
+		IObservableValue actionParamModel = PojoProperties.value("actionParam").observe(this);
 
 		// bind observables together
 		dbc.bindValue(fDelayAmountWidgetTarget, actionParamModel);
