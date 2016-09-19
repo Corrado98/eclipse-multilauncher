@@ -11,6 +11,7 @@
  *******************************************************************************/
 package ch.parisi.e4.advancedlaunch.dialog;
 
+import java.awt.Window;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -72,7 +73,7 @@ import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
  * Dialog to select launch configuration(s)
  * This class was taken from CDT and was modified by the author of this project.
  */
-public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog implements ISelectionChangedListener {
+public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog implements ISelectionChangedListener, IDoubleClickListener {
 	private LaunchConfigurationFilteredTree fTree;
 	private ViewerFilter[] filters = null;
 	private ISelection fSelection;
@@ -172,6 +173,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 			}
 			fTree.getViewer().addFilter(emptyTypeFilter);
 			fTree.getViewer().addSelectionChangedListener(this);
+			fTree.getViewer().addDoubleClickListener(this);
 
 			if (launchGroup.getMode().equals(this.mode)) {
 				stackComposite.setSelection(mode);
@@ -426,5 +428,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 
 	public void setInitialSelection(ILaunchConfiguration launchConfiguration) {
 		fInitialSelection = new StructuredSelection(launchConfiguration);
+	}
+
+	@Override
+	public void doubleClick(DoubleClickEvent event) {
+		okPressed();
 	}
 }
