@@ -394,6 +394,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		boolean isValid = true;
 
 		if (isValid) {
+			setErrorMessage(null);
 			if (action == PostLaunchAction.DELAY) {
 				isValid = (actionParam instanceof Integer) && ((Integer) actionParam > 0);
 				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10);
