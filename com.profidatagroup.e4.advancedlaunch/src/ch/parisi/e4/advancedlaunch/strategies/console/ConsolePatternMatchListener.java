@@ -11,38 +11,34 @@ public class ConsolePatternMatchListener implements IPatternMatchListener {
 	public ConsolePatternMatchListener(String checkRegex) {
 		this.checkRegex = checkRegex;
 	}
-
-	@Override
-	public void connect(TextConsole console) {
-	}
-
-	@Override
-	public void disconnect() {
-	}
-
+	
 	@Override
 	public void matchFound(PatternMatchEvent event) {
 		consoleStringDetected = true;
-		System.out.println("NEXT CONFIGURATION STARTED!");
 	}
 
 	@Override
 	public String getPattern() {
-		return checkRegex; /*".*successfully.*"*/
-	}
-
-	@Override
-	public int getCompilerFlags() {
-		return 0;
-	}
-
-	@Override
-	public String getLineQualifier() {
-		return null;
+		// e.g:  .*successfully.*
+		return checkRegex; 
 	}
 	
 	public boolean getConsoleStringDetected() {
 		return consoleStringDetected;
 	}
-
+	
+	@Override
+	public void connect(TextConsole console) {
+	}
+	@Override
+	public void disconnect() {
+	}
+	@Override
+	public int getCompilerFlags() {
+		return 0;
+	}
+	@Override
+	public String getLineQualifier() {
+		return null;
+	}
 }
