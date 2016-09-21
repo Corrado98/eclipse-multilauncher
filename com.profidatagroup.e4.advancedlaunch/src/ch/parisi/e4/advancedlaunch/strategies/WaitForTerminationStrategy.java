@@ -13,6 +13,9 @@ import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 
+/**
+ * Waits for launch to be terminated. 
+ */
 public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 
 	private List<Set<IProcess>> processesToWait = Collections.synchronizedList(new ArrayList<>());

@@ -11,7 +11,6 @@
  *******************************************************************************/
 package ch.parisi.e4.advancedlaunch.dialog;
 
-import java.awt.Window;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -31,13 +30,11 @@ import org.eclipse.debug.ui.ILaunchGroup;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -55,18 +52,16 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
-import ch.parisi.e4.advancedlaunch.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.PostLaunchAction;
+import ch.parisi.e4.advancedlaunch.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
 /**
@@ -74,10 +69,11 @@ import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
  * This class was taken from CDT and was modified by the author of this project.
  */
 public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog implements ISelectionChangedListener, IDoubleClickListener {
+	//implements Listener destroys encapsulation, because anyone could add this class as a Listener! 
 	private LaunchConfigurationFilteredTree fTree;
 	private ViewerFilter[] filters = null;
 	private ISelection fSelection;
-	private String mode = "run";
+	private String mode = "run"; // TODO make enum for mode
 	private PostLaunchAction action = PostLaunchAction.NONE;
 	private Object actionParam;
 	private ViewerFilter emptyTypeFilter;
@@ -343,6 +339,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	public ISelection getfSelection() {
 		return fSelection;
 	}
+	
+	public void setInitialSelection(ILaunchConfiguration launchConfiguration) {
+		fInitialSelection = new StructuredSelection(launchConfiguration);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -407,31 +407,42 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 				}
 				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10_2);
 			}
-			
+
 			if (fSelection == null) {
 				//nothing selected
 				isValid = false;
 			}
-			
-			IStructuredSelection selection = (IStructuredSelection) fSelection;
-			if (selection != null) {
-				if (selection.getFirstElement() instanceof ILaunchConfigurationType) {
-					//launchconfigurationtype selected
-					isValid = false;
-				}
-			}
+
+			isValid = isLaunchConfigurationTypeSelected();
 		}
 
-		if (btnOk != null)
+		if (btnOk != null) {
 			btnOk.setEnabled(isValid);
-	}
-
-	public void setInitialSelection(ILaunchConfiguration launchConfiguration) {
-		fInitialSelection = new StructuredSelection(launchConfiguration);
+		}
 	}
 
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
-		okPressed();
+		/*
+		 * this method catches ENTER-PRESSED as well.
+		 */
+
+		boolean isValid = true;
+		isValid = isLaunchConfigurationTypeSelected();
+		if (isValid) {
+			okPressed();
+		}
+	}
+	
+	private boolean isLaunchConfigurationTypeSelected() {
+		boolean isValid = true;
+		IStructuredSelection selection = (IStructuredSelection) fSelection;
+		if (selection != null) {
+			if (selection.getFirstElement() instanceof ILaunchConfigurationType) {
+				//launchconfigurationtype selected
+				isValid = false;
+			}
+		}
+		return isValid;
 	}
 }

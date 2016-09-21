@@ -1,8 +1,5 @@
 package ch.parisi.e4.advancedlaunch.strategies;
 
-import java.util.Arrays;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IProcess;
@@ -16,7 +13,7 @@ import ch.parisi.e4.advancedlaunch.strategies.console.ConsolePatternMatchListene
 import ch.parisi.e4.advancedlaunch.strategies.console.ConsoleRemoveListener;
 
 /**
- * Launches a {@link ILaunchConfiguration} and waits for a regular expression in the console.
+ * Reads the output of all consoles and waits for a regular expression.
  */
 public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 	

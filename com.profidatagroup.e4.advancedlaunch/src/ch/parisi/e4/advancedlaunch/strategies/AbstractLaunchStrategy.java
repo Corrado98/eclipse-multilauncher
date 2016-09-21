@@ -9,7 +9,7 @@ public abstract class AbstractLaunchStrategy {
 	/**
 	 * Launches the specified {@link ILaunchConfiguration} in the given <code>mode</code> and waits until the conditions of this strategy are met.
 	 * 
-	 * This method will only return when conditions of this strategy are met.
+	 * This method will only return when the conditions of this strategy are met.
 	 * 
 	 * @param launchConfiguration the {@link ILaunchConfiguration}
 	 * @param mode the launch mode, see {@link org.eclipse.debug.core.ILaunchManager}
@@ -27,7 +27,7 @@ public abstract class AbstractLaunchStrategy {
 	/**
 	 * Waits until the conditions of this strategy are met.
 	 * 
-	 * This method will only return when conditions of this strategy are met.
+	 * This method will only return when the conditions of this strategy are met.
 	 * 
 	 * @param launch the {@link ILaunch} to wait for
 	 * @param param the runtime parameter for this strategy (e.g. delay time)

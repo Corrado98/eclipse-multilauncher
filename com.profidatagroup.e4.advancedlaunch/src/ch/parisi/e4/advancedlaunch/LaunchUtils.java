@@ -73,7 +73,7 @@ public class LaunchUtils {
 	 * 
 	 * @param launchName
 	 *            the name of the custom-launch
-	 * @param launchConfigurationBeans
+	 * @param launchConfigurationModels
 	 *            the childlaunches of the custom-launch
 	 * @return {@code true} if an infinite-loop is detected within a custom
 	 *         launch. {@code false} if no infinite-loop is ever detected at any
@@ -81,8 +81,8 @@ public class LaunchUtils {
 	 * @throws CoreException
 	 */
 	public static boolean isRecursiveLaunchConfiguration(String launchName,
-			List<LaunchConfigurationModel> launchConfigurationBeans) throws CoreException {
-		for (LaunchConfigurationModel launchConfigurationBean : launchConfigurationBeans) {
+			List<LaunchConfigurationModel> launchConfigurationModels) throws CoreException {
+		for (LaunchConfigurationModel launchConfigurationBean : launchConfigurationModels) {
 			if (launchName.equals(launchConfigurationBean.getName())) {
 				return true;
 			}
@@ -90,9 +90,9 @@ public class LaunchUtils {
 			ILaunchConfiguration childLaunchConfiguration = LaunchUtils
 					.findLaunchConfiguration(launchConfigurationBean.getName());
 			if (childLaunchConfiguration != null) {
-				List<LaunchConfigurationModel> childLaunchConfigurationBeans = LaunchUtils
+				List<LaunchConfigurationModel> childLaunchConfigurationModels = LaunchUtils
 						.loadLaunchConfigurations(childLaunchConfiguration);
-				if (isRecursiveLaunchConfiguration(launchName, childLaunchConfigurationBeans)) {
+				if (isRecursiveLaunchConfiguration(launchName, childLaunchConfigurationModels)) {
 					return true;
 				}
 			}
