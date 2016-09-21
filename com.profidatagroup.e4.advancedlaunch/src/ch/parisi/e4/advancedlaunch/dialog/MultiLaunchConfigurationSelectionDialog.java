@@ -68,7 +68,8 @@ import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
  * Dialog to select launch configuration(s)
  * This class was taken from CDT and was modified by the author of this project.
  */
-public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog implements ISelectionChangedListener, IDoubleClickListener {
+public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog
+		implements ISelectionChangedListener, IDoubleClickListener {
 	//implements Listener destroys encapsulation, because anyone could add this class as a Listener! 
 	private LaunchConfigurationFilteredTree fTree;
 	private ViewerFilter[] filters = null;
@@ -81,6 +82,12 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	private ComboControlledStackComposite stackComposite;
 	private Label paramLabel;
 	private Text paramTextWidget;
+
+	/**
+	 * <code>true</code> if the OK-button (btnOk) is enabled.
+	 * 
+	 */
+	private boolean isValid;
 
 	/**
 	 * <code>true</code> if the dialog was opened to <b>edit</b> an entry,
@@ -141,10 +148,12 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		Composite comp = (Composite) super.createDialogArea(parent2);
 
 		// title bar
-		getShell().setText(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_13 : LaunchMessages.LaunchGroupConfigurationSelectionDialog_12);
+		getShell().setText(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_13
+				: LaunchMessages.LaunchGroupConfigurationSelectionDialog_12);
 
 		// dialog message area (not title bar)
-		setTitle(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_15 : LaunchMessages.LaunchGroupConfigurationSelectionDialog_14);
+		setTitle(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_15
+				: LaunchMessages.LaunchGroupConfigurationSelectionDialog_14);
 
 		stackComposite = new ComboControlledStackComposite(comp, SWT.NONE);
 		HashMap<String, ILaunchGroup> modes = new HashMap<String, ILaunchGroup>();
@@ -158,7 +167,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		for (Iterator<String> iterator = modes.keySet().iterator(); iterator.hasNext();) {
 			String mode = iterator.next();
 			ILaunchGroup launchGroup = modes.get(mode);
-			fTree = new LaunchConfigurationFilteredTree(stackComposite.getStackParent(), SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), launchGroup, filters);
+			fTree = new LaunchConfigurationFilteredTree(stackComposite.getStackParent(),
+					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), launchGroup, filters);
 			stackComposite.addItem(mode, fTree);
 			fTree.createViewControl();
 			ViewerFilter[] filters = fTree.getViewer().getFilters();
@@ -339,7 +349,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 	public ISelection getfSelection() {
 		return fSelection;
 	}
-	
+
 	public void setInitialSelection(ILaunchConfiguration launchConfiguration) {
 		fInitialSelection = new StructuredSelection(launchConfiguration);
 	}
@@ -393,27 +403,30 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 
 	protected void validate() {
 		Button btnOk = getButton(IDialogConstants.OK_ID);
-		boolean isValid = true;
+		isValid = true;
 
 		if (isValid) {
 			setErrorMessage(null);
 			if (action == PostLaunchAction.DELAY) {
-				isValid = (actionParam instanceof Integer) && ((Integer) actionParam > 0);
-				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10);
-			}
-			if (action == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
-				if (actionParam.toString().isEmpty()) {
+				try {
+					isValid = ((Integer.parseInt(actionParam.toString()) > 0));
+				} catch (Exception e) {
 					isValid = false;
+					setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10);
 				}
+			} else if (action == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+				isValid = (!String.valueOf(actionParam).trim().isEmpty());
 				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10_2);
 			}
-
 			if (fSelection == null) {
-				//nothing selected
 				isValid = false;
+			} else {
+				IStructuredSelection selection = (IStructuredSelection) fSelection;
+				if (selection.getFirstElement() instanceof ILaunchConfigurationType) {
+					isValid = false;
+					setErrorMessage(isValid ? null : "Choose a Launch-Configuration");
+				}
 			}
-
-			isValid = isLaunchConfigurationTypeSelected();
 		}
 
 		if (btnOk != null) {
@@ -426,23 +439,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog imp
 		/*
 		 * this method catches ENTER-PRESSED as well.
 		 */
-
-		boolean isValid = true;
-		isValid = isLaunchConfigurationTypeSelected();
+		validate();
 		if (isValid) {
 			okPressed();
 		}
-	}
-	
-	private boolean isLaunchConfigurationTypeSelected() {
-		boolean isValid = true;
-		IStructuredSelection selection = (IStructuredSelection) fSelection;
-		if (selection != null) {
-			if (selection.getFirstElement() instanceof ILaunchConfigurationType) {
-				//launchconfigurationtype selected
-				isValid = false;
-			}
-		}
-		return isValid;
+
 	}
 }

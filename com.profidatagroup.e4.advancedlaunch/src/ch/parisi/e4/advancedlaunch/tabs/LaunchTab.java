@@ -81,7 +81,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void initTableViewer() {
-		tableViewer = new TableViewer(mainComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		tableViewer = new TableViewer(mainComposite,
+				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
@@ -121,13 +122,16 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			@Override
 			public void handleEvent(Event event) {
 				// TODO extract into method
-				MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(getShell());
+				MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
+						getShell());
 				initAddConfigurationSelectionDialog(multiLaunchConfigurationSelectionDialog);
 
 				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
-					launchConfigurationDataList
-							.add(new LaunchConfigurationModel(multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(), multiLaunchConfigurationSelectionDialog.getMode(),
-									multiLaunchConfigurationSelectionDialog.getAction(), String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
+					launchConfigurationDataList.add(new LaunchConfigurationModel(
+							multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(),
+							multiLaunchConfigurationSelectionDialog.getMode(),
+							multiLaunchConfigurationSelectionDialog.getAction(),
+							String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
 
 					if (launchConfigurationDataList != null) {
 						updateDirtyModel();
@@ -145,7 +149,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		updateLaunchConfigurationDialog();
 	}
 
-	private void initAddConfigurationSelectionDialog(MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
+	private void initAddConfigurationSelectionDialog(
+			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(false);
 		multiLaunchConfigurationSelectionDialog.setMode("debug");
 		multiLaunchConfigurationSelectionDialog.setAction(PostLaunchAction.NONE);
@@ -166,25 +171,27 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void editLaunchConfiguration() {
-		MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(getShell());
+		MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
+				getShell());
 		loadExistingConfigurationData(multiLaunchConfigurationSelectionDialog);
 
 		ILaunchConfiguration launchConfiguration;
 		try {
 			launchConfiguration = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
-
-			if (LaunchUtils.isValidLaunchReference(launchConfiguration)) {
-				multiLaunchConfigurationSelectionDialog.setInitialSelection(launchConfiguration);
+			if (launchConfiguration != null) {
+				if (LaunchUtils.isValidLaunchReference(launchConfiguration)) {
+					multiLaunchConfigurationSelectionDialog.setInitialSelection(launchConfiguration);
+				}
 			}
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 
 		if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
-			ILaunchConfiguration configuration = multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration();
+			ILaunchConfiguration configuration = multiLaunchConfigurationSelectionDialog
+					.getSelectedLaunchConfiguration();
 
-			LaunchConfigurationModel model = new LaunchConfigurationModel(
-					configuration.getName(),
+			LaunchConfigurationModel model = new LaunchConfigurationModel(configuration.getName(),
 					multiLaunchConfigurationSelectionDialog.getMode(),
 					multiLaunchConfigurationSelectionDialog.getAction(),
 					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
@@ -196,7 +203,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 
-	private void loadExistingConfigurationData(MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
+	private void loadExistingConfigurationData(
+			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(true);
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog.setAction(selectedConfiguration.getPostLaunchAction());
@@ -295,7 +303,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		addTableColumn("Mode", 175, launchConfigurationModel -> launchConfigurationModel.getMode());
 
 		// create a column for the launchconfiguration POST-ACTION
-		addTableColumn("Action", 175, launchConfigurationModel -> PostLaunchActionUtils.convertToName(launchConfigurationModel.getPostLaunchAction()));
+		addTableColumn("Action", 175, launchConfigurationModel -> PostLaunchActionUtils
+				.convertToName(launchConfigurationModel.getPostLaunchAction()));
 
 		// create a column for the launchconfiguration PARAM
 		addTableColumn("Param", 120, launchConfigurationModel -> launchConfigurationModel.getParam());
@@ -386,24 +395,35 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		return false;
 	}
 
-	private void validateRecursive(String rootLaunchName, String firstLevelChildLaunchName, List<LaunchConfigurationModel> launchConfigurationDataList) throws CoreException {
+	private void validateRecursive(String rootLaunchName, String firstLevelChildLaunchName,
+			List<LaunchConfigurationModel> launchConfigurationDataList) throws CoreException {
 		for (LaunchConfigurationModel launchConfigurationModel : launchConfigurationDataList) {
 			if (rootLaunchName.equals(launchConfigurationModel.getName())) {
-				throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, firstLevelChildLaunchName));
+				throw new LaunchValidationException(MessageFormat
+						.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, 
+								firstLevelChildLaunchName == null
+								? launchConfigurationModel.getName() : firstLevelChildLaunchName));
 			}
 
-			ILaunchConfiguration childLaunchConfiguration = LaunchUtils.findLaunchConfiguration(launchConfigurationModel.getName());
+			ILaunchConfiguration childLaunchConfiguration = LaunchUtils
+					.findLaunchConfiguration(launchConfigurationModel.getName());
 			if (childLaunchConfiguration != null) {
-				List<LaunchConfigurationModel> childLaunchConfigurationModels = LaunchUtils.loadLaunchConfigurations(childLaunchConfiguration);
+				List<LaunchConfigurationModel> childLaunchConfigurationModels = LaunchUtils
+						.loadLaunchConfigurations(childLaunchConfiguration);
 				String childLaunchName = launchConfigurationModel.getName();
 
-				validateRecursive(rootLaunchName, firstLevelChildLaunchName == null ? childLaunchName : firstLevelChildLaunchName, childLaunchConfigurationModels);
+				validateRecursive(rootLaunchName,
+						firstLevelChildLaunchName == null ? childLaunchName : firstLevelChildLaunchName,
+						childLaunchConfigurationModels);
 			} else {
 				//invalid launch-reference
 				if (firstLevelChildLaunchName == null) {
-					throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_NotFound, launchConfigurationModel.getName()));
+					throw new LaunchValidationException(MessageFormat.format(
+							LaunchMessages.LaunchGroupConfiguration_NotFound, launchConfigurationModel.getName()));
 				} else {
-					throw new LaunchValidationException(MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_RecursiveNotFound, firstLevelChildLaunchName, launchConfigurationModel.getName()));
+					throw new LaunchValidationException(
+							MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_RecursiveNotFound,
+									firstLevelChildLaunchName, launchConfigurationModel.getName()));
 				}
 			}
 		}
