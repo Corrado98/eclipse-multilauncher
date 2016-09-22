@@ -34,6 +34,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
+
 		/*
 		 * This method iterates through all user-selected configurations and
 		 * starts them.
@@ -42,25 +43,23 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		List<LaunchConfigurationModel> launchConfigurationDataList = LaunchUtils
 				.loadLaunchConfigurations(configuration);
 
-		for (LaunchConfigurationModel model : launchConfigurationDataList) {
-			//isIterating = true;
-			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(model.getName());
-			if (launchConfiguration != null) {
-				AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(model);
-				launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
-			}
-			// launchConfiguration can never be null, since an invalid launch
-			// cannot be runned.
+		for (LaunchConfigurationModel model : launchConfigurationDataList) {	
+				//isIterating = true;
+				ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(model.getName());
+				if (launchConfiguration != null) {
+					AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(model);
+					launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
+				}
+				// launchConfiguration can never be null, since an invalid launch
+				// cannot be runned.
 		}
 
 		//DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
-		
-		MockProcess process = new MockProcess(launch);
+
+		PseudoProcess process = new PseudoProcess(launch);
 		launch.addProcess(process);
 		process.terminate();
 	}
-
-	
 
 	/**
 	 * Creates the waiting-strategy each configuration has to follow. The

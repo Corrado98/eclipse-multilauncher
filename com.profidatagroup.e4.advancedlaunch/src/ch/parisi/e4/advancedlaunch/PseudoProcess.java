@@ -9,11 +9,11 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.internal.core.DebugCoreMessages;
 
-public class MockProcess implements IProcess {
+public class PseudoProcess implements IProcess {
 
 		private ILaunch launch;
 
-		public MockProcess(ILaunch launch) {
+		public PseudoProcess(ILaunch launch) {
 			this.launch = launch;
 		}
 
@@ -34,31 +34,8 @@ public class MockProcess implements IProcess {
 
 		@Override
 		public void terminate() throws DebugException {
-			MultiStatus status = new MultiStatus(DebugPlugin.getUniqueIdentifier(), DebugException.REQUEST_FAILED,
-					DebugCoreMessages.Launch_terminate_failed, null);
-			//stop targets first to free up and sockets, etc held by the target
-			// terminate or disconnect debug target if it is still alive
-			IDebugTarget[] targets = launch.getDebugTargets();
-			for (int i = 0; i < targets.length; i++) {
-				IDebugTarget target = targets[i];
-				if (target != null) {
-					if (target.canTerminate()) {
-						try {
-							target.terminate();
-						} catch (DebugException e) {
-							status.merge(e.getStatus());
-						}
-					} else {
-						if (target.canDisconnect()) {
-							try {
-								target.disconnect();
-							} catch (DebugException de) {
-								status.merge(de.getStatus());
-							}
-						}
-					}
-				}
-			}
+			//TODO remove all sublaunches. 
+			//LaunchGroupConfigurationDelegate.terminateAllConfigurationsButtonPressed = true;
 		}
 
 		@Override
