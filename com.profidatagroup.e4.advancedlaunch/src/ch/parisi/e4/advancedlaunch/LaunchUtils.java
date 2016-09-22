@@ -71,37 +71,6 @@ public class LaunchUtils {
 	}
 
 	/**
-	 * Checks recursively if a custom-launch would cause an
-	 * infinite-loop.
-	 * 
-	 * @param launchName the name of the custom-launch
-	 * @param launchConfigurationModels the childlaunches of the custom-launch
-	 * @return {@code true} if an infinite-loop is detected within a custom-launch. 
-	 * 		   {@code false} if no infinite-loop is ever detected at any nesting depth.
-	 * @throws CoreException
-	 */
-	public static boolean isRecursiveLaunchConfiguration(String launchName,
-			List<LaunchConfigurationModel> launchConfigurationModels) throws CoreException {
-		for (LaunchConfigurationModel launchConfigurationBean : launchConfigurationModels) {
-			if (launchName.equals(launchConfigurationBean.getName())) {
-				return true;
-			}
-
-			ILaunchConfiguration childLaunchConfiguration = LaunchUtils
-					.findLaunchConfiguration(launchConfigurationBean.getName());
-			if (childLaunchConfiguration != null) {
-				List<LaunchConfigurationModel> childLaunchConfigurationModels = LaunchUtils
-						.loadLaunchConfigurations(childLaunchConfiguration);
-				if (isRecursiveLaunchConfiguration(launchName, childLaunchConfigurationModels)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * This method tests if a custom-configuration references a valid launch.
 	 * 
 	 * @param config

@@ -387,6 +387,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		setErrorMessage(null);
 
 		try {
+			if(((List<LaunchConfigurationModel>)tableViewer.getInput()).isEmpty()) return false;
 			validateRecursive(launchName, null, launchConfigurationDataList);
 			return true;
 		} catch (LaunchValidationException launchValidationException) {
