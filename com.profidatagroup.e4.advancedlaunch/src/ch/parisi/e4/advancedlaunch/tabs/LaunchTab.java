@@ -66,11 +66,11 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		initButtonComposite();
 
 		//just change this method order to reorder the buttons in the gui.
-		createAddBtnWithListener();
-		createEditButtonWithListener();
-		createUpButtonWithListener();
-		createDownButtonWithListener();
-		createRemoveButtonWithListener();
+		initAddBtnWithListener();
+		initEditButtonWithListener();
+		initUpButtonWithListener();
+		initDownButtonWithListener();
+		initRemoveButtonWithListener();
 	}
 
 	private void initMainComposite(Composite parent) {
@@ -115,31 +115,33 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		buttonComposite.setLayout(fillLayout);
 	}
 
-	private void createAddBtnWithListener() {
+	private void initAddBtnWithListener() {
 		btnAdd = new Button(buttonComposite, SWT.None);
 		btnAdd.setText(LaunchMessages.LaunchGroupConfiguration_Add);
 		btnAdd.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				// TODO extract into method
-				MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
-						getShell());
-				initAddConfigurationSelectionDialog(multiLaunchConfigurationSelectionDialog);
-
-				if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
-					launchConfigurationDataList.add(new LaunchConfigurationModel(
-							multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(),
-							multiLaunchConfigurationSelectionDialog.getMode(),
-							multiLaunchConfigurationSelectionDialog.getAction(),
-							String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
-
-					if (launchConfigurationDataList != null) {
-						updateDirtyModel();
-					}
-				}
+				addLaunchConfigurationToModel();
 			}
-
 		});
+	}
+	
+	private void addLaunchConfigurationToModel() {
+		MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
+				getShell());
+		initAddConfigurationSelectionDialog(multiLaunchConfigurationSelectionDialog);
+
+		if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
+			launchConfigurationDataList.add(new LaunchConfigurationModel(
+					multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(),
+					multiLaunchConfigurationSelectionDialog.getMode(),
+					multiLaunchConfigurationSelectionDialog.getAction(),
+					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
+
+			if (launchConfigurationDataList != null) {
+				updateDirtyModel();
+			}
+		}
 	}
 
 	private void updateDirtyModel() {
@@ -157,7 +159,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		multiLaunchConfigurationSelectionDialog.setActionParam("");
 	}
 
-	private void createEditButtonWithListener() {
+	private void initEditButtonWithListener() {
 		btnEdit = new Button(buttonComposite, SWT.None);
 		btnEdit.setText(LaunchMessages.LaunchGroupConfiguration_Edit);
 		btnEdit.setEnabled(false);
@@ -232,7 +234,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	}
 
-	private void createRemoveButtonWithListener() {
+	private void initRemoveButtonWithListener() {
 		btnRemove = new Button(buttonComposite, SWT.None);
 		btnRemove.setText(LaunchMessages.LaunchGroupConfiguration_Remove);
 		btnRemove.setEnabled(false);
@@ -247,7 +249,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		});
 	}
 
-	private void createUpButtonWithListener() {
+	private void initUpButtonWithListener() {
 		btnUp = new Button(buttonComposite, SWT.None);
 		btnUp.setText(LaunchMessages.LaunchGroupConfiguration_Up);
 		btnUp.setEnabled(false);
@@ -271,7 +273,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		});
 	}
 
-	private void createDownButtonWithListener() {
+	private void initDownButtonWithListener() {
 		btnDown = new Button(buttonComposite, SWT.None);
 		btnDown.setText(LaunchMessages.LaunchGroupConfiguration_Down);
 		btnDown.setEnabled(false);

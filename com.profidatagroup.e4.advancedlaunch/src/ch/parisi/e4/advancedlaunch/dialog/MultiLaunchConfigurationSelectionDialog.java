@@ -68,8 +68,7 @@ import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
  * Dialog to select launch configuration(s)
  * This class was taken from CDT and was modified by the author of this project.
  */
-public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog
-		implements ISelectionChangedListener, IDoubleClickListener {
+public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	//implements Listener destroys encapsulation, because anyone could add this class as a Listener! 
 	private LaunchConfigurationFilteredTree fTree;
 	private ViewerFilter[] filters = null;
@@ -178,8 +177,19 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog
 				}
 			}
 			fTree.getViewer().addFilter(emptyTypeFilter);
-			fTree.getViewer().addSelectionChangedListener(this);
-			fTree.getViewer().addDoubleClickListener(this);
+			fTree.getViewer().addSelectionChangedListener(new SelectionChangedListener());
+			fTree.getViewer().addDoubleClickListener(new IDoubleClickListener() {
+				@Override
+				public void doubleClick(DoubleClickEvent event) {
+					/*
+					 * this method catches ENTER-PRESSED as well.
+					 */
+					validate();
+					if (isValid) {
+						okPressed();
+					}
+				}
+			});
 
 			if (launchGroup.getMode().equals(this.mode)) {
 				stackComposite.setSelection(mode);
@@ -353,52 +363,48 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog
 	public void setInitialSelection(ILaunchConfiguration launchConfiguration) {
 		fInitialSelection = new StructuredSelection(launchConfiguration);
 	}
+	
+	private class SelectionChangedListener implements ISelectionChangedListener {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.
-	 * eclipse.jface.viewers.SelectionChangedEvent)
-	 */
-	@Override
-	public void selectionChanged(SelectionChangedEvent event) {
+		@Override
+		public void selectionChanged(SelectionChangedEvent event) {
+			// This listener gets called for a selection change in the launch
+			// configuration viewer embedded in the dialog. Problem is, there are
+			// numerous viewers--one for each platform debug ILaunchGroup (run,
+			// debug, profile). These viewers are stacked, so only one is ever
+			// visible to the user. During initialization, we get a selection change
+			// notification for every viewer. We need to ignore all but the one that
+			// matters--the visible one.
 
-		// This listener gets called for a selection change in the launch
-		// configuration viewer embedded in the dialog. Problem is, there are
-		// numerous viewers--one for each platform debug ILaunchGroup (run,
-		// debug, profile). These viewers are stacked, so only one is ever
-		// visible to the user. During initialization, we get a selection change
-		// notification for every viewer. We need to ignore all but the one that
-		// matters--the visible one.
-
-		Tree topTree = null;
-		final Control topControl = stackComposite.getTopControl();
-		if (topControl instanceof FilteredTree) {
-			final TreeViewer viewer = ((FilteredTree) topControl).getViewer();
-			if (viewer != null) {
-				topTree = viewer.getTree();
+			Tree topTree = null;
+			final Control topControl = stackComposite.getTopControl();
+			if (topControl instanceof FilteredTree) {
+				final TreeViewer viewer = ((FilteredTree) topControl).getViewer();
+				if (viewer != null) {
+					topTree = viewer.getTree();
+				}
 			}
-		}
-		if (topTree == null) {
-			return;
-		}
-
-		boolean selectionIsForVisibleViewer = false;
-		final Object src = event.getSource();
-		if (src instanceof Viewer) {
-			final Control viewerControl = ((Viewer) src).getControl();
-			if (viewerControl == topTree) {
-				selectionIsForVisibleViewer = true;
+			if (topTree == null) {
+				return;
 			}
-		}
 
-		if (!selectionIsForVisibleViewer) {
-			return;
-		}
+			boolean selectionIsForVisibleViewer = false;
+			final Object src = event.getSource();
+			if (src instanceof Viewer) {
+				final Control viewerControl = ((Viewer) src).getControl();
+				if (viewerControl == topTree) {
+					selectionIsForVisibleViewer = true;
+				}
+			}
 
-		fSelection = event.getSelection();
-		validate();
+			if (!selectionIsForVisibleViewer) {
+				return;
+			}
+
+			fSelection = event.getSelection();
+			validate();
+		}
+		
 	}
 
 	protected void validate() {
@@ -432,17 +438,5 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog
 		if (btnOk != null) {
 			btnOk.setEnabled(isValid);
 		}
-	}
-
-	@Override
-	public void doubleClick(DoubleClickEvent event) {
-		/*
-		 * this method catches ENTER-PRESSED as well.
-		 */
-		validate();
-		if (isValid) {
-			okPressed();
-		}
-
 	}
 }
