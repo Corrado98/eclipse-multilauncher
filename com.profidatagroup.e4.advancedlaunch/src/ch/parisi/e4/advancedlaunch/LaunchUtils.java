@@ -5,10 +5,13 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
+
+import ch.parisi.e4.advancedlaunch.enums.PostLaunchActionUtils;
 
 /**
  * Utility class with methods that can be accessed throughout the entire code.
@@ -71,13 +74,10 @@ public class LaunchUtils {
 	 * Checks recursively if a custom-launch would cause an
 	 * infinite-loop.
 	 * 
-	 * @param launchName
-	 *            the name of the custom-launch
-	 * @param launchConfigurationModels
-	 *            the childlaunches of the custom-launch
-	 * @return {@code true} if an infinite-loop is detected within a custom
-	 *         launch. {@code false} if no infinite-loop is ever detected at any
-	 *         nesting depth.
+	 * @param launchName the name of the custom-launch
+	 * @param launchConfigurationModels the childlaunches of the custom-launch
+	 * @return {@code true} if an infinite-loop is detected within a custom-launch. 
+	 * 		   {@code false} if no infinite-loop is ever detected at any nesting depth.
 	 * @throws CoreException
 	 */
 	public static boolean isRecursiveLaunchConfiguration(String launchName,

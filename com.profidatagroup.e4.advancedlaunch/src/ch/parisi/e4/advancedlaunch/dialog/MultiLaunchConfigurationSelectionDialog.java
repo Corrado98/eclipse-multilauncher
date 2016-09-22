@@ -60,8 +60,8 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 import ch.parisi.e4.advancedlaunch.LaunchUtils;
-import ch.parisi.e4.advancedlaunch.PostLaunchAction;
-import ch.parisi.e4.advancedlaunch.PostLaunchActionUtils;
+import ch.parisi.e4.advancedlaunch.enums.PostLaunchAction;
+import ch.parisi.e4.advancedlaunch.enums.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
 /**
@@ -73,7 +73,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	private LaunchConfigurationFilteredTree fTree;
 	private ViewerFilter[] filters = null;
 	private ISelection fSelection;
-	private String mode = "run"; // TODO make enum for mode
+	private String launchMode = ILaunchManager.RUN_MODE; // TODO make enum for mode
 	private PostLaunchAction action = PostLaunchAction.NONE;
 	private Object actionParam;
 	private ViewerFilter emptyTypeFilter;
@@ -191,7 +191,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				}
 			});
 
-			if (launchGroup.getMode().equals(this.mode)) {
+			if (launchGroup.getMode().equals(this.launchMode)) {
 				stackComposite.setSelection(mode);
 			}
 			if (fInitialSelection != null) {
@@ -213,7 +213,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		stackComposite.getCombo().addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				mode = ((Combo) e.widget).getText();
+				launchMode = ((Combo) e.widget).getText();
 			}
 		});
 
@@ -329,11 +329,11 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	}
 
 	public String getMode() {
-		return mode;
+		return launchMode;
 	}
 
 	public void setMode(String mode) {
-		this.mode = mode;
+		this.launchMode = mode;
 	}
 
 	public PostLaunchAction getAction() {
@@ -430,7 +430,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				IStructuredSelection selection = (IStructuredSelection) fSelection;
 				if (selection.getFirstElement() instanceof ILaunchConfigurationType) {
 					isValid = false;
-					setErrorMessage(isValid ? null : "Choose a Launch-Configuration");
+					setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfiguration_NotALaunchConfiguration);
 				}
 			}
 		}

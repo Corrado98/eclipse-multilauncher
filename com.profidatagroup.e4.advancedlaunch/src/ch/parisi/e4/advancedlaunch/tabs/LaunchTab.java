@@ -36,9 +36,9 @@ import org.eclipse.swt.widgets.Table;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.LaunchUtils;
-import ch.parisi.e4.advancedlaunch.PostLaunchAction;
-import ch.parisi.e4.advancedlaunch.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
+import ch.parisi.e4.advancedlaunch.enums.PostLaunchAction;
+import ch.parisi.e4.advancedlaunch.enums.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
 /**

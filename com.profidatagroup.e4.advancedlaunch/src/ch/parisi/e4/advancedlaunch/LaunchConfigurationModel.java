@@ -1,5 +1,7 @@
 package ch.parisi.e4.advancedlaunch;
 
+import ch.parisi.e4.advancedlaunch.enums.PostLaunchAction;
+
 /**
  * Class which contains user-defined information 
  * of one launch, within a custom-configuration.

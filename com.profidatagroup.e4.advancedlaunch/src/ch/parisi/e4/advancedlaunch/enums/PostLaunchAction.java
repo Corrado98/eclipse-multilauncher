@@ -1,4 +1,4 @@
-package ch.parisi.e4.advancedlaunch;
+package ch.parisi.e4.advancedlaunch.enums;
 
 /**
  * The strategies each launch has to wait for before starting the next one.
