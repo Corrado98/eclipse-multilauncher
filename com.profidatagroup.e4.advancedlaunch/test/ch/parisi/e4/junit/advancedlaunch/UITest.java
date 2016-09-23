@@ -1,5 +1,7 @@
 package ch.parisi.e4.junit.advancedlaunch;
 
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
@@ -23,23 +25,23 @@ public class UITest {
 		}
 	}
 
-//	@Test
-//	public void testUI() {
-//		SWTWorkbenchBot bot = new SWTWorkbenchBot();
-//		boolean found = false;
-//		for (SWTBotShell shell : bot.shells()) {
-//			if (shell.getText().contains("Eclipse")) {
-//				found = true;
-//				break;
-//			}
-//		}
-//		assertTrue(found);
-//	}
+	@Test
+	public void testUI() {
+		SWTWorkbenchBot bot = new SWTWorkbenchBot();
+		boolean found = false;
+		for (SWTBotShell shell : bot.shells()) {
+			if (shell.getText().contains("Eclipse")) {
+				found = true;
+				break;
+			}
+		}
+		assertTrue(found);
+	}
 
 	@Test
 	public void createProject() {
 		SWTWorkbenchBot bot = new SWTWorkbenchBot();
-		bot.menu("File").menu("Project...").click();
+		bot.menu("File").menu("New").menu("Project...").click();
 		SWTBotShell shell = bot.shell("New Project");
 		shell.activate();
 		bot.tree().expandNode("General").select("Project");
