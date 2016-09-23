@@ -1,21 +1,12 @@
 package ch.parisi.e4.advancedlaunch;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
-import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.debug.core.model.IStreamsProxy;
-import org.eclipse.debug.internal.core.DebugCoreMessages;
 
 import ch.parisi.e4.advancedlaunch.enums.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
@@ -38,27 +29,48 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		/*
 		 * This method iterates through all user-selected configurations and
 		 * starts them.
+		 * 
+		 * At the beginning it adds a PseudoProcess to the ILaunch in order
+		 * to set it to <terminated> in the end, when all other running processes
+		 * are terminated.  
 		 */
+		PseudoProcess process = new PseudoProcess(launch);
+		process.setLabel(configuration.getName());
+		launch.addProcess(process);
 
 		List<LaunchConfigurationModel> launchConfigurationDataList = LaunchUtils
 				.loadLaunchConfigurations(configuration);
 
-		for (LaunchConfigurationModel model : launchConfigurationDataList) {	
-				//isIterating = true;
-				ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(model.getName());
-				if (launchConfiguration != null) {
-					AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(model);
-					launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
+		for (LaunchConfigurationModel model : launchConfigurationDataList) {
+			//isIterating = true;
+			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(model.getName());
+			if (launchConfiguration != null) {
+				if (process.isTerminated()) {
+					break;
 				}
-				// launchConfiguration can never be null, since an invalid launch
-				// cannot be runned.
+				AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(model);
+				launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
+			}
+			// launchConfiguration can never be null, since an invalid launch
+			// cannot be runned.
 		}
 
-		//DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
+		wairForRunningProcesses();
 
-		PseudoProcess process = new PseudoProcess(launch);
+		launch.removeProcess(process);
+		process.setIsTerminated(true);
 		launch.addProcess(process);
-		process.terminate();
+	}
+
+	private void wairForRunningProcesses() {
+		//alternative solution would have been the following: DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
+		while (!LaunchUtils.AreAllRunningProcessesTerminated()) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**

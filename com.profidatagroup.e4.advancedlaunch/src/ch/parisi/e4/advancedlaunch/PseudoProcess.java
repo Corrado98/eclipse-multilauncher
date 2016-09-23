@@ -1,17 +1,22 @@
 package ch.parisi.e4.advancedlaunch;
 
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.eclipse.debug.internal.core.DebugCoreMessages;
 
 public class PseudoProcess implements IProcess {
 
 		private ILaunch launch;
+		private boolean isTerminated = false;
+		
+		/**
+		 * This constant accomplishes that the user cannot terminate
+		 * this process by the standard eclipse-ui-terminate-button,
+		 * but has to use this plugin-specific terminate-all-button.
+		 */
+		private static final boolean CAN_TERMINATE = false;
+		private String label;
 
 		public PseudoProcess(ILaunch launch) {
 			this.launch = launch;
@@ -24,23 +29,31 @@ public class PseudoProcess implements IProcess {
 
 		@Override
 		public boolean canTerminate() {
-			return false;
+			return CAN_TERMINATE;
 		}
 
 		@Override
 		public boolean isTerminated() {
-			return true;
+			return isTerminated;
+		}
+		
+		public void setIsTerminated(boolean isTerminated) {
+			this.isTerminated = isTerminated;
 		}
 
 		@Override
-		public void terminate() throws DebugException {
-			//TODO remove all sublaunches. 
-			//LaunchGroupConfigurationDelegate.terminateAllConfigurationsButtonPressed = true;
+		public void terminate() throws DebugException {			
+			setIsTerminated(true);
+			isTerminated();
 		}
 
 		@Override
 		public String getLabel() {
-			return null;
+			return label;
+		}
+		
+		public void setLabel(String label) {
+			this.label = label;
 		}
 
 		@Override

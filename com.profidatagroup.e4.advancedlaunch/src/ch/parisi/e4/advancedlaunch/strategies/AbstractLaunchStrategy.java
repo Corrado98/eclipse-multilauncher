@@ -1,10 +1,16 @@
 package ch.parisi.e4.advancedlaunch.strategies;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.model.IProcess;
 
 public abstract class AbstractLaunchStrategy {
+	
+	public static List<IProcess[]> launchProcesses = new ArrayList<>();
 	
 	/**
 	 * Launches the specified {@link ILaunchConfiguration} in the given <code>mode</code> and waits until the conditions of this strategy are met.
@@ -18,6 +24,7 @@ public abstract class AbstractLaunchStrategy {
 	public final void launchAndWait(ILaunchConfiguration launchConfiguration, String mode) {
 		try {
 			ILaunch launch = launchConfiguration.launch(mode, null);
+			launchProcesses.add(launch.getProcesses());
 			waitForLaunch(launch);
 		} catch (CoreException e) {
 			e.printStackTrace();

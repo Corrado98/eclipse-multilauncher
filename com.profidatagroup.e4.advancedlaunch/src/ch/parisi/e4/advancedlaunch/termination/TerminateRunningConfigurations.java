@@ -12,6 +12,9 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
 
+import ch.parisi.e4.advancedlaunch.PseudoProcess;
+
+
 /**
  * This class terminates all running {@link IProcess}es from the back. 
  */
@@ -29,7 +32,7 @@ public class TerminateRunningConfigurations extends AbstractHandler {
 			Collections.reverse(Arrays.asList(processes));
 		
 				for (IProcess process : processes) {
-					if (process.canTerminate()) {
+					if (process.canTerminate() || process instanceof PseudoProcess) {
 						try {
 							process.terminate();
 						} catch (DebugException e) {

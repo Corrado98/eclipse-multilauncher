@@ -8,10 +8,12 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
 
 import ch.parisi.e4.advancedlaunch.enums.PostLaunchActionUtils;
+import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
 
 /**
  * Utility class with methods that can be accessed throughout the entire code.
@@ -19,12 +21,10 @@ import ch.parisi.e4.advancedlaunch.enums.PostLaunchActionUtils;
 public class LaunchUtils {
 
 	/**
-	 * This method finds a {@link ILaunchConfiguration} by name.
+	 * Finds a {@link ILaunchConfiguration} by name.
 	 * 
-	 * @param name
-	 *            the name of the <code>ILaunchConfiguration</code>.
-	 * @return the <code>ILaunchConfiguration</code> or <code>null</code> if not
-	 *         found
+	 * @param name the name of the <code>ILaunchConfiguration</code>
+	 * @return the <code>ILaunchConfiguration</code> or <code>null</code> if not found
 	 * @throws CoreException
 	 */
 	public static ILaunchConfiguration findLaunchConfiguration(String name) throws CoreException {
@@ -41,11 +41,9 @@ public class LaunchUtils {
 	}
 
 	/**
-	 * This method loads all the sublaunches of an already existing
-	 * custom-launch into a list.
+	 * Loads all the sublaunches of an already existing multilaunch into a list.
 	 * 
-	 * @param configuration
-	 *            the custom-launch. <b>Cannot</b> be {@code null}.
+	 * @param configuration the multilaunch. <b>Cannot</b> be {@code null}.
 	 * @return the sublaunches as a list of {@link LaunchConfigurationModel}s.
 	 * @throws CoreException
 	 */
@@ -71,17 +69,38 @@ public class LaunchUtils {
 	}
 
 	/**
-	 * This method tests if a custom-configuration references a valid launch.
+	 * Checks whether a multilaunch references a valid launch.
 	 * 
-	 * @param config
-	 *            configuration reference <b>Cannot</b> be {@code null}.
-	 * @return <code>true</code> if it is a valid reference, <code>false</code>
-	 *         if launch configuration should be filtered.
+	 * @param config the launch-reference. <b>Cannot</b> be {@code null}.
+	 * @return <code>true</code> if it is a valid reference, 
+	 * 		   <code>false</code> if launch-configuration should be filtered.
 	 * @throws CoreException
 	 */
 	public static boolean isValidLaunchReference(ILaunchConfiguration config) throws CoreException {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		return manager.isExistingLaunchConfigurationName(config.getName());
+	}
+
+	/**
+	 * Checks whether all current running launches are terminated. 
+	 * 
+	 * @return {@code true} if all launches are terminated, 
+	 * 		   {@code false} 
+	 */
+	public static boolean AreAllRunningProcessesTerminated() {
+		boolean allTerminated = false;
+		for (IProcess[] processesArray : AbstractLaunchStrategy.launchProcesses) {
+			for (IProcess process : processesArray) {
+				if (process.isTerminated()) {
+					allTerminated = true;
+				}
+				else {
+					allTerminated = false;
+					return allTerminated;
+				}
+			}
+		}
+		return allTerminated;
 	}
 
 }
