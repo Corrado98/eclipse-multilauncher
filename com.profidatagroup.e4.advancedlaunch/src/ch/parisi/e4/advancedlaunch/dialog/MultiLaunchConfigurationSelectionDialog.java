@@ -73,7 +73,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	private LaunchConfigurationFilteredTree fTree;
 	private ViewerFilter[] filters = null;
 	private ISelection fSelection;
-	private String launchMode = ILaunchManager.RUN_MODE; // TODO make enum for mode
+	private String launchMode = ILaunchManager.RUN_MODE;
 	private PostLaunchAction action = PostLaunchAction.NONE;
 	private Object actionParam;
 	private ViewerFilter emptyTypeFilter;
@@ -84,7 +84,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 	/**
 	 * <code>true</code> if the OK-button (btnOk) is enabled.
-	 * 
 	 */
 	private boolean isValid;
 
@@ -156,12 +155,14 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 		stackComposite = new ComboControlledStackComposite(comp, SWT.NONE);
 		HashMap<String, ILaunchGroup> modes = new HashMap<String, ILaunchGroup>();
+
 		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
 		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
 		for (ILaunchGroup launchGroup : launchGroups) {
 			if (!modes.containsKey(launchGroup.getMode())) {
-				modes.put(launchGroup.getMode(), launchGroup);
+				modes.put(launchGroup.getMode(), launchGroup);	
 			}
+			modes.put(LaunchUtils.INHERIT_MODE, launchGroup);
 		}
 		for (Iterator<String> iterator = modes.keySet().iterator(); iterator.hasNext();) {
 			String mode = iterator.next();
@@ -363,7 +364,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	public void setInitialSelection(ILaunchConfiguration launchConfiguration) {
 		fInitialSelection = new StructuredSelection(launchConfiguration);
 	}
-	
+
 	private class SelectionChangedListener implements ISelectionChangedListener {
 
 		@Override
@@ -404,7 +405,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			fSelection = event.getSelection();
 			validate();
 		}
-		
+
 	}
 
 	protected void validate() {

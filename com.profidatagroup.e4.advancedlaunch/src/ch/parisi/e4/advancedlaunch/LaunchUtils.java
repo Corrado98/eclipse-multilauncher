@@ -19,6 +19,8 @@ import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
  * Utility class with methods that can be accessed throughout the entire code.
  */
 public class LaunchUtils {
+	
+	public static final String INHERIT_MODE = "inherit";
 
 	/**
 	 * Finds a {@link ILaunchConfiguration} by name.

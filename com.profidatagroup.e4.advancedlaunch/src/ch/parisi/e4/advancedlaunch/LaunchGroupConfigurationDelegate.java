@@ -33,7 +33,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		 * At the beginning it adds a PseudoProcess to the ILaunch in order
 		 * to set it to <terminated> in the end, when all other running processes
 		 * are terminated.  
-		 */
+		 */		
 		PseudoProcess process = new PseudoProcess(launch);
 		process.setLabel(configuration.getName());
 		launch.addProcess(process);
@@ -49,7 +49,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 					break;
 				}
 				AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(model);
-				launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
+				launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode(), mode);
 			}
 			// launchConfiguration can never be null, since an invalid launch
 			// cannot be runned.

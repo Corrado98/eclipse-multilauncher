@@ -1,8 +1,7 @@
 package ch.parisi.e4.junit.advancedlaunch;
 
-import static org.junit.Assert.assertTrue;
-
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.SWTBotTestCase;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
@@ -11,13 +10,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(SWTBotJunit4ClassRunner.class)
-public class UITest {
-
-	private static SWTWorkbenchBot bot;
+public class UITest extends SWTBotTestCase {
 
 	@BeforeClass
 	public static void beforeClass() {
-		bot = new SWTWorkbenchBot();
+		SWTWorkbenchBot bot = new SWTWorkbenchBot();
 		try {
 			bot.viewByTitle("Welcome").close();
 		} catch (WidgetNotFoundException e) {
@@ -39,15 +36,12 @@ public class UITest {
 	}
 
 	@Test
-	public void createProject() {
-		SWTWorkbenchBot bot = new SWTWorkbenchBot();
-		bot.menu("File").menu("New").menu("Project...").click();
-		SWTBotShell shell = bot.shell("New Project");
-		shell.activate();
-		bot.tree().expandNode("General").select("Project");
-		bot.button("Next >").click();
-		bot.textWithLabel("Project name:").setText("SWTBot Test Project");
-		bot.button("Finish").click();
+	public void islaunchConfigurationTypeLaunchGroupExisting() {
+		bot.menu("Window").menu("Perspective").menu("Open Perspective").menu("Java").click();
+		bot.toolbarDropDownButtonWithTooltip("Debug").menuItem("Debug Configurations...").click();
+		bot.tree().getTreeItem("Launch Group").select();
+		bot.button("Close").click();
 	}
+
 
 }

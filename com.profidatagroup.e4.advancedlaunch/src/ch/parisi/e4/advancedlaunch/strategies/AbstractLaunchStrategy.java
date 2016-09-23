@@ -8,10 +8,12 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IProcess;
 
+import ch.parisi.e4.advancedlaunch.LaunchUtils;
+
 public abstract class AbstractLaunchStrategy {
-	
+
 	public static List<IProcess[]> launchProcesses = new ArrayList<>();
-	
+
 	/**
 	 * Launches the specified {@link ILaunchConfiguration} in the given <code>mode</code> and waits until the conditions of this strategy are met.
 	 * 
@@ -21,8 +23,9 @@ public abstract class AbstractLaunchStrategy {
 	 * @param mode the launch mode, see {@link org.eclipse.debug.core.ILaunchManager}
 	 * @param param the runtime parameter for this strategy (e.g. delay time)
 	 */
-	public final void launchAndWait(ILaunchConfiguration launchConfiguration, String mode) {
+	public final void launchAndWait(ILaunchConfiguration launchConfiguration, String mode, String parentMode) {
 		try {
+			if (mode.equals(LaunchUtils.INHERIT_MODE)) mode = parentMode;
 			ILaunch launch = launchConfiguration.launch(mode, null);
 			launchProcesses.add(launch.getProcesses());
 			waitForLaunch(launch);
