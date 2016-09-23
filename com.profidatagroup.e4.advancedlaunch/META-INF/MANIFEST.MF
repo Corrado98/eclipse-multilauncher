@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Advancedlaunch
+Bundle-Name: Multilauncher
 Bundle-SymbolicName: ch.parisi.e4.advancedlaunch;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1
 Bundle-Activator: ch.parisi.e4.advancedlaunch.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
