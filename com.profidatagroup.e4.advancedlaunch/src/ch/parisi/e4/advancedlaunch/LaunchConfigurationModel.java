@@ -1,6 +1,6 @@
 package ch.parisi.e4.advancedlaunch;
 
-import ch.parisi.e4.advancedlaunch.enums.PostLaunchAction;
+import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
 
 /**
  * Class which contains user-defined information 

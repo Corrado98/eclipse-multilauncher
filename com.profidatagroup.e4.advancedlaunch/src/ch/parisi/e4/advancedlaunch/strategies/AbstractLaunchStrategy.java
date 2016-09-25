@@ -8,7 +8,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IProcess;
 
-import ch.parisi.e4.advancedlaunch.LaunchUtils;
+import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
 
 public abstract class AbstractLaunchStrategy {
 

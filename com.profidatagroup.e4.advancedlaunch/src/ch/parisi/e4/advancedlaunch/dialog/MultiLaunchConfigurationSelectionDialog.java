@@ -59,10 +59,10 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
-import ch.parisi.e4.advancedlaunch.LaunchUtils;
-import ch.parisi.e4.advancedlaunch.enums.PostLaunchAction;
-import ch.parisi.e4.advancedlaunch.enums.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
+import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
+import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
+import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 
 /**
  * Dialog to select launch configuration(s)

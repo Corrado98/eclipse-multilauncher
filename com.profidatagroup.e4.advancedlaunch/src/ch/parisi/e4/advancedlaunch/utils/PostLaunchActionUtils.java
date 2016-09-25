@@ -9,7 +9,7 @@
  *      QNX Software Systems - initial API and implementation
  *      Freescale Semiconductor
  *******************************************************************************/
-package ch.parisi.e4.advancedlaunch.enums;
+package ch.parisi.e4.advancedlaunch.utils;
 
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;

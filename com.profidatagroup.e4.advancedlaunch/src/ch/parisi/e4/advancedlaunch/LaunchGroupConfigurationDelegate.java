@@ -8,12 +8,13 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 
-import ch.parisi.e4.advancedlaunch.enums.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.DelayStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.EmptyStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.ReadConsoleTextStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.WaitForTerminationStrategy;
+import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
+import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 
 /**
  * Delegates the launch of each configuration, while respecting it`s

@@ -35,11 +35,11 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
-import ch.parisi.e4.advancedlaunch.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
-import ch.parisi.e4.advancedlaunch.enums.PostLaunchAction;
-import ch.parisi.e4.advancedlaunch.enums.PostLaunchActionUtils;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
+import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
+import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
+import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 
 /**
  * The LaunchConfiguration Tab to edit the multi launch configuration.

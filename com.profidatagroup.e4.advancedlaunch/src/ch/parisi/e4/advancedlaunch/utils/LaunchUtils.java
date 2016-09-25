@@ -1,4 +1,4 @@
-package ch.parisi.e4.advancedlaunch;
+package ch.parisi.e4.advancedlaunch.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
 
-import ch.parisi.e4.advancedlaunch.enums.PostLaunchActionUtils;
+import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
 
 /**
@@ -20,6 +20,11 @@ import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
  */
 public class LaunchUtils {
 	
+	/**
+	 * A Launch that can either be in {@link ILaunchManager#RUN_MODE} 
+	 * or {@link ILaunchManager#DEBUG_MODE}, depending on the user selecting the 
+	 * 'Run Configurations' or 'Debug Configurations'.
+	 */
 	public static final String INHERIT_MODE = "inherit";
 
 	/**
