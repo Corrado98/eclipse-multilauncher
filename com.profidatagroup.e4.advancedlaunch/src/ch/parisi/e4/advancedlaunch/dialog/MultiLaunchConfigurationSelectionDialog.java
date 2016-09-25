@@ -11,8 +11,10 @@
  *******************************************************************************/
 package ch.parisi.e4.advancedlaunch.dialog;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.PojoProperties;
@@ -22,6 +24,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.internal.core.LaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationFilteredTree;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
@@ -158,12 +161,25 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
 		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
+
 		for (ILaunchGroup launchGroup : launchGroups) {
 			if (!modes.containsKey(launchGroup.getMode())) {
-				modes.put(launchGroup.getMode(), launchGroup);	
+				modes.put(launchGroup.getMode(), launchGroup);
 			}
-			modes.put(LaunchUtils.INHERIT_MODE, launchGroup);
+			//Inherit-Mode gets the same properties as the Run-Mode. 
+			if (launchGroup.getMode().equals(LaunchManager.RUN_MODE)) {
+				modes.put(LaunchUtils.INHERIT_MODE, launchGroup);
+			}
 		}
+
+		for (String name : modes.keySet()) {
+
+			String key = name;
+			String value = modes.get(name).getMode();
+			System.out.println(key + " " + value);
+
+		}
+
 		for (Iterator<String> iterator = modes.keySet().iterator(); iterator.hasNext();) {
 			String mode = iterator.next();
 			ILaunchGroup launchGroup = modes.get(mode);
@@ -192,9 +208,9 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				}
 			});
 
-			if (launchGroup.getMode().equals(this.launchMode)) {
-				stackComposite.setSelection(mode);
-			}
+//			if (launchGroup.getMode().equals(this.launchMode)) {
+//				stackComposite.setSelection(mode);
+//			}
 			if (fInitialSelection != null) {
 				fTree.getViewer().setSelection(fInitialSelection, true);
 			}
@@ -215,6 +231,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				launchMode = ((Combo) e.widget).getText();
+				System.out.println(launchMode);
 			}
 		});
 

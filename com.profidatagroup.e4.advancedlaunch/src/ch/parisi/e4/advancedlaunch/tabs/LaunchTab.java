@@ -164,7 +164,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		btnEdit.setText(LaunchMessages.LaunchGroupConfiguration_Edit);
 		btnEdit.setEnabled(false);
 		btnEdit.addListener(SWT.Selection, new Listener() {
-
 			@Override
 			public void handleEvent(Event event) {
 				editLaunchConfiguration();
@@ -205,8 +204,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 
-	private void loadExistingConfigurationData(
-			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
+	private void loadExistingConfigurationData(MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(true);
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog.setAction(selectedConfiguration.getPostLaunchAction());

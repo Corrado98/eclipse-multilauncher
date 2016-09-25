@@ -56,14 +56,14 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 			// cannot be runned.
 		}
 
-		wairForRunningProcesses();
+		waitForRunningProcesses();
 
 		launch.removeProcess(process);
 		process.setIsTerminated(true);
 		launch.addProcess(process);
 	}
 
-	private void wairForRunningProcesses() {
+	private void waitForRunningProcesses() {
 		//alternative solution would have been the following: DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
 		while (!LaunchUtils.AreAllRunningProcessesTerminated()) {
 			try {
