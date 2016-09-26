@@ -43,7 +43,7 @@ import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 
 /**
- * The LaunchConfiguration Tab to edit the multi launch configuration.
+ * The LaunchConfiguration Tab to edit the multilaunch configuration.
  */
 public class LaunchTab extends AbstractLaunchConfigurationTab {
 

@@ -161,6 +161,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
 
 		for (ILaunchGroup launchGroup : launchGroups) {
+			if (launchGroup.getMode().equals(LaunchManager.PROFILE_MODE)) break;
 			if (!modes.containsKey(launchGroup.getMode())) {
 				modes.put(launchGroup.getMode(), launchGroup);
 			}
@@ -168,7 +169,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			if (!modes.containsKey(LaunchUtils.INHERIT_MODE) && launchGroup.getMode().equals(LaunchManager.RUN_MODE)) {
 				modes.put(LaunchUtils.INHERIT_MODE, launchGroup);
 			}
-			
+
 			//TODO remove profile mode
 		}
 
@@ -207,7 +208,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				tree.getViewer().setSelection(fInitialSelection, true);
 			}
 		}
-		
 
 		stackComposite.setLabelText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_4);
 		stackComposite.pack();
@@ -230,7 +230,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		createPostLaunchControl(comp);
 		return comp;
 	}
-	
+
 	private void createPostLaunchControl(Composite parent) {
 		Composite comp = new Composite(parent, SWT.NONE);
 		comp.setLayout(new GridLayout(4, false));
