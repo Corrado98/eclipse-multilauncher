@@ -245,7 +245,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final String actionStr = ((Combo) e.widget).getText();
-				action = PostLaunchActionUtils.convertToPostLaunchAction(actionStr);
+				action = PostLaunchActionUtils.convertToPostLaunchAction(actionStr);				
+				if (action == PostLaunchAction.NONE || action == PostLaunchAction.WAIT_FOR_TERMINATION) {
+					paramTextWidget.setText("");
+				}
 				showHideDelayAmountWidgets();
 				validate();
 			}
