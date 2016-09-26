@@ -73,7 +73,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	//implements Listener destroys encapsulation, because anyone could add this class as a Listener! 
 
 	private ViewerFilter[] filters = null;
-	private ISelection fSelection;
+	private ISelection currentSelection;
 	private String launchMode = ILaunchManager.RUN_MODE;
 	private PostLaunchAction action = PostLaunchAction.NONE;
 	private Object actionParam;
@@ -171,8 +171,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			}
 		}
 
-		for (Iterator<String> iterator = modes.keySet().iterator(); iterator.hasNext();) {
-			String mode = iterator.next();
+		for (String mode : modes.keySet()) {
 			ILaunchGroup launchGroup = modes.get(mode);
 			LaunchConfigurationFilteredTree tree = new LaunchConfigurationFilteredTree(stackComposite.getStackParent(),
 					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), launchGroup, filters);
@@ -186,18 +185,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			}
 			tree.getViewer().addFilter(emptyTypeFilter);
 			tree.getViewer().addSelectionChangedListener(new SelectionChangedListener());
-			tree.getViewer().addDoubleClickListener(new IDoubleClickListener() {
-				@Override
-				public void doubleClick(DoubleClickEvent event) {
-					/*
-					 * this method catches ENTER-PRESSED as well.
-					 */
-					validate();
-					if (isValid) {
-						okPressed();
-					}
-				}
-			});
+			tree.getViewer().addDoubleClickListener(new DoubleClickListener());
 
 			if (mode.equals(this.launchMode)) {
 				stackComposite.setSelection(mode);
@@ -206,7 +194,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				tree.getViewer().setSelection(fInitialSelection, true);
 			}
 		}
-
 		stackComposite.setLabelText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_4);
 		stackComposite.pack();
 		Rectangle bounds = stackComposite.getBounds();
@@ -245,7 +232,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final String actionStr = ((Combo) e.widget).getText();
-				action = PostLaunchActionUtils.convertToPostLaunchAction(actionStr);				
+				action = PostLaunchActionUtils.convertToPostLaunchAction(actionStr);
 				if (action == PostLaunchAction.NONE || action == PostLaunchAction.WAIT_FOR_TERMINATION) {
 					paramTextWidget.setText("");
 				}
@@ -332,11 +319,97 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	}
 
 	public ILaunchConfiguration getSelectedLaunchConfiguration() {
-		if (fSelection != null && !fSelection.isEmpty()) {
-			IStructuredSelection selection = (IStructuredSelection) fSelection;
+		if (currentSelection != null && !currentSelection.isEmpty()) {
+			IStructuredSelection selection = (IStructuredSelection) currentSelection;
 			return (ILaunchConfiguration) selection.getFirstElement();
 		}
 		return null;
+	}
+
+	public void setInitialSelection(ILaunchConfiguration launchConfiguration) {
+		fInitialSelection = new StructuredSelection(launchConfiguration);
+	}
+
+	private class SelectionChangedListener implements ISelectionChangedListener {
+		@Override
+		public void selectionChanged(SelectionChangedEvent event) {
+			// This listener gets called for a selection change in the launch
+			// configuration viewer embedded in the dialog. Problem is, there are
+			// numerous viewers--one for each platform debug ILaunchGroup (run,
+			// debug, profile). These viewers are stacked, so only one is ever
+			// visible to the user. During initialization, we get a selection change
+			// notification for every viewer. We need to ignore all but the one that
+			// matters--the visible one.
+
+			Tree topTree = null;
+			final Control topControl = stackComposite.getTopControl();
+			if (topControl instanceof FilteredTree) {
+				final TreeViewer viewer = ((FilteredTree) topControl).getViewer();
+				if (viewer != null) {
+					topTree = viewer.getTree();
+				}
+			}
+			if (topTree == null) {
+				return;
+			}
+			boolean selectionIsForVisibleViewer = false;
+			final Object src = event.getSource();
+			if (src instanceof Viewer) {
+				final Control viewerControl = ((Viewer) src).getControl();
+				if (viewerControl == topTree) {
+					selectionIsForVisibleViewer = true;
+				}
+			}
+			if (!selectionIsForVisibleViewer) {
+				return;
+			}
+			currentSelection = event.getSelection();
+			validate();
+		}
+	}
+
+	private class DoubleClickListener implements IDoubleClickListener {
+		@Override
+		public void doubleClick(DoubleClickEvent event) {
+			// this method catches ENTER-PRESSED as well.
+			validate();
+			if (isValid) {
+				okPressed();
+			}
+		}
+	}
+
+	protected void validate() {
+		Button btnOk = getButton(IDialogConstants.OK_ID);
+		isValid = true;
+
+		if (isValid) {
+			setErrorMessage(null);
+			if (action == PostLaunchAction.DELAY) {
+				try {
+					isValid = ((Integer.parseInt(actionParam.toString()) > 0));
+				} catch (Exception e) {
+					isValid = false;
+					setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10);
+				}
+			} else if (action == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+				isValid = (!String.valueOf(actionParam).trim().isEmpty());
+				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10_2);
+			}
+			if (currentSelection == null) {
+				isValid = false;
+			} else {
+				IStructuredSelection selection = (IStructuredSelection) currentSelection;
+				if (selection.getFirstElement() instanceof ILaunchConfigurationType) {
+					isValid = false;
+					setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfiguration_NotALaunchConfiguration);
+				}
+			}
+		}
+
+		if (btnOk != null) {
+			btnOk.setEnabled(isValid);
+		}
 	}
 
 	public String getMode() {
@@ -361,89 +434,5 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 	public void setActionParam(String actionParam) {
 		this.actionParam = actionParam;
-	}
-
-	public ISelection getfSelection() {
-		return fSelection;
-	}
-
-	public void setInitialSelection(ILaunchConfiguration launchConfiguration) {
-		fInitialSelection = new StructuredSelection(launchConfiguration);
-	}
-
-	private class SelectionChangedListener implements ISelectionChangedListener {
-
-		@Override
-		public void selectionChanged(SelectionChangedEvent event) {
-			// This listener gets called for a selection change in the launch
-			// configuration viewer embedded in the dialog. Problem is, there are
-			// numerous viewers--one for each platform debug ILaunchGroup (run,
-			// debug, profile). These viewers are stacked, so only one is ever
-			// visible to the user. During initialization, we get a selection change
-			// notification for every viewer. We need to ignore all but the one that
-			// matters--the visible one.
-
-			Tree topTree = null;
-			final Control topControl = stackComposite.getTopControl();
-			if (topControl instanceof FilteredTree) {
-				final TreeViewer viewer = ((FilteredTree) topControl).getViewer();
-				if (viewer != null) {
-					topTree = viewer.getTree();
-				}
-			}
-			if (topTree == null) {
-				return;
-			}
-
-			boolean selectionIsForVisibleViewer = false;
-			final Object src = event.getSource();
-			if (src instanceof Viewer) {
-				final Control viewerControl = ((Viewer) src).getControl();
-				if (viewerControl == topTree) {
-					selectionIsForVisibleViewer = true;
-				}
-			}
-
-			if (!selectionIsForVisibleViewer) {
-				return;
-			}
-
-			fSelection = event.getSelection();
-			validate();
-		}
-
-	}
-
-	protected void validate() {
-		Button btnOk = getButton(IDialogConstants.OK_ID);
-		isValid = true;
-
-		if (isValid) {
-			setErrorMessage(null);
-			if (action == PostLaunchAction.DELAY) {
-				try {
-					isValid = ((Integer.parseInt(actionParam.toString()) > 0));
-				} catch (Exception e) {
-					isValid = false;
-					setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10);
-				}
-			} else if (action == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
-				isValid = (!String.valueOf(actionParam).trim().isEmpty());
-				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10_2);
-			}
-			if (fSelection == null) {
-				isValid = false;
-			} else {
-				IStructuredSelection selection = (IStructuredSelection) fSelection;
-				if (selection.getFirstElement() instanceof ILaunchConfigurationType) {
-					isValid = false;
-					setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfiguration_NotALaunchConfiguration);
-				}
-			}
-		}
-
-		if (btnOk != null) {
-			btnOk.setEnabled(isValid);
-		}
 	}
 }
