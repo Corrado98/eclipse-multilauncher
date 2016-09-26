@@ -155,7 +155,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void initAddConfigurationSelectionDialog(
 			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(false);
-		multiLaunchConfigurationSelectionDialog.setMode(LaunchManager.DEBUG_MODE);
+		multiLaunchConfigurationSelectionDialog.setMode(LaunchUtils.INHERIT_MODE);
 		multiLaunchConfigurationSelectionDialog.setAction(PostLaunchAction.NONE);
 		multiLaunchConfigurationSelectionDialog.setActionParam("");
 	}
@@ -207,7 +207,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void loadExistingConfigurationData(MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(true);
-		System.out.println("MODE " + selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog.setAction(selectedConfiguration.getPostLaunchAction());
 		multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());

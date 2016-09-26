@@ -11,11 +11,8 @@
  *******************************************************************************/
 package ch.parisi.e4.advancedlaunch.dialog;
 
-import java.awt.Dialog;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.PojoProperties;
@@ -171,6 +168,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			if (!modes.containsKey(LaunchUtils.INHERIT_MODE) && launchGroup.getMode().equals(LaunchManager.RUN_MODE)) {
 				modes.put(LaunchUtils.INHERIT_MODE, launchGroup);
 			}
+			
+			//TODO remove profile mode
 		}
 
 		for (Iterator<String> iterator = modes.keySet().iterator(); iterator.hasNext();) {
