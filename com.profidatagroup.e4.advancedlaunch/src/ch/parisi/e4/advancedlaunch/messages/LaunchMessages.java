@@ -46,6 +46,8 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfiguration_NotFound;
 	public static String LaunchGroupConfiguration_RecursiveNotFound;
 	public static String LaunchGroupConfiguration_NotALaunchConfiguration;
+	public static String LaunchGroupConfiguration_LaunchDelegationError;
+	public static String LaunchGroupConfiguration_CannotLaunch;
 	private LaunchMessages() {
 	}
 

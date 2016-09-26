@@ -8,6 +8,7 @@ import java.util.function.Function;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.internal.core.LaunchManager;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -154,7 +155,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void initAddConfigurationSelectionDialog(
 			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(false);
-		multiLaunchConfigurationSelectionDialog.setMode("debug");
+		multiLaunchConfigurationSelectionDialog.setMode(LaunchManager.DEBUG_MODE);
 		multiLaunchConfigurationSelectionDialog.setAction(PostLaunchAction.NONE);
 		multiLaunchConfigurationSelectionDialog.setActionParam("");
 	}
@@ -206,6 +207,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void loadExistingConfigurationData(MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(true);
+		System.out.println("MODE " + selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog.setAction(selectedConfiguration.getPostLaunchAction());
 		multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());

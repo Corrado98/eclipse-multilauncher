@@ -7,7 +7,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.Model;
 
+import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.DelayStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.EmptyStrategy;
@@ -23,6 +28,8 @@ import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
  */
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
 
+	private LaunchConfigurationModel errorConfiguration;
+
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
@@ -34,26 +41,21 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		 * At the beginning it adds a PseudoProcess to the ILaunch in order
 		 * to set it to <terminated> in the end, when all other running processes
 		 * are terminated.  
-		 */		
+		 */
 		PseudoProcess process = new PseudoProcess(launch);
 		process.setLabel(configuration.getName());
 		launch.addProcess(process);
 
 		List<LaunchConfigurationModel> launchConfigurationDataList = LaunchUtils
 				.loadLaunchConfigurations(configuration);
-
 		for (LaunchConfigurationModel model : launchConfigurationDataList) {
-			//isIterating = true;
+			errorConfiguration = model;
 			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(model.getName());
 			if (launchConfiguration != null) {
-				if (process.isTerminated()) {
-					break;
-				}
+				if (process.isTerminated()) break;
 				AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(model);
 				launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode(), mode);
 			}
-			// launchConfiguration can never be null, since an invalid launch
-			// cannot be runned.
 		}
 
 		waitForRunningProcesses();

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package ch.parisi.e4.advancedlaunch.dialog;
 
+import java.awt.Dialog;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -73,7 +74,7 @@ import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
  */
 public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	//implements Listener destroys encapsulation, because anyone could add this class as a Listener! 
-	private LaunchConfigurationFilteredTree fTree;
+
 	private ViewerFilter[] filters = null;
 	private ISelection fSelection;
 	private String launchMode = ILaunchManager.RUN_MODE;
@@ -166,36 +167,28 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			if (!modes.containsKey(launchGroup.getMode())) {
 				modes.put(launchGroup.getMode(), launchGroup);
 			}
-			//Inherit-Mode gets the same properties as the Run-Mode. 
-			if (launchGroup.getMode().equals(LaunchManager.RUN_MODE)) {
+			//Inherit-Mode sees the same launch groups as the Run-Mode. 
+			if (!modes.containsKey(LaunchUtils.INHERIT_MODE) && launchGroup.getMode().equals(LaunchManager.RUN_MODE)) {
 				modes.put(LaunchUtils.INHERIT_MODE, launchGroup);
 			}
-		}
-
-		for (String name : modes.keySet()) {
-
-			String key = name;
-			String value = modes.get(name).getMode();
-			System.out.println(key + " " + value);
-
 		}
 
 		for (Iterator<String> iterator = modes.keySet().iterator(); iterator.hasNext();) {
 			String mode = iterator.next();
 			ILaunchGroup launchGroup = modes.get(mode);
-			fTree = new LaunchConfigurationFilteredTree(stackComposite.getStackParent(),
+			LaunchConfigurationFilteredTree tree = new LaunchConfigurationFilteredTree(stackComposite.getStackParent(),
 					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), launchGroup, filters);
-			stackComposite.addItem(mode, fTree);
-			fTree.createViewControl();
-			ViewerFilter[] filters = fTree.getViewer().getFilters();
+			stackComposite.addItem(mode, tree);
+			tree.createViewControl();
+			ViewerFilter[] filters = tree.getViewer().getFilters();
 			for (ViewerFilter viewerFilter : filters) {
 				if (viewerFilter instanceof LaunchGroupFilter) {
-					fTree.getViewer().removeFilter(viewerFilter);
+					tree.getViewer().removeFilter(viewerFilter);
 				}
 			}
-			fTree.getViewer().addFilter(emptyTypeFilter);
-			fTree.getViewer().addSelectionChangedListener(new SelectionChangedListener());
-			fTree.getViewer().addDoubleClickListener(new IDoubleClickListener() {
+			tree.getViewer().addFilter(emptyTypeFilter);
+			tree.getViewer().addSelectionChangedListener(new SelectionChangedListener());
+			tree.getViewer().addDoubleClickListener(new IDoubleClickListener() {
 				@Override
 				public void doubleClick(DoubleClickEvent event) {
 					/*
@@ -208,13 +201,14 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				}
 			});
 
-//			if (launchGroup.getMode().equals(this.launchMode)) {
-//				stackComposite.setSelection(mode);
-//			}
+			if (mode.equals(this.launchMode)) {
+				stackComposite.setSelection(mode);
+			}
 			if (fInitialSelection != null) {
-				fTree.getViewer().setSelection(fInitialSelection, true);
+				tree.getViewer().setSelection(fInitialSelection, true);
 			}
 		}
+		
 
 		stackComposite.setLabelText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_4);
 		stackComposite.pack();
@@ -231,14 +225,13 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				launchMode = ((Combo) e.widget).getText();
-				System.out.println(launchMode);
 			}
 		});
 
 		createPostLaunchControl(comp);
 		return comp;
 	}
-
+	
 	private void createPostLaunchControl(Composite parent) {
 		Composite comp = new Composite(parent, SWT.NONE);
 		comp.setLayout(new GridLayout(4, false));
@@ -368,10 +361,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 	public void setActionParam(String actionParam) {
 		this.actionParam = actionParam;
-	}
-
-	public LaunchConfigurationFilteredTree getfTree() {
-		return fTree;
 	}
 
 	public ISelection getfSelection() {
