@@ -21,7 +21,7 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfigurationDelegate_Loop;
 	public static String LaunchGroupConfigurationDelegate_Error;
 	public static String LaunchGroupConfigurationDelegate_Action_None;
-	public static String LaunchGroupConfigurationDelegate_Action_WaitUntilTerminated;
+	public static String LaunchGroupConfigurationDelegate_Action_WaitForTermination;
 	public static String LaunchGroupConfigurationDelegate_Action_Delay;
 	public static String LaunchGroupConfigurationDelegate_Action_WaitForConsoleString;
 	public static String LaunchGroupConfigurationSelectionDialog_4;

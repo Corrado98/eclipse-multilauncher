@@ -33,7 +33,7 @@ public class PostLaunchActionUtils {
 		case NONE:
 			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_None;
 		case WAIT_FOR_TERMINATION:
-			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitUntilTerminated;
+			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForTermination;
 		case DELAY:
 			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay;
 		case WAIT_FOR_CONSOLESTRING:
@@ -51,7 +51,7 @@ public class PostLaunchActionUtils {
 	public static PostLaunchAction convertToPostLaunchAction(String name) {
 		if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_None)) {
 			return PostLaunchAction.NONE;
-		} else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitUntilTerminated)) {
+		} else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForTermination)) {
 			return PostLaunchAction.WAIT_FOR_TERMINATION;
 		} else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay)) {
 			return PostLaunchAction.DELAY;

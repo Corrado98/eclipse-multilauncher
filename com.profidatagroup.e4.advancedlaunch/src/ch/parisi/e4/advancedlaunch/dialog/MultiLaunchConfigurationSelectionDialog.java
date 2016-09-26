@@ -169,8 +169,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			if (!modes.containsKey(LaunchUtils.INHERIT_MODE) && launchGroup.getMode().equals(LaunchManager.RUN_MODE)) {
 				modes.put(LaunchUtils.INHERIT_MODE, launchGroup);
 			}
-
-			//TODO remove profile mode
 		}
 
 		for (Iterator<String> iterator = modes.keySet().iterator(); iterator.hasNext();) {
