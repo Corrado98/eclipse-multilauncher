@@ -54,7 +54,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 			if (launchConfiguration != null) {
 				if (process.isTerminated()) break;
 				AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(model);
-				launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode(), mode);
+				launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
 			}
 		}
 

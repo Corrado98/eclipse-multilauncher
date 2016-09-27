@@ -155,7 +155,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void initAddConfigurationSelectionDialog(
 			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(false);
-		multiLaunchConfigurationSelectionDialog.setMode(LaunchUtils.INHERIT_MODE);
+		multiLaunchConfigurationSelectionDialog.setMode(LaunchManager.DEBUG_MODE);
 		multiLaunchConfigurationSelectionDialog.setAction(PostLaunchAction.NONE);
 		multiLaunchConfigurationSelectionDialog.setActionParam("");
 	}

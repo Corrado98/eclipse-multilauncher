@@ -23,9 +23,8 @@ public abstract class AbstractLaunchStrategy {
 	 * @param mode the launch mode, see {@link org.eclipse.debug.core.ILaunchManager}
 	 * @param param the runtime parameter for this strategy (e.g. delay time)
 	 */
-	public final void launchAndWait(ILaunchConfiguration launchConfiguration, String mode, String parentMode) {
+	public final void launchAndWait(ILaunchConfiguration launchConfiguration, String mode) {
 		try {
-			if (mode.equals(LaunchUtils.INHERIT_MODE)) mode = parentMode;
 			ILaunch launch = launchConfiguration.launch(mode, null);
 			launchProcesses.add(launch.getProcesses());
 			waitForLaunch(launch);

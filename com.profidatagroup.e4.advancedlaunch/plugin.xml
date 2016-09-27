@@ -7,7 +7,7 @@
 	   	   id="com.profidatagroup.e4.advancedlaunch.launchConfigurationType"
 		   name="Launch Group"
 		   delegate="ch.parisi.e4.advancedlaunch.LaunchGroupConfigurationDelegate"
-		   modes= "run, debug"
+		   modes= "run"
 		   sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
 	       sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
 	   </launchConfigurationType>

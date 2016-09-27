@@ -19,13 +19,6 @@ import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
  * Utility class with methods that can be accessed throughout the entire code.
  */
 public class LaunchUtils {
-	
-	/**
-	 * A Launch that can either be in {@link ILaunchManager#RUN_MODE} 
-	 * or {@link ILaunchManager#DEBUG_MODE}, depending on the user selecting the 
-	 * 'Run Configurations' or 'Debug Configurations'.
-	 */
-	public static final String INHERIT_MODE = "inherit";
 
 	/**
 	 * Finds a {@link ILaunchConfiguration} by name.

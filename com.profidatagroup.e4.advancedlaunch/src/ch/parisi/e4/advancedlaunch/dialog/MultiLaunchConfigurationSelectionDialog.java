@@ -165,10 +165,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			if (!modes.containsKey(launchGroup.getMode())) {
 				modes.put(launchGroup.getMode(), launchGroup);
 			}
-			//Inherit-Mode sees the same launch groups as the Run-Mode. 
-			if (!modes.containsKey(LaunchUtils.INHERIT_MODE) && launchGroup.getMode().equals(LaunchManager.RUN_MODE)) {
-				modes.put(LaunchUtils.INHERIT_MODE, launchGroup);
-			}
 		}
 
 		for (String mode : modes.keySet()) {
