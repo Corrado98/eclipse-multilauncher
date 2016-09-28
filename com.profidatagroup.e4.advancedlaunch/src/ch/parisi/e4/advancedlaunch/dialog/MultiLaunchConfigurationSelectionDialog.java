@@ -13,6 +13,7 @@ package ch.parisi.e4.advancedlaunch.dialog;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.PojoProperties;
@@ -155,17 +156,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				: LaunchMessages.LaunchGroupConfigurationSelectionDialog_14);
 
 		stackComposite = new ComboControlledStackComposite(comp, SWT.NONE);
-		HashMap<String, ILaunchGroup> modes = new HashMap<String, ILaunchGroup>();
-
-		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
-		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
-
-		for (ILaunchGroup launchGroup : launchGroups) {
-			if (launchGroup.getMode().equals(LaunchManager.PROFILE_MODE)) break;
-			if (!modes.containsKey(launchGroup.getMode())) {
-				modes.put(launchGroup.getMode(), launchGroup);
-			}
-		}
+		
+		Map<String, ILaunchGroup> modes = LaunchUtils.getAllowedModesMap();
 
 		for (String mode : modes.keySet()) {
 			ILaunchGroup launchGroup = modes.get(mode);

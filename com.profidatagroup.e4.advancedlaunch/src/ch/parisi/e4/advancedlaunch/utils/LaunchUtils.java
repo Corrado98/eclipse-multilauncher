@@ -1,16 +1,19 @@
 package ch.parisi.e4.advancedlaunch.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.internal.core.LaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.ui.activities.WorkbenchActivityHelper;
+import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
+import org.eclipse.debug.ui.ILaunchGroup;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
@@ -93,14 +96,42 @@ public class LaunchUtils {
 			for (IProcess process : processesArray) {
 				if (process.isTerminated()) {
 					allTerminated = true;
-				}
-				else {
+				} else {
 					allTerminated = false;
 					return allTerminated;
 				}
 			}
 		}
 		return allTerminated;
+	}
+	
+	//TODO add javadoc
+	public static HashMap<String, ILaunchGroup> getAllowedModesMap() {
+		HashMap<String, ILaunchGroup> modes = new HashMap<String, ILaunchGroup>();
+
+		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
+		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
+
+		for (ILaunchGroup launchGroup : launchGroups) {
+			if (launchGroup.getMode().equals(LaunchManager.PROFILE_MODE)) break;
+			if (!modes.containsKey(launchGroup.getMode())) {
+				modes.put(launchGroup.getMode(), launchGroup);
+			}
+		}
+		return modes;
+	}
+
+	//TODO add javadoc
+	public static String[] getAllowedModes() {
+		int counter = 0;
+		Map<String, ILaunchGroup> modes = getAllowedModesMap();
+		String[] launchModes = new String[modes.keySet().size()];
+		
+		for (String mode : modes.keySet()) {
+			launchModes[counter] = mode;
+			counter++;
+		}
+		return launchModes;
 	}
 
 }
