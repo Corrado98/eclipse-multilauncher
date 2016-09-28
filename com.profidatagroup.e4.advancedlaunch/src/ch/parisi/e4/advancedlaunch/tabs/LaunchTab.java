@@ -1,10 +1,14 @@
 package ch.parisi.e4.advancedlaunch.tabs;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import org.eclipse.core.databinding.observable.list.ObservableList;
+import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -12,6 +16,7 @@ import org.eclipse.debug.internal.core.LaunchManager;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -36,6 +41,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
+import ch.parisi.e4.advancedlaunch.LaunchModeEditingSupport;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
@@ -59,6 +65,14 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private String launchName;
 	private List<LaunchConfigurationModel> launchConfigurationDataList = new ArrayList<>();
+	
+	private PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			setDirty(true);
+			updateLaunchConfigurationDialog();
+		}
+	};
 
 	@Override
 	public void createControl(Composite parent) {
@@ -133,11 +147,13 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		initAddConfigurationSelectionDialog(multiLaunchConfigurationSelectionDialog);
 
 		if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
-			launchConfigurationDataList.add(new LaunchConfigurationModel(
+			LaunchConfigurationModel aLaunchConfigurationModel = new LaunchConfigurationModel(
 					multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(),
 					multiLaunchConfigurationSelectionDialog.getMode(),
 					multiLaunchConfigurationSelectionDialog.getAction(),
-					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam())));
+					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
+			aLaunchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
+			launchConfigurationDataList.add(aLaunchConfigurationModel);
 
 			if (launchConfigurationDataList != null) {
 				updateDirtyModel();
@@ -193,10 +209,12 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			ILaunchConfiguration configuration = multiLaunchConfigurationSelectionDialog
 					.getSelectedLaunchConfiguration();
 
-			LaunchConfigurationModel model = new LaunchConfigurationModel(configuration.getName(),
+			LaunchConfigurationModel launchConfigurationModel = new LaunchConfigurationModel(configuration.getName(),
 					multiLaunchConfigurationSelectionDialog.getMode(),
 					multiLaunchConfigurationSelectionDialog.getAction(),
 					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
+			launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
+			LaunchConfigurationModel model = launchConfigurationModel;
 			launchConfigurationDataList.set(launchConfigurationDataList.indexOf(selectedConfiguration), model);
 
 			if (launchConfigurationDataList != null) {
@@ -315,6 +333,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 		tableViewerColumn.getColumn().setWidth(width);
 		tableViewerColumn.getColumn().setText(name);
+		if(name.equals("Mode")) tableViewerColumn.setEditingSupport(new LaunchModeEditingSupport(tableViewer));
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -339,10 +358,14 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		launchName = configuration.getName();
 		createModelsFromAttributes(configuration);
 	}
-
+	
 	private void createModelsFromAttributes(ILaunchConfiguration configuration) {
 		try {
-			launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
+			List<LaunchConfigurationModel> loadLaunchConfigurations = LaunchUtils.loadLaunchConfigurations(configuration);
+			for (LaunchConfigurationModel launchConfigurationModel : loadLaunchConfigurations) {
+				launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
+			}
+			launchConfigurationDataList = loadLaunchConfigurations;
 			tableViewer.setInput(launchConfigurationDataList);
 			tableViewer.refresh();
 		} catch (CoreException e) {
