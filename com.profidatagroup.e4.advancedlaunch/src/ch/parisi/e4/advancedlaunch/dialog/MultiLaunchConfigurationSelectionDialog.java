@@ -11,8 +11,6 @@
  *******************************************************************************/
 package ch.parisi.e4.advancedlaunch.dialog;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.databinding.DataBindingContext;
@@ -23,7 +21,6 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.internal.core.LaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationFilteredTree;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
@@ -161,7 +158,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 		for (String mode : modes.keySet()) {
 			ILaunchGroup launchGroup = modes.get(mode);
-			LaunchConfigurationFilteredTree tree = new LaunchConfigurationFilteredTree(stackComposite.getStackParent(),
+			 LaunchConfigurationFilteredTree tree = new LaunchConfigurationFilteredTree(stackComposite.getStackParent(),
 					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), launchGroup, filters);
 			stackComposite.addItem(mode, tree);
 			tree.createViewControl();
@@ -174,7 +171,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			tree.getViewer().addFilter(emptyTypeFilter);
 			tree.getViewer().addSelectionChangedListener(new SelectionChangedListener());
 			tree.getViewer().addDoubleClickListener(new DoubleClickListener());
-
 			if (mode.equals(this.launchMode)) {
 				stackComposite.setSelection(mode);
 			}
@@ -320,8 +316,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 	private class SelectionChangedListener implements ISelectionChangedListener {
 		@Override
-		public void selectionChanged(SelectionChangedEvent event) {
-			
+		public void selectionChanged(SelectionChangedEvent event) {	
 			// This listener gets called for a selection change in the launch
 			// configuration viewer embedded in the dialog. Problem is, there are
 			// numerous viewers--one for each platform debug ILaunchGroup (run,
@@ -330,6 +325,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			// notification for every viewer. We need to ignore all but the one that
 			// matters--the visible one.
 			//fInitialSelection = null;
+			//System.out.println(getTree().getViewer().getSelection().toString());
 			Tree topTree = null;
 			final Control topControl = stackComposite.getTopControl();
 			if (topControl instanceof FilteredTree) {
@@ -423,5 +419,9 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 	public void setActionParam(String actionParam) {
 		this.actionParam = actionParam;
+	}
+	
+	public void setCurrentSelection(ISelection currentSelection) {
+		this.currentSelection = currentSelection;
 	}
 }

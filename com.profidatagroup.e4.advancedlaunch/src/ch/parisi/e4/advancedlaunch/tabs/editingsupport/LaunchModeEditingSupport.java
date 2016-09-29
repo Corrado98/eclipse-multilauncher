@@ -1,24 +1,21 @@
-package ch.parisi.e4.advancedlaunch;
+package ch.parisi.e4.advancedlaunch.tabs.editingsupport;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 
+import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
 
 public class LaunchModeEditingSupport extends EditingSupport {
 
 	private final TableViewer tableViewer;
-	int counter = 0;
-	int b = -11;
 
 	public LaunchModeEditingSupport(TableViewer tableViewer) {
 		super(tableViewer);
@@ -50,6 +47,7 @@ public class LaunchModeEditingSupport extends EditingSupport {
 		tableViewer.update(launchConfigurationModel, null);
 	}
 	
+	//TODO add javadoc
 	private static List<String> getSupportedModes(LaunchConfigurationModel launchConfigurationModel) {
 		List<String> supportedModes = new ArrayList<>();
 

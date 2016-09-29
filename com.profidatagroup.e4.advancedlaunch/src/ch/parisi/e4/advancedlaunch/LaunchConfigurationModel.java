@@ -65,7 +65,7 @@ public class LaunchConfigurationModel {
 	}
 
 	public void setPostLaunchAction(PostLaunchAction postLaunchAction) {
-		this.postLaunchAction = postLaunchAction;
+		propertyChangeSupport.firePropertyChange("postLaunchAction", this.postLaunchAction, this.postLaunchAction = postLaunchAction);
 	}
 
 	public String getParam() {

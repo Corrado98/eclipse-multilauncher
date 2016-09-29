@@ -1,6 +1,7 @@
 package ch.parisi.e4.advancedlaunch.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,5 +125,4 @@ public class LaunchUtils {
 	public static String[] getAllowedModes() {
 		return getAllowedModesMap().keySet().toArray(new String[0]);
 	}
-
 }

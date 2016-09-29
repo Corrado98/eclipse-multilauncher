@@ -11,6 +11,8 @@
  *******************************************************************************/
 package ch.parisi.e4.advancedlaunch.utils;
 
+import java.util.Arrays;
+
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
@@ -62,4 +64,21 @@ public class PostLaunchActionUtils {
 			return PostLaunchAction.NONE;
 		}
 	}
+	
+	//TODO add javadoc
+	public static String[] getPostLaunchActionNames(Class<? extends Enum<?>> e) {
+	    return Arrays.stream(e.getEnumConstants()).map(Enum::name).toArray(String[]::new);
+	}
+	
+	//TODO add javadoc	
+	public static String[] getPostLaunchActionNames() {
+	    PostLaunchAction[] states = PostLaunchAction.values();
+	    String[] names = new String[states.length];
+
+	    for (int i = 0; i < states.length; i++) {
+	        names[i] = convertToName(states[i]);
+	    }
+
+	    return names;
+	}	
 }

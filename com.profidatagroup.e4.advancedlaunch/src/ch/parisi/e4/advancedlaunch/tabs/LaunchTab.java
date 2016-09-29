@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import org.eclipse.core.databinding.observable.list.ObservableList;
-import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -16,7 +14,6 @@ import org.eclipse.debug.internal.core.LaunchManager;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -41,9 +38,10 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
-import ch.parisi.e4.advancedlaunch.LaunchModeEditingSupport;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
+import ch.parisi.e4.advancedlaunch.tabs.editingsupport.LaunchModeEditingSupport;
+import ch.parisi.e4.advancedlaunch.tabs.editingsupport.PostLaunchActionEditingSupport;
 import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
@@ -153,6 +151,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					multiLaunchConfigurationSelectionDialog.getAction(),
 					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
 			aLaunchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
+			aLaunchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
 			launchConfigurationDataList.add(aLaunchConfigurationModel);
 
 			if (launchConfigurationDataList != null) {
@@ -214,6 +213,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					multiLaunchConfigurationSelectionDialog.getAction(),
 					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
 			launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
+			launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
 			LaunchConfigurationModel model = launchConfigurationModel;
 			launchConfigurationDataList.set(launchConfigurationDataList.indexOf(selectedConfiguration), model);
 
@@ -334,6 +334,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		tableViewerColumn.getColumn().setWidth(width);
 		tableViewerColumn.getColumn().setText(name);
 		if(name.equals("Mode")) tableViewerColumn.setEditingSupport(new LaunchModeEditingSupport(tableViewer));
+		if(name.equals("Action")) tableViewerColumn.setEditingSupport(new PostLaunchActionEditingSupport(tableViewer));
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -364,6 +365,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			List<LaunchConfigurationModel> loadLaunchConfigurations = LaunchUtils.loadLaunchConfigurations(configuration);
 			for (LaunchConfigurationModel launchConfigurationModel : loadLaunchConfigurations) {
 				launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
+				launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
 			}
 			launchConfigurationDataList = loadLaunchConfigurations;
 			tableViewer.setInput(launchConfigurationDataList);
