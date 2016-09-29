@@ -113,7 +113,6 @@ public class LaunchUtils {
 		ILaunchGroup[] launchGroups = manager.getLaunchGroups();
 
 		for (ILaunchGroup launchGroup : launchGroups) {
-			if (launchGroup.getMode().equals(LaunchManager.PROFILE_MODE)) break;
 			if (!modes.containsKey(launchGroup.getMode())) {
 				modes.put(launchGroup.getMode(), launchGroup);
 			}
@@ -123,15 +122,7 @@ public class LaunchUtils {
 
 	//TODO add javadoc
 	public static String[] getAllowedModes() {
-		int counter = 0;
-		Map<String, ILaunchGroup> modes = getAllowedModesMap();
-		String[] launchModes = new String[modes.keySet().size()];
-		
-		for (String mode : modes.keySet()) {
-			launchModes[counter] = mode;
-			counter++;
-		}
-		return launchModes;
+		return getAllowedModesMap().keySet().toArray(new String[0]);
 	}
 
 }

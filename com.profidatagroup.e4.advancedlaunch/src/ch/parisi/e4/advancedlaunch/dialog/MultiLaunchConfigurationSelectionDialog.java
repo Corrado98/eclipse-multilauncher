@@ -155,7 +155,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		setTitle(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_15
 				: LaunchMessages.LaunchGroupConfigurationSelectionDialog_14);
 
-		stackComposite = new ComboControlledStackComposite(comp, SWT.NONE);
+		stackComposite = new ComboControlledStackComposite(comp, SWT.NONE, this);
 		
 		Map<String, ILaunchGroup> modes = LaunchUtils.getAllowedModesMap();
 
@@ -321,6 +321,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	private class SelectionChangedListener implements ISelectionChangedListener {
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
+			
 			// This listener gets called for a selection change in the launch
 			// configuration viewer embedded in the dialog. Problem is, there are
 			// numerous viewers--one for each platform debug ILaunchGroup (run,
@@ -328,7 +329,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			// visible to the user. During initialization, we get a selection change
 			// notification for every viewer. We need to ignore all but the one that
 			// matters--the visible one.
-
+			//fInitialSelection = null;
 			Tree topTree = null;
 			final Control topControl = stackComposite.getTopControl();
 			if (topControl instanceof FilteredTree) {

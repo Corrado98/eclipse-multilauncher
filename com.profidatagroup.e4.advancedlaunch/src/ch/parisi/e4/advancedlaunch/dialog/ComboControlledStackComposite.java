@@ -39,9 +39,11 @@ public class ComboControlledStackComposite extends Composite {
 	private Map<String, Composite> tabMap; // label ==> tab
 	private StackLayout layout;
 	private Label fLabel;
+	private MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog;
 
-	public ComboControlledStackComposite(Composite parent, int style) {
+	public ComboControlledStackComposite(Composite parent, int style, MultiLaunchConfigurationSelectionDialog dialog) {
 		super(parent, style);
+		multiLaunchConfigurationSelectionDialog = dialog;
 		tabMap = new LinkedHashMap<String, Composite>();
 		setLayout(new GridLayout(2, false));
 		createContents(this);
@@ -120,6 +122,7 @@ public class ComboControlledStackComposite extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				String name = fCombo.getText();
 				comboSelected(name);
+				multiLaunchConfigurationSelectionDialog.validate();
 			}
 		});
 		return box;
