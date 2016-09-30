@@ -1,6 +1,5 @@
 package ch.parisi.e4.advancedlaunch;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -73,6 +72,6 @@ public class LaunchConfigurationModel {
 	}
 
 	public void setParam(String param) {
-		this.param = param;
+		propertyChangeSupport.firePropertyChange("param", this.param, this.param = param);
 	}
 }

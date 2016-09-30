@@ -9,11 +9,13 @@ import java.util.function.Function;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.internal.core.LaunchManager;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -41,6 +43,7 @@ import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 import ch.parisi.e4.advancedlaunch.tabs.editingsupport.LaunchModeEditingSupport;
+import ch.parisi.e4.advancedlaunch.tabs.editingsupport.ParamEditingSupport;
 import ch.parisi.e4.advancedlaunch.tabs.editingsupport.PostLaunchActionEditingSupport;
 import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
@@ -63,12 +66,20 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private String launchName;
 	private List<LaunchConfigurationModel> launchConfigurationDataList = new ArrayList<>();
-	
+
 	private PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			setDirty(true);
-			updateLaunchConfigurationDialog();
+			//TODO add validation here.
+			switch (evt.getPropertyName()) {
+			case "mode":
+				break;
+			case "postLaunchAction":
+				((LaunchConfigurationModel) evt.getSource()).setParam("");
+				break;
+
+			case "param":
+			}
 		}
 	};
 
@@ -138,21 +149,22 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			}
 		});
 	}
-	
+
 	private void addLaunchConfigurationToModel() {
 		MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
 				getShell());
 		initAddConfigurationSelectionDialog(multiLaunchConfigurationSelectionDialog);
 
 		if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
-			LaunchConfigurationModel aLaunchConfigurationModel = new LaunchConfigurationModel(
+			LaunchConfigurationModel launchConfigurationModel = new LaunchConfigurationModel(
 					multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(),
 					multiLaunchConfigurationSelectionDialog.getMode(),
 					multiLaunchConfigurationSelectionDialog.getAction(),
 					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
-			aLaunchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
-			aLaunchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
-			launchConfigurationDataList.add(aLaunchConfigurationModel);
+			launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
+			launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
+			launchConfigurationModel.addPropertyChangeListener("param", propertyChangeListener);
+			launchConfigurationDataList.add(launchConfigurationModel);
 
 			if (launchConfigurationDataList != null) {
 				updateDirtyModel();
@@ -214,6 +226,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
 			launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
+			launchConfigurationModel.addPropertyChangeListener("param", propertyChangeListener);
 			LaunchConfigurationModel model = launchConfigurationModel;
 			launchConfigurationDataList.set(launchConfigurationDataList.indexOf(selectedConfiguration), model);
 
@@ -223,7 +236,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 
-	private void loadExistingConfigurationData(MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
+	private void loadExistingConfigurationData(
+			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setForEditing(true);
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog.setAction(selectedConfiguration.getPostLaunchAction());
@@ -276,7 +290,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null) {
 					int index = launchConfigurationDataList.indexOf(selectedConfiguration);
-					// If first element of table is selected, cant move it further
+					// If first element of table is selected, can't move it further
 					// up than that, therefore return.
 					if (index > 0) {
 						int indexBefore = index - 1;
@@ -300,7 +314,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null) {
 					int index = launchConfigurationDataList.indexOf(selectedConfiguration);
-					// If last element of table is selected, cant move it further
+					// If last element of table is selected, can't move it further
 					// down than that, therefore return.
 					if (index + 1 < launchConfigurationDataList.size()) {
 						int indexAfter = index + 1;
@@ -333,8 +347,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 		tableViewerColumn.getColumn().setWidth(width);
 		tableViewerColumn.getColumn().setText(name);
-		if(name.equals("Mode")) tableViewerColumn.setEditingSupport(new LaunchModeEditingSupport(tableViewer));
-		if(name.equals("Action")) tableViewerColumn.setEditingSupport(new PostLaunchActionEditingSupport(tableViewer));
+		if (name.equals("Mode")) tableViewerColumn.setEditingSupport(new LaunchModeEditingSupport(tableViewer));
+		if (name.equals("Action")) tableViewerColumn.setEditingSupport(new PostLaunchActionEditingSupport(tableViewer));
+		if (name.equals("Param")) tableViewerColumn.setEditingSupport(new ParamEditingSupport(tableViewer));
+
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -359,13 +375,15 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		launchName = configuration.getName();
 		createModelsFromAttributes(configuration);
 	}
-	
+
 	private void createModelsFromAttributes(ILaunchConfiguration configuration) {
 		try {
-			List<LaunchConfigurationModel> loadLaunchConfigurations = LaunchUtils.loadLaunchConfigurations(configuration);
+			List<LaunchConfigurationModel> loadLaunchConfigurations = LaunchUtils
+					.loadLaunchConfigurations(configuration);
 			for (LaunchConfigurationModel launchConfigurationModel : loadLaunchConfigurations) {
 				launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
 				launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
+				launchConfigurationModel.addPropertyChangeListener("param", propertyChangeListener);
 			}
 			launchConfigurationDataList = loadLaunchConfigurations;
 			tableViewer.setInput(launchConfigurationDataList);
@@ -410,8 +428,21 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		setMessage(null);
 		setErrorMessage(null);
 
+		for (LaunchConfigurationModel launchConfigurationModel : launchConfigurationDataList) {
+			if (launchConfigurationModel.getPostLaunchAction() == PostLaunchAction.DELAY) {
+				if (!isValidNumber(launchConfigurationModel.getParam())) {
+					setErrorMessage("Invalid number of seconds: " + launchConfigurationModel.getParam());
+					return false;
+				}
+			}
+		}
+		
 		try {
-			if(((List<LaunchConfigurationModel>)tableViewer.getInput()).isEmpty()) return false;
+			if (((List<LaunchConfigurationModel>) tableViewer.getInput()).isEmpty()) {
+				setMessage(null);
+				setErrorMessage(null);
+				return false;
+			}
 			validateRecursive(launchName, null, launchConfigurationDataList);
 			return true;
 		} catch (LaunchValidationException launchValidationException) {
@@ -422,13 +453,21 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		return false;
 	}
 
+	private boolean isValidNumber(String string) {
+		try {
+			Integer.parseInt(string);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
+	}
+
 	private void validateRecursive(String rootLaunchName, String firstLevelChildLaunchName,
 			List<LaunchConfigurationModel> launchConfigurationDataList) throws CoreException {
 		for (LaunchConfigurationModel launchConfigurationModel : launchConfigurationDataList) {
 			if (rootLaunchName.equals(launchConfigurationModel.getName())) {
 				throw new LaunchValidationException(MessageFormat
-						.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, 
-								firstLevelChildLaunchName == null
+						.format(LaunchMessages.LaunchGroupConfigurationDelegate_Loop, firstLevelChildLaunchName == null
 								? launchConfigurationModel.getName() : firstLevelChildLaunchName));
 			}
 
