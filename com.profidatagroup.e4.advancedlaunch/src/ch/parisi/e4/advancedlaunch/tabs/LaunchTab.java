@@ -9,13 +9,11 @@ import java.util.function.Function;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.internal.core.LaunchManager;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -72,13 +70,16 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		public void propertyChange(PropertyChangeEvent evt) {
 			//TODO add validation here.
 			switch (evt.getPropertyName()) {
-			case "mode":
-				break;
 			case "postLaunchAction":
 				((LaunchConfigurationModel) evt.getSource()).setParam("");
+				setDirty(true);
+				updateLaunchConfigurationDialog();
 				break;
 
 			case "param":
+				setDirty(true);
+				updateLaunchConfigurationDialog();
+				break;
 			}
 		}
 	};
@@ -107,13 +108,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void initTableViewer() {
 		tableViewer = new TableViewer(mainComposite,
 				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				editLaunchConfiguration();
-			}
-		});
-
+		
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(tableViewer.getTable());
 
 		// gets user selected element in the table and works with it.
@@ -432,6 +427,12 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			if (launchConfigurationModel.getPostLaunchAction() == PostLaunchAction.DELAY) {
 				if (!isValidNumber(launchConfigurationModel.getParam())) {
 					setErrorMessage("Invalid number of seconds: " + launchConfigurationModel.getParam());
+					return false;
+				}
+			}
+			if(launchConfigurationModel.getPostLaunchAction() == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+				if(launchConfigurationModel.getParam().trim().isEmpty()) {
+					setErrorMessage("Empty regular expression: " + launchConfigurationModel.getParam());
 					return false;
 				}
 			}
