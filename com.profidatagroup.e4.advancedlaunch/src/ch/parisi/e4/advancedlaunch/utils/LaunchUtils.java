@@ -106,8 +106,38 @@ public class LaunchUtils {
 		return allTerminated;
 	}
 	
-	//TODO add javadoc
-	public static HashMap<String, ILaunchGroup> getAllowedModesMap() {
+	/**
+	 * Returns all supported modes of a {@link ILaunchConfiguration}.
+	 * @param launchConfigurationModel the model with the {@code ILaunchConfiguration}'s name
+	 * @return the supported modes for the {@code ILaunchConfiguration}
+	 */
+	public static List<String> getSupportedModes(LaunchConfigurationModel launchConfigurationModel) {
+		List<String> supportedModes = new ArrayList<>();
+
+		try {
+			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(launchConfigurationModel.getName());
+			String[] launchModes = LaunchUtils.getModes();
+			for (String launchMode : launchModes) {
+				if (launchConfiguration.supportsMode(launchMode)) {
+					supportedModes.add(launchMode);
+				}
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		
+		return supportedModes;
+	}
+	
+	/**
+	 * Returns a map which maps a LaunchMode to an 'example' LaunchGroup. 
+	 * 
+	 *  The method checks for each LaunchGroup if its corresponding mode is already in the map;
+	 *  if not, the mode(key) will be put in the map with the first launchGroup that contained it. 
+	 *  
+	 * @return a map with all modes
+	 */
+	public static HashMap<String, ILaunchGroup> getModesMap() {
 		HashMap<String, ILaunchGroup> modes = new HashMap<String, ILaunchGroup>();
 
 		LaunchConfigurationManager manager = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
@@ -121,8 +151,12 @@ public class LaunchUtils {
 		return modes;
 	}
 
-	//TODO add javadoc
-	public static String[] getAllowedModes() {
-		return getAllowedModesMap().keySet().toArray(new String[0]);
+	/**
+	 * Gets all the modes based on the returned {@code Map} of the {@link #getModesMap()} method.
+	 * @return a {@code String} array with all modes
+	 */
+	public static String[] getModes() {
+		return getModesMap().keySet().toArray(new String[0]);
 	}
+	
 }

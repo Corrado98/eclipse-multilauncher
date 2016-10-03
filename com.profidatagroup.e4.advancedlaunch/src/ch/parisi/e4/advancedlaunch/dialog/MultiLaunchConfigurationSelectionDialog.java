@@ -154,7 +154,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 		stackComposite = new ComboControlledStackComposite(comp, SWT.NONE, this);
 		
-		Map<String, ILaunchGroup> modes = LaunchUtils.getAllowedModesMap();
+		Map<String, ILaunchGroup> modes = LaunchUtils.getModesMap();
 
 		for (String mode : modes.keySet()) {
 			ILaunchGroup launchGroup = modes.get(mode);

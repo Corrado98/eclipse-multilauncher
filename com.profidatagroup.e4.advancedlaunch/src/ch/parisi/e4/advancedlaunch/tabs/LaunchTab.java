@@ -68,7 +68,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			//TODO add validation here.
 			switch (evt.getPropertyName()) {
 			case "postLaunchAction":
 				((LaunchConfigurationModel) evt.getSource()).setParam("");

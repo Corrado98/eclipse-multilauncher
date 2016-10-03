@@ -13,15 +13,17 @@ import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 public class PostLaunchActionEditingSupport extends EditingSupport {
 
 	private final TableViewer tableViewer;
+	private final CellEditor cellEditor;
 
 	public PostLaunchActionEditingSupport(TableViewer tableViewer) {
 		super(tableViewer);
 		this.tableViewer = tableViewer;
+		this.cellEditor = new ComboBoxCellEditor(tableViewer.getTable(), PostLaunchActionUtils.getPostLaunchActionNames());
 	}
 
 	@Override
 	protected CellEditor getCellEditor(Object element) {
-		return new ComboBoxCellEditor(tableViewer.getTable(), PostLaunchActionUtils.getPostLaunchActionNames());
+		return cellEditor;
 	}
 
 	@Override

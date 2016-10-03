@@ -65,16 +65,14 @@ public class PostLaunchActionUtils {
 		}
 	}
 	
-	//TODO add javadoc
-	public static String[] getPostLaunchActionNames(Class<? extends Enum<?>> e) {
-	    return Arrays.stream(e.getEnumConstants()).map(Enum::name).toArray(String[]::new);
-	}
-	
-	//TODO add javadoc	
+	/**
+	 * Returns the String representations of the {@link PostLaunchAction} enum in an array.  	
+	 * @return a {@code String} array containing the textual value of each enum state.    
+	 */
 	public static String[] getPostLaunchActionNames() {
 	    PostLaunchAction[] states = PostLaunchAction.values();
 	    String[] names = new String[states.length];
-
+	    
 	    for (int i = 0; i < states.length; i++) {
 	        names[i] = convertToName(states[i]);
 	    }
