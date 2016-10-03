@@ -6,6 +6,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
@@ -22,7 +23,7 @@ public class LaunchModeEditingSupport extends EditingSupport {
 	@Override
 	protected CellEditor getCellEditor(Object element) {
 		LaunchConfigurationModel launchConfigurationModel = (LaunchConfigurationModel) element;
-		return new ComboBoxCellEditor(tableViewer.getTable(), LaunchUtils.getSupportedModes(launchConfigurationModel).toArray(new String[0]));
+		return new ComboBoxCellEditor(tableViewer.getTable(), LaunchUtils.getSupportedModes(launchConfigurationModel).toArray(new String[0]), SWT.READ_ONLY);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
@@ -13,17 +14,15 @@ import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 public class PostLaunchActionEditingSupport extends EditingSupport {
 
 	private final TableViewer tableViewer;
-	private final CellEditor cellEditor;
 
 	public PostLaunchActionEditingSupport(TableViewer tableViewer) {
 		super(tableViewer);
 		this.tableViewer = tableViewer;
-		this.cellEditor = new ComboBoxCellEditor(tableViewer.getTable(), PostLaunchActionUtils.getPostLaunchActionNames());
 	}
 
 	@Override
 	protected CellEditor getCellEditor(Object element) {
-		return cellEditor;
+		return new ComboBoxCellEditor(tableViewer.getTable(), PostLaunchActionUtils.getPostLaunchActionNames(), SWT.READ_ONLY);
 	}
 
 	@Override
