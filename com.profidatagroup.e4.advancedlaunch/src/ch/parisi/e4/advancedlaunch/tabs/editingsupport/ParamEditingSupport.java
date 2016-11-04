@@ -4,11 +4,9 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.swt.SWT;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
-import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 
 public class ParamEditingSupport extends EditingSupport {
 
@@ -21,7 +19,7 @@ public class ParamEditingSupport extends EditingSupport {
 
 	@Override
 	protected CellEditor getCellEditor(Object element) {
-		return new TextCellEditor(tableViewer.getTable(), SWT.READ_ONLY);
+		return new TextCellEditor(tableViewer.getTable());
 	}
 
 	@Override

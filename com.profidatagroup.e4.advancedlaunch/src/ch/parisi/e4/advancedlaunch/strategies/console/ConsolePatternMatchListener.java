@@ -5,7 +5,7 @@ import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 
 public class ConsolePatternMatchListener implements IPatternMatchListener {
-	private String checkRegex;
+	private final String checkRegex;
 	private volatile boolean consoleStringDetected = false;
 	
 	public ConsolePatternMatchListener(String checkRegex) {

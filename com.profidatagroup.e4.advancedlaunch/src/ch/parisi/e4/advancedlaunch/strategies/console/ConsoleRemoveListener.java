@@ -7,7 +7,7 @@ import org.eclipse.ui.console.IConsoleListener;
 
 public class ConsoleRemoveListener implements IConsoleListener {
 
-	private IConsole console;
+	private final IConsole console;
 	
 	private volatile boolean removed;
 

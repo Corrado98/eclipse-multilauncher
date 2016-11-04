@@ -341,9 +341,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 		tableViewerColumn.getColumn().setWidth(width);
 		tableViewerColumn.getColumn().setText(name);
-		if (name.equals("Mode")) tableViewerColumn.setEditingSupport(new LaunchModeEditingSupport(tableViewer));
-		if (name.equals("Action")) tableViewerColumn.setEditingSupport(new PostLaunchActionEditingSupport(tableViewer));
-		if (name.equals("Param")) tableViewerColumn.setEditingSupport(new ParamEditingSupport(tableViewer));
+		
+		initEditingSupport(name, tableViewerColumn);
 
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
@@ -352,6 +351,12 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				return actionTextFetcher.apply(model);
 			}
 		});
+	}
+
+	private void initEditingSupport(String name, TableViewerColumn tableViewerColumn) {	
+		if (name.equals("Mode")) tableViewerColumn.setEditingSupport(new LaunchModeEditingSupport(tableViewer));
+		else if (name.equals("Action")) tableViewerColumn.setEditingSupport(new PostLaunchActionEditingSupport(tableViewer));
+		else if (name.equals("Param")) tableViewerColumn.setEditingSupport(new ParamEditingSupport(tableViewer));
 	}
 
 	@Override
