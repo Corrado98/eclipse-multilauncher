@@ -18,8 +18,6 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -196,19 +194,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void editLaunchConfiguration() {
 		MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog = new MultiLaunchConfigurationSelectionDialog(
 				getShell());
+		
 		loadExistingConfigurationData(multiLaunchConfigurationSelectionDialog);
-
-		ILaunchConfiguration launchConfiguration;
-		try {
-			launchConfiguration = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
-			if (launchConfiguration != null) {
-				if (LaunchUtils.isValidLaunchReference(launchConfiguration)) {
-					multiLaunchConfigurationSelectionDialog.setInitialSelection(launchConfiguration);
-				}
-			}
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 
 		if (multiLaunchConfigurationSelectionDialog.open() == Window.OK) {
 			ILaunchConfiguration configuration = multiLaunchConfigurationSelectionDialog
@@ -236,6 +223,17 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog.setAction(selectedConfiguration.getPostLaunchAction());
 		multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
+		
+		try {
+			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
+			if (launchConfiguration != null) {
+				if (LaunchUtils.isValidLaunchReference(launchConfiguration)) { //likely unnecessary
+					multiLaunchConfigurationSelectionDialog.setInitialSelection(launchConfiguration);
+				}
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void addTableViewerSelectionChangedListener() {

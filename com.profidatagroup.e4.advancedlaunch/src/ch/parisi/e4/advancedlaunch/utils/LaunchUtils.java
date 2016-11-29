@@ -81,27 +81,6 @@ public class LaunchUtils {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		return manager.isExistingLaunchConfigurationName(config.getName());
 	}
-
-	/**
-	 * Checks whether all current running launches are terminated. 
-	 * 
-	 * @return {@code true} if all launches are terminated, 
-	 * 		   {@code false} 
-	 */
-	public static boolean AreAllRunningProcessesTerminated() {
-		boolean allTerminated = false;
-		for (IProcess[] processesArray : AbstractLaunchStrategy.launchProcesses) {
-			for (IProcess process : processesArray) {
-				if (process.isTerminated()) {
-					allTerminated = true;
-				} else {
-					allTerminated = false;
-					return allTerminated;
-				}
-			}
-		}
-		return allTerminated;
-	}
 	
 	/**
 	 * Returns all supported modes of a {@link ILaunchConfiguration}.
