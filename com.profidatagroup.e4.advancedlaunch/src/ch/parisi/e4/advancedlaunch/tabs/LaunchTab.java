@@ -70,6 +70,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			case "mode":
 				setDirty(true);
 				updateDirtyModel();
+				break;
 				
 			case "postLaunchAction":
 				((LaunchConfigurationModel) evt.getSource()).setParam("");
