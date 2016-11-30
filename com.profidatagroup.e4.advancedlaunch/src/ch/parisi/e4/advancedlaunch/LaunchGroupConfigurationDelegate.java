@@ -25,7 +25,8 @@ import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDelegate {
 
 	@Override
-	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
+	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
+			throws CoreException {
 
 		/*
 		 * This method iterates through all user-selected launchconfigurations and
@@ -35,16 +36,16 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		 * to set a name (label) to the multilaunch. After all wait strategies have finished, the multilaunch is removed 
 		 * from the LaunchManager.
 		 */
-		
+
 		PseudoProcess process = new PseudoProcess(launch);
 		process.setLabel(configuration.getName());
 		launch.addProcess(process);
 
+		try {
 			List<LaunchConfigurationModel> launchConfigurationDataList = LaunchUtils
 					.loadLaunchConfigurations(configuration);
-			
+
 			for (LaunchConfigurationModel model : launchConfigurationDataList) {
-				monitor.done();
 				ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(model.getName());
 				if (launchConfiguration != null) {
 					if (process.isTerminated()) break;
@@ -52,8 +53,18 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 					launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
 				}
 			}
-
+		} catch (CoreException e) {
+			removeLaunchesFromLaunchManager();
+			throw e;
+		}
 		DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
+	}
+
+	private void removeLaunchesFromLaunchManager() {
+		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
+		for (int i = 0; i < launches.length; i++) {
+			DebugPlugin.getDefault().getLaunchManager().removeLaunch(launches[i]);
+		}
 	}
 
 	/**

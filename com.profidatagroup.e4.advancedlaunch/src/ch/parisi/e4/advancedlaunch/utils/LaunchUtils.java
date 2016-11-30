@@ -85,7 +85,7 @@ public class LaunchUtils {
 	/**
 	 * Returns all supported modes of a {@link ILaunchConfiguration}.
 	 * @param launchConfigurationModel the model with the {@code ILaunchConfiguration}'s name
-	 * @return the supported modes for the {@code ILaunchConfiguration}
+	 * @return the supported modes of the {@code ILaunchConfiguration}
 	 */
 	public static List<String> getSupportedModes(LaunchConfigurationModel launchConfigurationModel) {
 		List<String> supportedModes = new ArrayList<>();

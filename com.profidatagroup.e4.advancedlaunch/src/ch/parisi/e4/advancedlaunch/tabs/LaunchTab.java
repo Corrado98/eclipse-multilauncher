@@ -67,6 +67,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			switch (evt.getPropertyName()) {
+			case "mode":
+				setDirty(true);
+				updateDirtyModel();
+				
 			case "postLaunchAction":
 				((LaunchConfigurationModel) evt.getSource()).setParam("");
 				setDirty(true);

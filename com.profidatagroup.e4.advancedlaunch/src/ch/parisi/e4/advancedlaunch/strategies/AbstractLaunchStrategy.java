@@ -7,8 +7,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 
 public abstract class AbstractLaunchStrategy {
 
@@ -22,17 +20,14 @@ public abstract class AbstractLaunchStrategy {
 	 * @param launchConfiguration the {@link ILaunchConfiguration}
 	 * @param mode the launch mode, see {@link org.eclipse.debug.core.ILaunchManager}
 	 * @param param the runtime parameter for this strategy (e.g. delay time)
+	 * @throws CoreException 
 	 */
-	public final void launchAndWait(ILaunchConfiguration launchConfiguration, String mode) {
-		try {
-			ILaunch launch = launchConfiguration.launch(mode, null);
-			launchProcesses.add(launch.getProcesses());
-			waitForLaunch(launch);
-		} catch (CoreException e) {
-			displayException(e);
-		}
+	public final void launchAndWait(ILaunchConfiguration launchConfiguration, String mode) throws CoreException {
+		ILaunch launch = launchConfiguration.launch(mode, null);
+		launchProcesses.add(launch.getProcesses());
+		waitForLaunch(launch);
 	}
-	
+
 	/**
 	 * Waits until the conditions of this strategy are met.
 	 * 
@@ -43,12 +38,4 @@ public abstract class AbstractLaunchStrategy {
 	 */
 	protected abstract void waitForLaunch(ILaunch launch);
 	
-	private void displayException(CoreException e) {
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				MessageDialog.openError(Display.getDefault().getActiveShell(), "Core Exception", e.getLocalizedMessage());
-			}
-		});
-	}
 }
