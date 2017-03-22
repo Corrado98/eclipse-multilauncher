@@ -40,6 +40,10 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfiguration_Edit;
 	public static String LaunchGroupConfiguration_Add;
 	public static String LaunchGroupConfiguration_Remove;
+	public static String LaunchGroupConfiguration_PromptBeforeLaunch;
+	public static String LaunchGroupConfiguration_PromptBeforeLaunch_Dialog_Title;
+	public static String LaunchGroupConfiguration_PromptBeforeLaunch_Dialog_Question;
+	public static String LaunchGroupConfiguration_PromptBeforeLaunch_Dialog_Toggle;
 	public static String LaunchGroupConfiguration_Name;
 	public static String LaunchGroupConfiguration_Launches;
 	public static String LaunchGroupConfiguration_NotFound;
