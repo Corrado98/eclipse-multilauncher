@@ -19,6 +19,7 @@ import org.eclipse.debug.core.model.IProcess;
 public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 
 	private List<Set<IProcess>> processesToWait = Collections.synchronizedList(new ArrayList<>());
+	private volatile boolean aborted = false;
 
 	@Override
 	protected void waitForLaunch(ILaunch launch) {
@@ -32,9 +33,6 @@ public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 					for (DebugEvent event : events) {
 						Object source = event.getSource();
 						if (source instanceof IProcess && event.getKind() == DebugEvent.TERMINATE) {
-							// check if the process terminating is one i'm
-							// interested in
-							System.out.println("Terminated " + source);
 							for (Set<IProcess> processSet : processesToWait) {
 								processSet.remove(source);
 							}
@@ -45,7 +43,8 @@ public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 
 			debugPlugin.addDebugEventListener(debugEventSetListener);
 			waitForProcessesToTerminate(launch.getProcesses());
-		} finally {
+		}
+		finally {
 			if (debugEventSetListener != null) {
 				debugPlugin.removeDebugEventListener(debugEventSetListener);
 			}
@@ -58,14 +57,20 @@ public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 		System.out.println("Waiting for processes: " + processSet);
 		processesToWait.add(processSet);
 
-		while (!processSet.isEmpty()) {
+		while (!processSet.isEmpty() && !aborted) { //could make aborted check on first method line
 			System.out.println("Still waiting for processes: " + processSet);
 			try {
 				Thread.sleep(1000);
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		System.out.println("Finished waiting for processes: " + Arrays.toString(processes));
+	}
+
+	@Override
+	protected void launchTerminated(int theExitCode) {
+		aborted = true;
 	}
 }

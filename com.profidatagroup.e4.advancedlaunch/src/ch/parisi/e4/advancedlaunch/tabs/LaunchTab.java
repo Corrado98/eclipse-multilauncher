@@ -85,6 +85,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					setDirty(true);
 					updateLaunchConfigurationDialog();
 					break;
+				case "abortLaunchOnException":
+					setDirty(true);
+					updateLaunchConfigurationDialog();
+					break;
 			}
 		}
 	};
@@ -163,10 +167,12 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(),
 					multiLaunchConfigurationSelectionDialog.getMode(),
 					multiLaunchConfigurationSelectionDialog.getAction(),
-					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
+					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()),
+					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnException());
 			launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener("param", propertyChangeListener);
+			launchConfigurationModel.addPropertyChangeListener("abortLaunchOnException", propertyChangeListener);
 			launchConfigurationDataList.add(launchConfigurationModel);
 
 			if (launchConfigurationDataList != null) {
@@ -216,10 +222,12 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					configuration.getName(),
 					multiLaunchConfigurationSelectionDialog.getMode(),
 					multiLaunchConfigurationSelectionDialog.getAction(),
-					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()));
+					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()),
+					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnException());
 			launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener("param", propertyChangeListener);
+			launchConfigurationModel.addPropertyChangeListener("abortLaunchOnException", propertyChangeListener);
 			LaunchConfigurationModel model = launchConfigurationModel;
 			launchConfigurationDataList.set(launchConfigurationDataList.indexOf(selectedConfiguration), model);
 
@@ -235,6 +243,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog.setAction(selectedConfiguration.getPostLaunchAction());
 		multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
+		multiLaunchConfigurationSelectionDialog.setAbortLaunchOnException(selectedConfiguration.isAbortLaunchOnError());
 
 		try {
 			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
@@ -279,6 +288,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null && launchConfigurationDataList != null) {
 					launchConfigurationDataList.remove(selectedConfiguration);
+					//Is this cleaner?
+					//selectedConfiguration.removePropertyChangeListener(propertyChangeListener);
 					updateDirtyModel();
 				}
 			}
@@ -287,9 +298,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void initPromptBeforeLaunchCheckbox() {
 		promptBeforeLaunchCheckbox = new Button(mainComposite, SWT.CHECK);
-		//promptBeforeLaunchCheckbox.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		promptBeforeLaunchCheckbox.setText(LaunchMessages.LaunchGroupConfiguration_PromptBeforeLaunch);
-		//promptBeforeLaunchCheckbox.setSelection(true);
 		promptBeforeLaunchCheckbox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -398,6 +407,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
+		// empty
 	}
 
 	@Override
@@ -414,6 +424,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
 				launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
 				launchConfigurationModel.addPropertyChangeListener("param", propertyChangeListener);
+				launchConfigurationModel.addPropertyChangeListener("abortLaunchOnException", propertyChangeListener);
 			}
 			launchConfigurationDataList = loadLaunchConfigurations;
 			tableViewer.setInput(launchConfigurationDataList);
@@ -431,18 +442,22 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		List<String> modes = new ArrayList<>();
 		List<String> postLaunchActions = new ArrayList<>();
 		List<String> params = new ArrayList<>();
+		List<String> abortLaunchesOnException = new ArrayList<>();
 
 		for (LaunchConfigurationModel launchConfigurationModel : launchConfigurationDataList) {
 			names.add(launchConfigurationModel.getName());
 			modes.add(launchConfigurationModel.getMode());
 			postLaunchActions.add(PostLaunchActionUtils.convertToName(launchConfigurationModel.getPostLaunchAction()));
 			params.add(launchConfigurationModel.getParam());
+			abortLaunchesOnException.add(String.valueOf(launchConfigurationModel.isAbortLaunchOnError()));
 		}
 
 		configuration.setAttribute("names", names);
 		configuration.setAttribute("modes", modes);
 		configuration.setAttribute("postLaunchActions", postLaunchActions);
 		configuration.setAttribute("params", params);
+		configuration.setAttribute("abortLaunchesOnException", abortLaunchesOnException);
+
 		configuration.setAttribute("promptBeforeLaunch", promptBeforeLaunchCheckbox.getSelection());
 	}
 

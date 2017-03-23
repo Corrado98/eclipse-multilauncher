@@ -6,7 +6,7 @@ public class EmptyStrategy extends AbstractLaunchStrategy {
 
 	@Override
 	protected void waitForLaunch(ILaunch launch) {
-		// nothing to do
+		//nothing to do
 	}
 
 }

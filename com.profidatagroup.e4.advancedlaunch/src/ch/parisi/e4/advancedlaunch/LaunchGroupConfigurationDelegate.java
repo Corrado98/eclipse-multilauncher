@@ -58,8 +58,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		launch.addProcess(process);
 
 		try {
-			List<LaunchConfigurationModel> launchConfigurationDataList = LaunchUtils
-					.loadLaunchConfigurations(configuration);
+			List<LaunchConfigurationModel> launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
 
 			for (LaunchConfigurationModel model : launchConfigurationDataList) {
 				ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(model.getName());
@@ -68,16 +67,18 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 						break;
 					}
 					AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(model);
-					launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
+					boolean success = launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
+					if (!success && model.isAbortLaunchOnError()) { //TODO rename every checkbox ... and setter and so on etc.
+						break;
+					}
 				}
 			}
+			DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
 		}
 		catch (CoreException e) {
 			removeLaunchesFromLaunchManager();
 			throw e;
 		}
-
-		DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
 	}
 
 	/**

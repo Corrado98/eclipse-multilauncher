@@ -8,13 +8,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
 import org.eclipse.debug.ui.ILaunchGroup;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
-import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
 
 /**
  * Utility class with methods that can be accessed throughout the entire code.
@@ -54,6 +52,7 @@ public class LaunchUtils {
 		List<String> modes = new ArrayList<>();
 		List<String> postLaunchActions = new ArrayList<>();
 		List<String> params = new ArrayList<>();
+		List<String> abortLaunchesOnException = new ArrayList<>();
 
 		List<LaunchConfigurationModel> launchConfigurationDataList = new ArrayList<>();
 
@@ -61,10 +60,15 @@ public class LaunchUtils {
 		modes = configuration.getAttribute("modes", new ArrayList<String>());
 		postLaunchActions = configuration.getAttribute("postLaunchActions", new ArrayList<String>());
 		params = configuration.getAttribute("params", new ArrayList<String>());
+		abortLaunchesOnException = configuration.getAttribute("abortLaunchesOnException", new ArrayList<String>());
 
 		for (int i = 0; i < names.size(); i++) {
-			launchConfigurationDataList.add(new LaunchConfigurationModel(names.get(i), modes.get(i),
-					PostLaunchActionUtils.convertToPostLaunchAction(postLaunchActions.get(i)), params.get(i)));
+			launchConfigurationDataList.add(new LaunchConfigurationModel(
+					names.get(i),
+					modes.get(i),
+					PostLaunchActionUtils.convertToPostLaunchAction(postLaunchActions.get(i)),
+					params.get(i),
+					Boolean.parseBoolean(abortLaunchesOnException.get(i))));
 		}
 		return launchConfigurationDataList;
 	}
@@ -81,7 +85,7 @@ public class LaunchUtils {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		return manager.isExistingLaunchConfigurationName(config.getName());
 	}
-	
+
 	/**
 	 * Returns all supported modes of a {@link ILaunchConfiguration}.
 	 * @param launchConfigurationModel the model with the {@code ILaunchConfiguration}'s name
@@ -98,13 +102,14 @@ public class LaunchUtils {
 					supportedModes.add(launchMode);
 				}
 			}
-		} catch (CoreException e) {
+		}
+		catch (CoreException e) {
 			e.printStackTrace();
 		}
-		
+
 		return supportedModes;
 	}
-	
+
 	/**
 	 * Returns a map which maps a LaunchMode to an 'example' LaunchGroup. 
 	 * 
@@ -134,5 +139,5 @@ public class LaunchUtils {
 	public static String[] getModes() {
 		return getModesMap().keySet().toArray(new String[0]);
 	}
-	
+
 }
