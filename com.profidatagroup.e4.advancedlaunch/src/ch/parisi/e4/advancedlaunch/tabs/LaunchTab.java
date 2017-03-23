@@ -379,12 +379,15 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void initEditingSupport(String name, TableViewerColumn tableViewerColumn) {
-		if (name.equals("Mode"))
+		if (name.equals("Mode")) {
 			tableViewerColumn.setEditingSupport(new LaunchModeEditingSupport(tableViewer));
-		else if (name.equals("Action"))
+		}
+		else if (name.equals("Action")) {
 			tableViewerColumn.setEditingSupport(new PostLaunchActionEditingSupport(tableViewer));
-		else if (name.equals("Param"))
+		}
+		else if (name.equals("Param")) {
 			tableViewerColumn.setEditingSupport(new ParamEditingSupport(tableViewer));
+		}
 	}
 
 	@Override

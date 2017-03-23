@@ -1,5 +1,6 @@
 package ch.parisi.e4.advancedlaunch;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -88,7 +89,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	 */
 	private boolean confirmMultilaunch(ILaunchConfiguration configuration) throws CoreException {
 		boolean promptBeforeLaunch = configuration.getAttribute("promptBeforeLaunch", false);
-		if(!promptBeforeLaunch) {
+		if (!promptBeforeLaunch) {
 			return true;
 		}
 		AtomicBoolean isConfirmed = new AtomicBoolean();
@@ -99,7 +100,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 						.openOkCancelConfirm(
 								Display.getDefault().getActiveShell(),
 								LaunchMessages.LaunchGroupConfiguration_PromptBeforeLaunch_Dialog_Title,
-								LaunchMessages.LaunchGroupConfiguration_PromptBeforeLaunch_Dialog_Question,
+								MessageFormat.format(LaunchMessages.LaunchGroupConfiguration_PromptBeforeLaunch_Dialog_Question, configuration.getName()),
 								LaunchMessages.LaunchGroupConfiguration_PromptBeforeLaunch_Dialog_Toggle,
 								false,
 								null,
