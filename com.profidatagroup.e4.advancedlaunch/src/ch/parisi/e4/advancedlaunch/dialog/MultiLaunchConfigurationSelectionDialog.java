@@ -74,11 +74,13 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	private ISelection currentSelection;
 	private String launchMode = ILaunchManager.RUN_MODE;
 	private PostLaunchAction action = PostLaunchAction.NONE;
+	private boolean abortLaunchOnException = false;
 	private Object actionParam;
 	private ViewerFilter emptyTypeFilter;
 	private IStructuredSelection fInitialSelection;
 	private ComboControlledStackComposite stackComposite;
 	private Label paramLabel;
+	private Button abortLaunchOnExceptionCheckbox;
 	private Text paramTextWidget;
 
 	/**
@@ -109,13 +111,16 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 					try {
 						ILaunchConfigurationType type = (ILaunchConfigurationType) element;
 						return getLaunchManager().getLaunchConfigurations(type).length > 0;
-					} catch (CoreException e) {
+					}
+					catch (CoreException e) {
 						return false;
 					}
-				} else if (element instanceof ILaunchConfiguration) {
+				}
+				else if (element instanceof ILaunchConfiguration) {
 					try {
 						return LaunchUtils.isValidLaunchReference((ILaunchConfiguration) element);
-					} catch (CoreException e) {
+					}
+					catch (CoreException e) {
 						e.printStackTrace();
 					}
 				}
@@ -145,21 +150,23 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		Composite comp = (Composite) super.createDialogArea(parent2);
 
 		// title bar
-		getShell().setText(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_13
-				: LaunchMessages.LaunchGroupConfigurationSelectionDialog_12);
+		getShell().setText(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_13 : LaunchMessages.LaunchGroupConfigurationSelectionDialog_12);
 
 		// dialog message area (not title bar)
-		setTitle(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_15
-				: LaunchMessages.LaunchGroupConfigurationSelectionDialog_14);
+		setTitle(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_15 : LaunchMessages.LaunchGroupConfigurationSelectionDialog_14);
 
 		stackComposite = new ComboControlledStackComposite(comp, SWT.NONE, this);
-		
+
 		Map<String, ILaunchGroup> modes = LaunchUtils.getModesMap();
 
 		for (String mode : modes.keySet()) {
 			ILaunchGroup launchGroup = modes.get(mode);
-			 LaunchConfigurationFilteredTree tree = new LaunchConfigurationFilteredTree(stackComposite.getStackParent(),
-					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), launchGroup, filters);
+			LaunchConfigurationFilteredTree tree = new LaunchConfigurationFilteredTree(
+					stackComposite.getStackParent(),
+					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
+					new PatternFilter(),
+					launchGroup,
+					filters);
 			stackComposite.addItem(mode, tree);
 			tree.createViewControl();
 			ViewerFilter[] filters = tree.getViewer().getFilters();
@@ -197,6 +204,12 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		});
 
 		createPostLaunchControl(comp);
+		createAbortOnExceptionControl(comp);
+
+		initActionParamDatabinding();
+		initAbortLaunchOnExceptionDatabinding();
+		showHideDelayAmountWidgets();
+
 		return comp;
 	}
 
@@ -242,7 +255,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				if (action == PostLaunchAction.DELAY) {
 					try {
 						actionParam = Integer.valueOf(userInput);
-					} catch (NumberFormatException exc) {
+					}
+					catch (NumberFormatException exc) {
 						actionParam = null;
 					}
 					validate();
@@ -257,11 +271,23 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		if (actionParam instanceof Integer) {
 			paramTextWidget.setText(((Integer) actionParam).toString());
 		}
-
-		initActionParamDatabinding();
-		showHideDelayAmountWidgets();
 	}
 
+	private void createAbortOnExceptionControl(Composite composite) {
+		abortLaunchOnExceptionCheckbox = new Button(composite, SWT.CHECK);
+		abortLaunchOnExceptionCheckbox.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		abortLaunchOnExceptionCheckbox.setText("Abort multilaunch on exception");
+		abortLaunchOnExceptionCheckbox.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("checked");
+			}
+		});
+	}
+
+	/**
+	 * IObservableValue is not parameterized '<>' to make the plugin run on Eclipse Luna release as well. 
+	 */
 	@SuppressWarnings("unchecked")
 	private void initActionParamDatabinding() {
 		// Do the actual binding and conversion
@@ -275,30 +301,46 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		dbc.bindValue(fDelayAmountWidgetTarget, actionParamModel);
 	}
 
+	/**
+	 * IObservableValue is not parameterized '<>' to make the plugin run on Eclipse Luna release as well. 
+	 */
+	@SuppressWarnings("unchecked")
+	private void initAbortLaunchOnExceptionDatabinding() {
+		// Do the actual binding and conversion
+		DataBindingContext dbc = new DataBindingContext();
+
+		// create the observables, which should be bound
+		IObservableValue abortLaunchOnExceptionCheckboxTarget = WidgetProperties.selection().observe(abortLaunchOnExceptionCheckbox);
+		IObservableValue abortLaunchOnExceptionModel = PojoProperties.value("abortLaunchOnException").observe(this);
+
+		// bind observables together
+		dbc.bindValue(abortLaunchOnExceptionCheckboxTarget, abortLaunchOnExceptionModel);
+	}
+
 	public Text getFDelayAmountWidget() {
 		return paramTextWidget;
 	}
 
 	private void showHideDelayAmountWidgets() {
 		switch (action) {
-		case DELAY:
-			paramLabel.setText("Seconds:");
-			paramLabel.setVisible(true);
-			paramTextWidget.setVisible(true);
-			break;
-		case WAIT_FOR_CONSOLESTRING:
-			paramLabel.setText("RegEx:");
-			paramLabel.setVisible(true);
-			paramTextWidget.setVisible(true);
-			break;
-		case WAIT_FOR_TERMINATION:
-			paramLabel.setVisible(false);
-			paramTextWidget.setVisible(false);
-			break;
-		case NONE:
-			paramLabel.setVisible(false);
-			paramTextWidget.setVisible(false);
-			break;
+			case DELAY:
+				paramLabel.setText("Seconds:");
+				paramLabel.setVisible(true);
+				paramTextWidget.setVisible(true);
+				break;
+			case WAIT_FOR_CONSOLESTRING:
+				paramLabel.setText("RegEx:");
+				paramLabel.setVisible(true);
+				paramTextWidget.setVisible(true);
+				break;
+			case WAIT_FOR_TERMINATION:
+				paramLabel.setVisible(false);
+				paramTextWidget.setVisible(false);
+				break;
+			case NONE:
+				paramLabel.setVisible(false);
+				paramTextWidget.setVisible(false);
+				break;
 		}
 	}
 
@@ -316,7 +358,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 	private class SelectionChangedListener implements ISelectionChangedListener {
 		@Override
-		public void selectionChanged(SelectionChangedEvent event) {	
+		public void selectionChanged(SelectionChangedEvent event) {
 			// This listener gets called for a selection change in the launch
 			// configuration viewer embedded in the dialog. Problem is, there are
 			// numerous viewers--one for each platform debug ILaunchGroup (run,
@@ -373,17 +415,20 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 			if (action == PostLaunchAction.DELAY) {
 				try {
 					isValid = ((Integer.parseInt(actionParam.toString()) > 0));
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					isValid = false;
 					setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10);
 				}
-			} else if (action == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+			}
+			else if (action == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
 				isValid = (!String.valueOf(actionParam).trim().isEmpty());
 				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10_2);
 			}
 			if (currentSelection == null) {
 				isValid = false;
-			} else {
+			}
+			else {
 				IStructuredSelection selection = (IStructuredSelection) currentSelection;
 				if (selection.getFirstElement() instanceof ILaunchConfigurationType) {
 					isValid = false;
@@ -420,7 +465,15 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	public void setActionParam(String actionParam) {
 		this.actionParam = actionParam;
 	}
-	
+
+	public boolean isAbortLaunchOnException() {
+		return abortLaunchOnException;
+	}
+
+	public void setAbortLaunchOnException(boolean abortLaunchOnException) {
+		this.abortLaunchOnException = abortLaunchOnException;
+	}
+
 	public void setCurrentSelection(ISelection currentSelection) {
 		this.currentSelection = currentSelection;
 	}

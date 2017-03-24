@@ -30,9 +30,9 @@ public abstract class AbstractLaunchStrategy {
 			ILaunch launch = launchConfiguration.launch(mode, null);
 			debugEventSetListener = registerTerminationListener(exitCode -> {
 				success.set(exitCode == 0);
-				if (!success.get()) {
-					launchTerminated(exitCode);
-				}
+				//if (!success.get()) {
+				launchTerminated(exitCode);
+				//}
 			});
 			waitForLaunch(launch);
 		}

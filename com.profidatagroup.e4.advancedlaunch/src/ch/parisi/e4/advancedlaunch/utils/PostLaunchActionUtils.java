@@ -32,17 +32,17 @@ public class PostLaunchActionUtils {
 	 */
 	public static String convertToName(PostLaunchAction action) {
 		switch (action) {
-		case NONE:
-			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_None;
-		case WAIT_FOR_TERMINATION:
-			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForTermination;
-		case DELAY:
-			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay;
-		case WAIT_FOR_CONSOLESTRING:
-			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString;
-		default:
-			assert false : "new post launch action type is missing logic"; //$NON-NLS-1$
-			return LaunchMessages.LaunchGroupConfigurationDelegate_Action_None;
+			case NONE:
+				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_None;
+			case WAIT_FOR_TERMINATION:
+				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForTermination;
+			case DELAY:
+				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay;
+			case WAIT_FOR_CONSOLESTRING:
+				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString;
+			default:
+				assert false : "new post launch action type is missing logic"; //$NON-NLS-1$
+				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_None;
 		}
 	}
 
@@ -53,30 +53,34 @@ public class PostLaunchActionUtils {
 	public static PostLaunchAction convertToPostLaunchAction(String name) {
 		if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_None)) {
 			return PostLaunchAction.NONE;
-		} else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForTermination)) {
+		}
+		else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForTermination)) {
 			return PostLaunchAction.WAIT_FOR_TERMINATION;
-		} else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay)) {
+		}
+		else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay)) {
 			return PostLaunchAction.DELAY;
-		} else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString)) {
+		}
+		else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString)) {
 			return PostLaunchAction.WAIT_FOR_CONSOLESTRING;
-		} else {
+		}
+		else {
 			assert false : "new post launch action type is missing logic"; //$NON-NLS-1$
 			return PostLaunchAction.NONE;
 		}
 	}
-	
+
 	/**
 	 * Returns the String representations of the {@link PostLaunchAction} enum in an array.  	
 	 * @return a {@code String} array containing the textual value of each enum state.    
 	 */
 	public static String[] getPostLaunchActionNames() {
-	    PostLaunchAction[] states = PostLaunchAction.values();
-	    String[] names = new String[states.length];
-	    
-	    for (int i = 0; i < states.length; i++) {
-	        names[i] = convertToName(states[i]);
-	    }
+		PostLaunchAction[] states = PostLaunchAction.values();
+		String[] names = new String[states.length];
 
-	    return names;
-	}	
+		for (int i = 0; i < states.length; i++) {
+			names[i] = convertToName(states[i]);
+		}
+
+		return names;
+	}
 }

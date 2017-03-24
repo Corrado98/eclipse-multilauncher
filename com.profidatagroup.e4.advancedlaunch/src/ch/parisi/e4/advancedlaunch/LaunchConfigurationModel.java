@@ -13,7 +13,7 @@ public class LaunchConfigurationModel {
 	private String name;
 	private String mode;
 	private String param;
-	private boolean abortLaunchOnException;
+	private boolean abortLaunchOnError;
 
 	/**
 	 * {@link PostLaunchAction}.
@@ -28,14 +28,14 @@ public class LaunchConfigurationModel {
 	 * @param mode the chosen launch-mode
 	 * @param postLaunchAction the chosen postLaunchAction
 	 * @param param the chosen runtime-parameter
-	 * @param abortLaunchOnException whether to abort a launch on exception
+	 * @param abortLaunchOnError whether to abort a launch on error
 	 */
-	public LaunchConfigurationModel(String name, String mode, PostLaunchAction postLaunchAction, String param, boolean abortLaunchOnException) {
+	public LaunchConfigurationModel(String name, String mode, PostLaunchAction postLaunchAction, String param, boolean abortLaunchOnError) {
 		this.name = name;
 		this.mode = mode;
 		this.postLaunchAction = postLaunchAction;
 		this.param = param;
-		this.abortLaunchOnException = abortLaunchOnException;
+		this.abortLaunchOnError = abortLaunchOnError;
 	}
 
 	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
@@ -79,10 +79,10 @@ public class LaunchConfigurationModel {
 	}
 
 	public boolean isAbortLaunchOnError() {
-		return abortLaunchOnException;
+		return abortLaunchOnError;
 	}
 
 	public void setAbortLaunchOnException(boolean abortLaunchOnException) {
-		propertyChangeSupport.firePropertyChange("abortLaunchOnException", this.abortLaunchOnException, this.abortLaunchOnException = abortLaunchOnException);
+		propertyChangeSupport.firePropertyChange("abortLaunchOnException", this.abortLaunchOnError, this.abortLaunchOnError = abortLaunchOnException);
 	}
 }
