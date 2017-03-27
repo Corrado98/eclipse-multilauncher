@@ -51,11 +51,12 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfiguration_NotALaunchConfiguration;
 	public static String LaunchGroupConfiguration_LaunchDelegationError;
 	public static String LaunchGroupConfiguration_CannotLaunch;
+
 	private LaunchMessages() {
 	}
 
 	static {
-        // Load message values from bundle file
-        NLS.initializeMessages(LaunchMessages.class.getCanonicalName(), LaunchMessages.class);
-    }
+		// Load message values from bundle file
+		NLS.initializeMessages(LaunchMessages.class.getCanonicalName(), LaunchMessages.class);
+	}
 }

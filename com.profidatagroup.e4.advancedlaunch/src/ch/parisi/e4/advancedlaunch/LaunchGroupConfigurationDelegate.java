@@ -43,7 +43,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		 * the user will be prompted whether he really wants 
 		 * to start the multilaunch. 
 		 * 
-		 * A PseudoProcess to the ILaunch in order
+		 * A PseudoProcess is added to the ILaunch in order
 		 * to set a name (label) to the multilaunch. After all wait strategies have finished, the multilaunch is removed 
 		 * from the LaunchManager.
 		 */
@@ -68,7 +68,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 					}
 					AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(model);
 					boolean success = launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
-					if (!success && model.isAbortLaunchOnError()) { //TODO rename every checkbox ... and setter and so on etc.
+					if (!success && model.isAbortLaunchOnError()) {
 						break;
 					}
 				}

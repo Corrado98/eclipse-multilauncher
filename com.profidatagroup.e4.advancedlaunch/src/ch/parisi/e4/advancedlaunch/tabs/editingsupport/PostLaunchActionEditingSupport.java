@@ -9,12 +9,21 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
+import ch.parisi.e4.advancedlaunch.tabs.LaunchTab;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 
+/**
+ * The {@link PostLaunchActionEditingSupport} for the CellEditor in the {@link LaunchTab}'s {@code TableViewer}.
+ */
 public class PostLaunchActionEditingSupport extends EditingSupport {
 
 	private final TableViewer tableViewer;
 
+	/**
+	 * Constructs a {@link PostLaunchActionEditingSupport}.
+	 * 
+	 * @param tableViewer the table viewer
+	 */
 	public PostLaunchActionEditingSupport(TableViewer tableViewer) {
 		super(tableViewer);
 		this.tableViewer = tableViewer;
@@ -41,7 +50,7 @@ public class PostLaunchActionEditingSupport extends EditingSupport {
 		LaunchConfigurationModel launchConfigurationModel = (LaunchConfigurationModel) element;
 		launchConfigurationModel.setPostLaunchAction(PostLaunchActionUtils.convertToPostLaunchAction(
 				Arrays.asList(PostLaunchActionUtils.getPostLaunchActionNames()).get((int) value)));
-		
+
 		tableViewer.update(launchConfigurationModel, null);
 	}
 }

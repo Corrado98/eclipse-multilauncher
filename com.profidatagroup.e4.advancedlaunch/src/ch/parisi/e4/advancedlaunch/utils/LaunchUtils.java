@@ -17,6 +17,7 @@ import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 /**
  * Utility class with methods that can be accessed throughout the entire code.
  */
+@SuppressWarnings("restriction") // To get a ILaunchGroup one needs the eclipse internal LaunchConfigurationManager. See getModesMap().
 public class LaunchUtils {
 
 	/**
@@ -112,6 +113,9 @@ public class LaunchUtils {
 
 	/**
 	 * Returns a map which maps a LaunchMode to an 'example' LaunchGroup. 
+	 * 
+	 *  A launch group identifies a group of launch configurations by a launch
+	 *  mode and category.
 	 * 
 	 *  The method checks for each LaunchGroup if its corresponding mode is already in the map;
 	 *  if not, the mode(key) will be put in the map with the first launchGroup that contained it. 

@@ -74,13 +74,13 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	private ISelection currentSelection;
 	private String launchMode = ILaunchManager.RUN_MODE;
 	private PostLaunchAction action = PostLaunchAction.NONE;
-	private boolean abortLaunchOnException = false;
+	private boolean abortLaunchOnError = false;
 	private Object actionParam;
 	private ViewerFilter emptyTypeFilter;
 	private IStructuredSelection fInitialSelection;
 	private ComboControlledStackComposite stackComposite;
 	private Label paramLabel;
-	private Button abortLaunchOnExceptionCheckbox;
+	private Button abortLaunchOnErrorCheckbox;
 	private Text paramTextWidget;
 
 	/**
@@ -129,7 +129,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		};
 	}
 
-	public void setForEditing(boolean editMode) {
+	public void setEditMode(boolean editMode) {
 		this.editMode = editMode;
 	}
 
@@ -207,7 +207,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		createAbortOnExceptionControl(comp);
 
 		initActionParamDatabinding();
-		initAbortLaunchOnExceptionDatabinding();
+		initAbortLaunchOnErrorDatabinding();
 		showHideDelayAmountWidgets();
 
 		return comp;
@@ -274,10 +274,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	}
 
 	private void createAbortOnExceptionControl(Composite composite) {
-		abortLaunchOnExceptionCheckbox = new Button(composite, SWT.CHECK);
-		abortLaunchOnExceptionCheckbox.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-		abortLaunchOnExceptionCheckbox.setText("Abort multilaunch on exception");
-		abortLaunchOnExceptionCheckbox.addSelectionListener(new SelectionAdapter() {
+		abortLaunchOnErrorCheckbox = new Button(composite, SWT.CHECK);
+		abortLaunchOnErrorCheckbox.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		abortLaunchOnErrorCheckbox.setText("Abort multilaunch on exception");
+		abortLaunchOnErrorCheckbox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("checked");
@@ -305,16 +305,16 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	 * IObservableValue is not parameterized '<>' to make the plugin run on Eclipse Luna release as well. 
 	 */
 	@SuppressWarnings("unchecked")
-	private void initAbortLaunchOnExceptionDatabinding() {
+	private void initAbortLaunchOnErrorDatabinding() {
 		// Do the actual binding and conversion
 		DataBindingContext dbc = new DataBindingContext();
 
 		// create the observables, which should be bound
-		IObservableValue abortLaunchOnExceptionCheckboxTarget = WidgetProperties.selection().observe(abortLaunchOnExceptionCheckbox);
-		IObservableValue abortLaunchOnExceptionModel = PojoProperties.value("abortLaunchOnException").observe(this);
+		IObservableValue abortLaunchOnErrorCheckboxTarget = WidgetProperties.selection().observe(abortLaunchOnErrorCheckbox);
+		IObservableValue abortLaunchOnErrorModel = PojoProperties.value("abortLaunchOnError").observe(this);
 
 		// bind observables together
-		dbc.bindValue(abortLaunchOnExceptionCheckboxTarget, abortLaunchOnExceptionModel);
+		dbc.bindValue(abortLaunchOnErrorCheckboxTarget, abortLaunchOnErrorModel);
 	}
 
 	public Text getFDelayAmountWidget() {
@@ -466,12 +466,12 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		this.actionParam = actionParam;
 	}
 
-	public boolean isAbortLaunchOnException() {
-		return abortLaunchOnException;
+	public boolean isAbortLaunchOnError() {
+		return abortLaunchOnError;
 	}
 
-	public void setAbortLaunchOnException(boolean abortLaunchOnException) {
-		this.abortLaunchOnException = abortLaunchOnException;
+	public void setAbortLaunchOnError(boolean abortLaunchOnError) {
+		this.abortLaunchOnError = abortLaunchOnError;
 	}
 
 	public void setCurrentSelection(ISelection currentSelection) {

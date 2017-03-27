@@ -9,12 +9,21 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
+import ch.parisi.e4.advancedlaunch.tabs.LaunchTab;
 import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
 
+/**
+ * The {@link LaunchModeEditingSupport} for the CellEditor in the {@link LaunchTab}'s {@code TableViewer}.
+ */
 public class LaunchModeEditingSupport extends EditingSupport {
 
 	private final TableViewer tableViewer;
 
+	/**
+	 * Constructs a {@link LaunchModeEditingSupport}.
+	 * 
+	 * @param tableViewer the table viewer
+	 */
 	public LaunchModeEditingSupport(TableViewer tableViewer) {
 		super(tableViewer);
 		this.tableViewer = tableViewer;
@@ -41,7 +50,7 @@ public class LaunchModeEditingSupport extends EditingSupport {
 	protected void setValue(Object element, Object value) {
 		LaunchConfigurationModel launchConfigurationModel = (LaunchConfigurationModel) element;
 		List<String> supportedModes = LaunchUtils.getSupportedModes(launchConfigurationModel);
-		launchConfigurationModel.setMode(supportedModes.get((int) value));		
+		launchConfigurationModel.setMode(supportedModes.get((int) value));
 		tableViewer.update(launchConfigurationModel, null);
 	}
 }

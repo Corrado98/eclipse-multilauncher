@@ -8,13 +8,13 @@ import org.eclipse.ui.console.IConsoleListener;
 public class ConsoleRemoveListener implements IConsoleListener {
 
 	private final IConsole console;
-	
+
 	private volatile boolean removed;
 
 	public ConsoleRemoveListener(IConsole console) {
 		this.console = console;
 	}
-	
+
 	@Override
 	public void consolesAdded(IConsole[] consoles) {
 	}
@@ -25,7 +25,7 @@ public class ConsoleRemoveListener implements IConsoleListener {
 			removed = true;
 		}
 	}
-	
+
 	public boolean isRemoved() {
 		return removed;
 	}

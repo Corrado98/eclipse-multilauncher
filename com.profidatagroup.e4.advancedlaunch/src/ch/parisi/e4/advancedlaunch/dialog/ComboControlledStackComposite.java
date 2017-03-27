@@ -14,7 +14,6 @@ package ch.parisi.e4.advancedlaunch.dialog;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationFilteredTree;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;

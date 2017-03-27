@@ -11,8 +11,6 @@
  *******************************************************************************/
 package ch.parisi.e4.advancedlaunch.utils;
 
-import java.util.Arrays;
-
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 
@@ -49,6 +47,9 @@ public class PostLaunchActionUtils {
 	/**
 	 * Allows us decouple the enum identifier in the code from its textual
 	 * representation in the GUI
+	 * 
+	 * @param name the post launch action's name
+	 * @return the {@code PostLaunchAction} enum. 
 	 */
 	public static PostLaunchAction convertToPostLaunchAction(String name) {
 		if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_None)) {
@@ -71,6 +72,7 @@ public class PostLaunchActionUtils {
 
 	/**
 	 * Returns the String representations of the {@link PostLaunchAction} enum in an array.  	
+	 * 
 	 * @return a {@code String} array containing the textual value of each enum state.    
 	 */
 	public static String[] getPostLaunchActionNames() {

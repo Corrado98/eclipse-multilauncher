@@ -10,10 +10,7 @@ import java.util.function.Function;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.internal.core.LaunchManager;
-import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -36,7 +33,9 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import ch.parisi.e4.advancedlaunch.Activator;
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
@@ -85,7 +84,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					setDirty(true);
 					updateLaunchConfigurationDialog();
 					break;
-				case "abortLaunchOnException":
+				case "abortLaunchOnError":
 					setDirty(true);
 					updateLaunchConfigurationDialog();
 					break;
@@ -168,11 +167,11 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					multiLaunchConfigurationSelectionDialog.getMode(),
 					multiLaunchConfigurationSelectionDialog.getAction(),
 					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()),
-					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnException());
+					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnError());
 			launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener("param", propertyChangeListener);
-			launchConfigurationModel.addPropertyChangeListener("abortLaunchOnException", propertyChangeListener);
+			launchConfigurationModel.addPropertyChangeListener("abortLaunchOnError", propertyChangeListener);
 			launchConfigurationDataList.add(launchConfigurationModel);
 
 			if (launchConfigurationDataList != null) {
@@ -190,8 +189,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void initAddConfigurationSelectionDialog(
 			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
-		multiLaunchConfigurationSelectionDialog.setForEditing(false);
-		multiLaunchConfigurationSelectionDialog.setMode(LaunchManager.DEBUG_MODE);
+		multiLaunchConfigurationSelectionDialog.setEditMode(false);
+		multiLaunchConfigurationSelectionDialog.setMode("debug");
 		multiLaunchConfigurationSelectionDialog.setAction(PostLaunchAction.NONE);
 		multiLaunchConfigurationSelectionDialog.setActionParam("");
 	}
@@ -223,11 +222,11 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					multiLaunchConfigurationSelectionDialog.getMode(),
 					multiLaunchConfigurationSelectionDialog.getAction(),
 					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()),
-					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnException());
+					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnError());
 			launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener("param", propertyChangeListener);
-			launchConfigurationModel.addPropertyChangeListener("abortLaunchOnException", propertyChangeListener);
+			launchConfigurationModel.addPropertyChangeListener("abortLaunchOnError", propertyChangeListener);
 			LaunchConfigurationModel model = launchConfigurationModel;
 			launchConfigurationDataList.set(launchConfigurationDataList.indexOf(selectedConfiguration), model);
 
@@ -239,11 +238,11 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void loadExistingConfigurationData(
 			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
-		multiLaunchConfigurationSelectionDialog.setForEditing(true);
+		multiLaunchConfigurationSelectionDialog.setEditMode(true);
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
 		multiLaunchConfigurationSelectionDialog.setAction(selectedConfiguration.getPostLaunchAction());
 		multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
-		multiLaunchConfigurationSelectionDialog.setAbortLaunchOnException(selectedConfiguration.isAbortLaunchOnError());
+		multiLaunchConfigurationSelectionDialog.setAbortLaunchOnError(selectedConfiguration.isAbortLaunchOnError());
 
 		try {
 			ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(selectedConfiguration.getName());
@@ -424,7 +423,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
 				launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
 				launchConfigurationModel.addPropertyChangeListener("param", propertyChangeListener);
-				launchConfigurationModel.addPropertyChangeListener("abortLaunchOnException", propertyChangeListener);
+				launchConfigurationModel.addPropertyChangeListener("abortLaunchOnError", propertyChangeListener);
 			}
 			launchConfigurationDataList = loadLaunchConfigurations;
 			tableViewer.setInput(launchConfigurationDataList);
@@ -492,7 +491,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		}
 
 		try {
-			if (((List<LaunchConfigurationModel>) tableViewer.getInput()).isEmpty()) {
+			if (((List<?>) tableViewer.getInput()).isEmpty()) {
 				setMessage(null);
 				setErrorMessage(null);
 				return false;
@@ -519,7 +518,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		return true;
 	}
 
-	private void validateRecursive(
+	private static void validateRecursive(
 			String rootLaunchName,
 			String firstLevelChildLaunchName,
 			List<LaunchConfigurationModel> launchConfigurationDataList) throws CoreException {
@@ -567,6 +566,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public Image getImage() {
-		return DebugPluginImages.getImage(IDebugUIConstants.IMG_ACT_RUN);
+		return AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/full/obj16/lrun_obj.gif").createImage();
 	}
 }

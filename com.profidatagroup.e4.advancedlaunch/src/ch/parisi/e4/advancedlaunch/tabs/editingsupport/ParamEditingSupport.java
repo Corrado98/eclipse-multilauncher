@@ -6,12 +6,21 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
+import ch.parisi.e4.advancedlaunch.tabs.LaunchTab;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
 
+/**
+ * The {@link ParamEditingSupport} for the CellEditor in the {@link LaunchTab}'s {@code TableViewer}.
+ */
 public class ParamEditingSupport extends EditingSupport {
 
 	private final TableViewer tableViewer;
 
+	/**
+	 * Constructs a {@link ParamEditingSupport}.
+	 * 
+	 * @param tableViewer the table viewer
+	 */
 	public ParamEditingSupport(TableViewer tableViewer) {
 		super(tableViewer);
 		this.tableViewer = tableViewer;
@@ -25,9 +34,9 @@ public class ParamEditingSupport extends EditingSupport {
 	@Override
 	protected boolean canEdit(Object element) {
 		LaunchConfigurationModel launchConfigurationModel = (LaunchConfigurationModel) element;
-		if(launchConfigurationModel.getPostLaunchAction().equals(PostLaunchAction.NONE) || launchConfigurationModel.getPostLaunchAction().equals(PostLaunchAction.WAIT_FOR_TERMINATION)) {
+		if (launchConfigurationModel.getPostLaunchAction().equals(PostLaunchAction.NONE) || launchConfigurationModel.getPostLaunchAction().equals(PostLaunchAction.WAIT_FOR_TERMINATION)) {
 			return false;
-		}	
+		}
 		return true;
 	}
 
@@ -39,7 +48,7 @@ public class ParamEditingSupport extends EditingSupport {
 	@Override
 	protected void setValue(Object element, Object value) {
 		((LaunchConfigurationModel) element).setParam(String.valueOf(value));
-	
+
 		tableViewer.update(element, null);
 	}
 
