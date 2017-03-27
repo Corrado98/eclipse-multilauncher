@@ -8,17 +8,21 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "com.profidatagroup.e4.advancedlaunch"; //$NON-NLS-1$
+	/**
+	 * The Activator <code>PLUGIN_ID</code>.
+	 */
+	public static final String PLUGIN_ID = "ch.parisi.e4.advancedlaunch"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;
 
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 	}
 
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
