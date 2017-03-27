@@ -12,16 +12,28 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IProcess;
 
+/**
+ * This class handles the default behavior of all waiting strategies.
+ * 
+ * Moreover it offers the possibility to register a termination listener. 
+ */
 public abstract class AbstractLaunchStrategy {
 
 	/**
 	 * Launches the specified {@link ILaunchConfiguration} in the given <code>mode</code> and waits until the conditions of this strategy are met.
 	 * 
 	 * This method will only return when the conditions of this strategy are met.
+	 * It registers a launch termination listener in order to react to any kind of launch errors.
 	 * 
 	 * @param launchConfiguration the {@link ILaunchConfiguration}
 	 * @param mode the launch mode, see {@link org.eclipse.debug.core.ILaunchManager}
-	 * @throws CoreException 
+	 * 
+	 * @return whether the launch was successful (or aborted).  
+	 * 
+	 * @throws CoreException if the specified launchConfiguration's launch method fails. Reasons include:<ul>
+	 * <li>unable to instantiate the underlying launch configuration delegate</li>
+	 * <li>the launch fails (in the delegate)</code>
+	 * </ul>
 	 */
 	public final boolean launchAndWait(ILaunchConfiguration launchConfiguration, String mode) throws CoreException {
 		AtomicBoolean success = new AtomicBoolean(true);
@@ -30,9 +42,7 @@ public abstract class AbstractLaunchStrategy {
 			ILaunch launch = launchConfiguration.launch(mode, null);
 			debugEventSetListener = registerTerminationListener(exitCode -> {
 				success.set(exitCode == 0);
-				//if (!success.get()) {
 				launchTerminated(exitCode);
-				//}
 			});
 			waitForLaunch(launch);
 		}
@@ -41,7 +51,7 @@ public abstract class AbstractLaunchStrategy {
 				unregisterTerminationListener(debugEventSetListener);
 			}
 		}
-		return success.get(); // TODO true = success, false = abort
+		return success.get();
 	}
 
 	/**
@@ -53,17 +63,24 @@ public abstract class AbstractLaunchStrategy {
 	 */
 	protected abstract void waitForLaunch(ILaunch launch);
 
-	protected void launchTerminated(int exitCode) {
-		System.out.println("Launch terminated " + exitCode);
-	}
+	/**
+	 * This method gets called when a launch terminates with its exit code. 
+	 * 
+	 * @param exitCode the exit code of the terminated launch
+	 */
+	protected abstract void launchTerminated(int exitCode);
 
 	/**
-	 * Javadoc
-	 * TODO Auto-generated javadoc registerTerminationListener
+	 * Registers a {@link IDebugEventSetListener}. 
 	 * 
-	 * @return
+	 * If the event's source is an instance of {@link IProcess}
+	 * and it's kind equal to {@code DebugEvent.TERMINATE} the specified
+	 * exitCodeHandler is consumed with the {@code IProcess}'s exitCode. 
+	 * 
+	 * @param exitCodeHandler the exit code handler
+	 * @return the {@link IDebugEventSetListener}.
 	 */
-	public final IDebugEventSetListener registerTerminationListener(Consumer<Integer> exitCodeHandler) {
+	private final IDebugEventSetListener registerTerminationListener(Consumer<Integer> exitCodeHandler) {
 		DebugPlugin debugPlugin = DebugPlugin.getDefault();
 		IDebugEventSetListener debugEventSetListener = new IDebugEventSetListener() {
 			@Override

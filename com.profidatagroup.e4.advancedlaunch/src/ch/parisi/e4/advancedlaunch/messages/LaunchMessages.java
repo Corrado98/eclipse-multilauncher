@@ -16,7 +16,10 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * This class was taken from CDT and was modified by the author of this project.
+ * 
+ * It contains 
  */
+@SuppressWarnings("javadoc") // the textual representation of this constants is within the LaunchMessages.properties file.
 public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfigurationDelegate_Loop;
 	public static String LaunchGroupConfigurationDelegate_Error;

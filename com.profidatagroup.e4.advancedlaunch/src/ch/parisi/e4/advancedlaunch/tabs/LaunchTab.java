@@ -10,6 +10,7 @@ import java.util.function.Function;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -165,8 +166,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			LaunchConfigurationModel launchConfigurationModel = new LaunchConfigurationModel(
 					multiLaunchConfigurationSelectionDialog.getSelectedLaunchConfiguration().getName(),
 					multiLaunchConfigurationSelectionDialog.getMode(),
-					multiLaunchConfigurationSelectionDialog.getAction(),
-					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()),
+					multiLaunchConfigurationSelectionDialog.getPostLaunchAction(),
+					String.valueOf(multiLaunchConfigurationSelectionDialog.getParam()),
 					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnError());
 			launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
@@ -190,9 +191,9 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private void initAddConfigurationSelectionDialog(
 			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setEditMode(false);
-		multiLaunchConfigurationSelectionDialog.setMode("debug");
-		multiLaunchConfigurationSelectionDialog.setAction(PostLaunchAction.NONE);
-		multiLaunchConfigurationSelectionDialog.setActionParam("");
+		multiLaunchConfigurationSelectionDialog.setMode(ILaunchManager.DEBUG_MODE);
+		multiLaunchConfigurationSelectionDialog.setPostLaunchAction(PostLaunchAction.NONE);
+		multiLaunchConfigurationSelectionDialog.setParam("");
 	}
 
 	private void initEditButtonWithListener() {
@@ -220,8 +221,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			LaunchConfigurationModel launchConfigurationModel = new LaunchConfigurationModel(
 					configuration.getName(),
 					multiLaunchConfigurationSelectionDialog.getMode(),
-					multiLaunchConfigurationSelectionDialog.getAction(),
-					String.valueOf(multiLaunchConfigurationSelectionDialog.getActionParam()),
+					multiLaunchConfigurationSelectionDialog.getPostLaunchAction(),
+					String.valueOf(multiLaunchConfigurationSelectionDialog.getParam()),
 					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnError());
 			launchConfigurationModel.addPropertyChangeListener("mode", propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener("postLaunchAction", propertyChangeListener);
@@ -240,8 +241,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog) {
 		multiLaunchConfigurationSelectionDialog.setEditMode(true);
 		multiLaunchConfigurationSelectionDialog.setMode(selectedConfiguration.getMode());
-		multiLaunchConfigurationSelectionDialog.setAction(selectedConfiguration.getPostLaunchAction());
-		multiLaunchConfigurationSelectionDialog.setActionParam(selectedConfiguration.getParam());
+		multiLaunchConfigurationSelectionDialog.setPostLaunchAction(selectedConfiguration.getPostLaunchAction());
+		multiLaunchConfigurationSelectionDialog.setParam(selectedConfiguration.getParam());
 		multiLaunchConfigurationSelectionDialog.setAbortLaunchOnError(selectedConfiguration.isAbortLaunchOnError());
 
 		try {
@@ -287,7 +288,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null && launchConfigurationDataList != null) {
 					launchConfigurationDataList.remove(selectedConfiguration);
-					//Is this cleaner?
+					////FIXME Is this cleaner?
 					//selectedConfiguration.removePropertyChangeListener(propertyChangeListener);
 					updateDirtyModel();
 				}

@@ -132,7 +132,7 @@ public class LaunchConfigurationModel {
 	/**
 	 * Returns whether a multilaunch will stop launching when an error occurs on this childlaunch-entry.
 	 * 
-	 * @return {@code true} when multilaunch must abort on error{@code false} when launching will be continued.
+	 * @return {@code true} when a multilaunch must abort on error {@code false} when launching continues.
 	 */
 	public boolean isAbortLaunchOnError() {
 		return abortLaunchOnError;

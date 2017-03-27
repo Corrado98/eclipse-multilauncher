@@ -16,35 +16,40 @@ import ch.parisi.e4.advancedlaunch.strategies.console.ConsoleRemoveListener;
  */
 public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 
-	private String regEx;
+	private String regex;
 	private volatile boolean aborted = false;
 
-	public ReadConsoleTextStrategy(String userConsoleStringToWaitFor) {
-		this.regEx = userConsoleStringToWaitFor;
+	/**
+	 * Constructs a {@link ReadConsoleTextStrategy}.
+	 * 
+	 * @param consoleStringToWaitFor the console string to wait for
+	 */
+	public ReadConsoleTextStrategy(String consoleStringToWaitFor) {
+		this.regex = consoleStringToWaitFor;
 	}
 
 	@Override
 	protected void waitForLaunch(ILaunch launch) {
 		TextConsole console = findTextConsole(launch);
 		if (console != null) {
-			waitForConsolePatternMatch(console, regEx, launch);
+			waitForConsolePatternMatch(console, regex, launch);
 		}
 	}
 
-	private void waitForConsolePatternMatch(TextConsole console, String regEx, ILaunch launch) {
+	private void waitForConsolePatternMatch(TextConsole console, String regex, ILaunch launch) {
 		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		ConsolePatternMatchListener consoleListener = null;
 		ConsoleRemoveListener consoleRemoveListener = null;
 
 		try {
-			consoleListener = new ConsolePatternMatchListener(regEx);
+			consoleListener = new ConsolePatternMatchListener(regex);
 			console.addPatternMatchListener(consoleListener);
 
 			consoleRemoveListener = new ConsoleRemoveListener(console);
 			consoleManager.addConsoleListener(consoleRemoveListener);
 
-			//FIXME rename getConsoleStringdetected to isConsole... could check aborted on method start
-			while (!consoleRemoveListener.isRemoved() && !consoleListener.getConsoleStringDetected() && isLaunchRunning(launch) && !aborted) {
+			//FIXME could check aborted on method start
+			while (!consoleRemoveListener.isRemoved() && !consoleListener.isConsoleStringDetected() && isLaunchRunning(launch) && !aborted) {
 				sleep();
 			}
 		}
@@ -82,7 +87,7 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 	}
 
 	@Override
-	protected void launchTerminated(int theExitCode) {
+	protected void launchTerminated(int exitCode) {
 		aborted = true;
 	}
 

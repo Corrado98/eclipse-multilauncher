@@ -4,12 +4,20 @@ import org.eclipse.ui.console.IPatternMatchListener;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 
+/**
+ * The {@link ConsolePatternMatchListener}.
+ */
 public class ConsolePatternMatchListener implements IPatternMatchListener {
-	private final String checkRegex;
+	private final String regex;
 	private volatile boolean consoleStringDetected = false;
 
-	public ConsolePatternMatchListener(String checkRegex) {
-		this.checkRegex = checkRegex;
+	/**
+	 * Constructs a {@link ConsolePatternMatchListener}.
+	 * 
+	 * @param regex the regex to listen for
+	 */
+	public ConsolePatternMatchListener(String regex) {
+		this.regex = regex;
 	}
 
 	@Override
@@ -20,10 +28,15 @@ public class ConsolePatternMatchListener implements IPatternMatchListener {
 	@Override
 	public String getPattern() {
 		// e.g:  .*successfully.*
-		return checkRegex;
+		return regex;
 	}
 
-	public boolean getConsoleStringDetected() {
+	/**
+	 * Returns whether the console string was detected.
+	 * 
+	 * @return {@code true} if console string detected, otherwise {@code false}.
+	 */
+	public boolean isConsoleStringDetected() {
 		return consoleStringDetected;
 	}
 

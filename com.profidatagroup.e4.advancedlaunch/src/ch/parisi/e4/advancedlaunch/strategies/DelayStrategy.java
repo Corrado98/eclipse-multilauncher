@@ -2,12 +2,20 @@ package ch.parisi.e4.advancedlaunch.strategies;
 
 import org.eclipse.debug.core.ILaunch;
 
+/**
+ * Waits for a specified amount of time before launching the next launch.
+ */
 public class DelayStrategy extends AbstractLaunchStrategy {
 
 	private int waitingTimeInSeconds;
 
 	private volatile boolean aborted = false;
 
+	/**
+	 * Constructs a {@link DelayStrategy}.
+	 * 
+	 * @param delayInSeconds the delay in seconds
+	 */
 	public DelayStrategy(int delayInSeconds) {
 		this.waitingTimeInSeconds = delayInSeconds;
 	}

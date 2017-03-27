@@ -41,6 +41,13 @@ public class ComboControlledStackComposite extends Composite {
 	private Label fLabel;
 	private MultiLaunchConfigurationSelectionDialog multiLaunchConfigurationSelectionDialog;
 
+	/**
+	 * Constructs a {@link ComboControlledStackComposite}.
+	 * 
+	 * @param parent the parent composite
+	 * @param style the style
+	 * @param dialog the dialog
+	 */
 	public ComboControlledStackComposite(Composite parent, int style, MultiLaunchConfigurationSelectionDialog dialog) {
 		super(parent, style);
 		multiLaunchConfigurationSelectionDialog = dialog;
@@ -49,10 +56,23 @@ public class ComboControlledStackComposite extends Composite {
 		createContents(this);
 	}
 
+	/**
+	 * Sets this composite's label text
+	 * 
+	 * @param label the label text
+	 */
 	public void setLabelText(String label) {
 		fLabel.setText(label);
 	}
 
+	/**
+	 * Adds a specified label to a combobox and tabMap.
+	 * 
+	 * The specified tab is only added to the tabMap.	 
+	 * 
+	 * @param label the label text
+	 * @param tab the tab composite
+	 */
 	public void addItem(String label, Composite tab) {
 		tabMap.put(label, tab);
 		fCombo.add(label);
@@ -62,6 +82,11 @@ public class ComboControlledStackComposite extends Composite {
 		}
 	}
 
+	/**
+	 * Deleted an item with the specified label. 
+	 * 
+	 * @param label the label text
+	 */
 	public void deleteItem(String label) {
 		if (fCombo.getText().equals(label)) {
 			setSelection(fCombo.getItem(0));
@@ -73,6 +98,11 @@ public class ComboControlledStackComposite extends Composite {
 		}
 	}
 
+	/**
+	 * Sets the combobox's selection by the specified label.
+	 * 
+	 * @param label the label text
+	 */
 	public void setSelection(String label) {
 		fCombo.setText(label);
 		setPage(label);
@@ -90,14 +120,29 @@ public class ComboControlledStackComposite extends Composite {
 		fArea.setLayoutData(agd);
 	}
 
+	/**
+	 * Gets this Composite's stack parent.
+	 * 
+	 * @return the parent composite
+	 */
 	public Composite getStackParent() {
 		return fArea;
 	}
 
+	/**
+	 * Gets this composite's label.
+	 * 
+	 * @return the label
+	 */
 	public Label getLabel() {
 		return fLabel;
 	}
 
+	/**
+	 * Gets this composite's Combobox.
+	 * 
+	 * @return the combobox
+	 */
 	public Combo getCombo() {
 		return fCombo;
 	}
@@ -138,6 +183,11 @@ public class ComboControlledStackComposite extends Composite {
 		getStackParent().layout();
 	}
 
+	/**
+	 * Gets this composite's top control. 
+	 * 
+	 * @return the top control if {@link ComboControlledStackComposite#layout} is not null. Otherwise returns null.
+	 */
 	public Control getTopControl() {
 		return layout != null ? layout.topControl : null;
 	}
