@@ -26,10 +26,12 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
@@ -40,6 +42,7 @@ import ch.parisi.e4.advancedlaunch.Activator;
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.dialog.MultiLaunchConfigurationSelectionDialog;
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
+import ch.parisi.e4.advancedlaunch.tabs.editingsupport.AbortOnErrorEditingSupport;
 import ch.parisi.e4.advancedlaunch.tabs.editingsupport.LaunchModeEditingSupport;
 import ch.parisi.e4.advancedlaunch.tabs.editingsupport.ParamEditingSupport;
 import ch.parisi.e4.advancedlaunch.tabs.editingsupport.PostLaunchActionEditingSupport;
@@ -52,11 +55,11 @@ import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
  */
 public class LaunchTab extends AbstractLaunchConfigurationTab {
 
-	private Button btnAdd;
-	private Button btnRemove;
-	private Button btnUp;
-	private Button btnDown;
-	private Button btnEdit;
+	private Button addButton;
+	private Button removeButton;
+	private Button upButton;
+	private Button downButton;
+	private Button editButton;
 	private Button promptBeforeLaunchCheckbox;
 	private TableViewer tableViewer;
 	private LaunchConfigurationModel selectedConfiguration;
@@ -100,7 +103,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		initButtonComposite();
 
 		//just change this method order to reorder the buttons in the gui.
-		initAddBtnWithListener();
+		initAddButtonWithListener();
 		initEditButtonWithListener();
 		initUpButtonWithListener();
 		initDownButtonWithListener();
@@ -146,10 +149,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		buttonComposite.setLayout(fillLayout);
 	}
 
-	private void initAddBtnWithListener() {
-		btnAdd = new Button(buttonComposite, SWT.None);
-		btnAdd.setText(LaunchMessages.LaunchGroupConfiguration_Add);
-		btnAdd.addListener(SWT.Selection, new Listener() {
+	private void initAddButtonWithListener() {
+		addButton = new Button(buttonComposite, SWT.None);
+		addButton.setText(LaunchMessages.LaunchGroupConfiguration_Add);
+		addButton.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				addLaunchConfigurationToModel();
@@ -197,10 +200,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void initEditButtonWithListener() {
-		btnEdit = new Button(buttonComposite, SWT.None);
-		btnEdit.setText(LaunchMessages.LaunchGroupConfiguration_Edit);
-		btnEdit.setEnabled(false);
-		btnEdit.addListener(SWT.Selection, new Listener() {
+		editButton = new Button(buttonComposite, SWT.None);
+		editButton.setText(LaunchMessages.LaunchGroupConfiguration_Edit);
+		editButton.setEnabled(false);
+		editButton.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				editLaunchConfiguration();
@@ -269,10 +272,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					selectedConfiguration = (LaunchConfigurationModel) selectedElement;
 
 					boolean hasSelection = selectedElement != null;
-					btnRemove.setEnabled(hasSelection);
-					btnUp.setEnabled(hasSelection);
-					btnDown.setEnabled(hasSelection);
-					btnEdit.setEnabled(hasSelection);
+					removeButton.setEnabled(hasSelection);
+					upButton.setEnabled(hasSelection);
+					downButton.setEnabled(hasSelection);
+					editButton.setEnabled(hasSelection);
 				}
 			}
 		});
@@ -280,10 +283,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void initRemoveButtonWithListener() {
-		btnRemove = new Button(buttonComposite, SWT.None);
-		btnRemove.setText(LaunchMessages.LaunchGroupConfiguration_Remove);
-		btnRemove.setEnabled(false);
-		btnRemove.addListener(SWT.Selection, new Listener() {
+		removeButton = new Button(buttonComposite, SWT.None);
+		removeButton.setText(LaunchMessages.LaunchGroupConfiguration_Remove);
+		removeButton.setEnabled(false);
+		removeButton.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null && launchConfigurationDataList != null) {
@@ -309,10 +312,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void initUpButtonWithListener() {
-		btnUp = new Button(buttonComposite, SWT.None);
-		btnUp.setText(LaunchMessages.LaunchGroupConfiguration_Up);
-		btnUp.setEnabled(false);
-		btnUp.addListener(SWT.Selection, new Listener() {
+		upButton = new Button(buttonComposite, SWT.None);
+		upButton.setText(LaunchMessages.LaunchGroupConfiguration_Up);
+		upButton.setEnabled(false);
+		upButton.addListener(SWT.Selection, new Listener() {
 
 			@Override
 			public void handleEvent(Event event) {
@@ -333,10 +336,10 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void initDownButtonWithListener() {
-		btnDown = new Button(buttonComposite, SWT.None);
-		btnDown.setText(LaunchMessages.LaunchGroupConfiguration_Down);
-		btnDown.setEnabled(false);
-		btnDown.addListener(SWT.Selection, new Listener() {
+		downButton = new Button(buttonComposite, SWT.None);
+		downButton.setText(LaunchMessages.LaunchGroupConfiguration_Down);
+		downButton.setEnabled(false);
+		downButton.addListener(SWT.Selection, new Listener() {
 
 			@Override
 			public void handleEvent(Event event) {
@@ -369,14 +372,18 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 		// create a column for the launchconfiguration PARAM
 		addTableColumn("Param", 120, launchConfigurationModel -> launchConfigurationModel.getParam());
+
+		// create a column for the launchconfiguration ABORT-LAUNCH-ON-ERROR
+		addTableColumn("Abort", 50, launchConfigurationModel -> "");
+
 	}
 
-	private void addTableColumn(String name, int width, Function<LaunchConfigurationModel, String> actionTextFetcher) {
+	private void addTableColumn(String columnName, int width, Function<LaunchConfigurationModel, String> actionTextFetcher) {
 		TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 		tableViewerColumn.getColumn().setWidth(width);
-		tableViewerColumn.getColumn().setText(name);
+		tableViewerColumn.getColumn().setText(columnName);
 
-		initEditingSupport(name, tableViewerColumn);
+		initEditingSupport(columnName, tableViewerColumn);
 
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
@@ -384,18 +391,54 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 				LaunchConfigurationModel model = (LaunchConfigurationModel) element;
 				return actionTextFetcher.apply(model);
 			}
+
+			@Override
+			public Image getImage(Object element) {
+				if (columnName.equals("Abort")) {
+					if (((LaunchConfigurationModel) element).isAbortLaunchOnError()) {
+						return resize(AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/full/obj16/checked.png").createImage(), 10, 10);
+					}
+					else {
+						return resize(AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/full/obj16/unchecked.png").createImage(), 10, 10);
+					}
+				}
+				return null;
+			}
+
+			private Image resize(Image image, int toWidth, int toHeight) {
+				Image scaledImage = new Image(Display.getDefault(), toWidth, toHeight);
+				GC gc = new GC(scaledImage);
+				gc.setAntialias(SWT.ON);
+				gc.setInterpolation(SWT.HIGH);
+				gc.drawImage(
+						image,
+						0,
+						0,
+						image.getBounds().width,
+						image.getBounds().height,
+						0,
+						0,
+						toWidth,
+						toHeight);
+				gc.dispose();
+				image.dispose();
+				return scaledImage;
+			}
 		});
 	}
 
-	private void initEditingSupport(String name, TableViewerColumn tableViewerColumn) {
-		if (name.equals("Mode")) {
+	private void initEditingSupport(String columnName, TableViewerColumn tableViewerColumn) {
+		if (columnName.equals("Mode")) {
 			tableViewerColumn.setEditingSupport(new LaunchModeEditingSupport(tableViewer));
 		}
-		else if (name.equals("Action")) {
+		else if (columnName.equals("Action")) {
 			tableViewerColumn.setEditingSupport(new PostLaunchActionEditingSupport(tableViewer));
 		}
-		else if (name.equals("Param")) {
+		else if (columnName.equals("Param")) {
 			tableViewerColumn.setEditingSupport(new ParamEditingSupport(tableViewer));
+		}
+		else if (columnName.equals("Abort")) {
+			tableViewerColumn.setEditingSupport(new AbortOnErrorEditingSupport(tableViewer));
 		}
 	}
 

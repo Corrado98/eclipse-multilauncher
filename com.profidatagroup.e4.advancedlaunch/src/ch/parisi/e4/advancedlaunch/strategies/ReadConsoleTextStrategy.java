@@ -16,7 +16,7 @@ import ch.parisi.e4.advancedlaunch.strategies.console.ConsoleRemoveListener;
  */
 public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 
-	private String regex;
+	private final String regex;
 	private volatile boolean aborted = false;
 
 	/**
@@ -32,11 +32,11 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 	protected void waitForLaunch(ILaunch launch) {
 		TextConsole console = findTextConsole(launch);
 		if (console != null) {
-			waitForConsolePatternMatch(console, regex, launch);
+			waitForConsolePatternMatch(console, launch);
 		}
 	}
 
-	private void waitForConsolePatternMatch(TextConsole console, String regex, ILaunch launch) {
+	private void waitForConsolePatternMatch(TextConsole console, ILaunch launch) {
 		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		ConsolePatternMatchListener consoleListener = null;
 		ConsoleRemoveListener consoleRemoveListener = null;
