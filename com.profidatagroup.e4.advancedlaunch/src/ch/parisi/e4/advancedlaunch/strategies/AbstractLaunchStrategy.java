@@ -23,7 +23,7 @@ public abstract class AbstractLaunchStrategy {
 	 * Launches the specified {@link ILaunchConfiguration} in the given <code>mode</code> and waits until the conditions of this strategy are met.
 	 * 
 	 * This method will only return when the conditions of this strategy are met.
-	 * It registers a launch termination listener in order to react to any kind of launch errors.
+	 * It provides functionality for its subclasses to react to launch terminations.
 	 * 
 	 * @param launchConfiguration the {@link ILaunchConfiguration}
 	 * @param mode the launch mode, see {@link org.eclipse.debug.core.ILaunchManager}

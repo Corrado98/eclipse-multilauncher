@@ -17,7 +17,7 @@ import ch.parisi.e4.advancedlaunch.strategies.console.ConsoleRemoveListener;
 public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 
 	private final String regex;
-	private volatile boolean aborted = false;
+	private volatile boolean terminated = false;
 
 	/**
 	 * Constructs a {@link ReadConsoleTextStrategy}.
@@ -37,6 +37,9 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 	}
 
 	private void waitForConsolePatternMatch(TextConsole console, ILaunch launch) {
+		if (terminated) {
+			return;
+		}
 		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		ConsolePatternMatchListener consoleListener = null;
 		ConsoleRemoveListener consoleRemoveListener = null;
@@ -48,13 +51,15 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 			consoleRemoveListener = new ConsoleRemoveListener(console);
 			consoleManager.addConsoleListener(consoleRemoveListener);
 
-			//FIXME could check aborted on method start
-			while (!consoleRemoveListener.isRemoved() && !consoleListener.isConsoleStringDetected() && isLaunchRunning(launch) && !aborted) {
+			while (!consoleRemoveListener.isRemoved() && !consoleListener.isConsoleStringDetected() && isLaunchRunning(launch)) {
 				sleep();
 			}
 		}
 		finally {
-			System.out.println("Finished waiting");
+			IProcess[] processes = launch.getProcesses();
+			for (int process = 0; process < processes.length; process++) {
+				System.out.println("Finished waiting for " + regex);
+			}
 
 			if (consoleListener != null) {
 				console.removePatternMatchListener(consoleListener);
@@ -78,8 +83,8 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 
 	private void sleep() {
 		try {
-			System.out.println("Still waiting..");
 			Thread.sleep(1000);
+			System.out.println("Still waiting for console string: " + regex);
 		}
 		catch (InterruptedException e) {
 			e.printStackTrace();
@@ -88,7 +93,7 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 
 	@Override
 	protected void launchTerminated(int exitCode) {
-		aborted = true;
+		terminated = true;
 	}
 
 	private TextConsole findTextConsole(ILaunch launch) {
