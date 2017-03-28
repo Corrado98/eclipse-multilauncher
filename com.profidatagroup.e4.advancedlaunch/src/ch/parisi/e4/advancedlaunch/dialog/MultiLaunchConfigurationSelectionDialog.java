@@ -287,12 +287,6 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		abortLaunchOnErrorCheckbox = new Button(composite, SWT.CHECK);
 		abortLaunchOnErrorCheckbox.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		abortLaunchOnErrorCheckbox.setText("Abort multilaunch on exception");
-		abortLaunchOnErrorCheckbox.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				System.out.println("checked");
-			}
-		});
 	}
 
 	//IObservableValue is not parameterized '<>' to make the plugin run on Eclipse Luna release as well.

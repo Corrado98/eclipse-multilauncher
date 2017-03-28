@@ -53,15 +53,15 @@ public class LaunchUtils {
 		List<String> modes = new ArrayList<>();
 		List<String> postLaunchActions = new ArrayList<>();
 		List<String> params = new ArrayList<>();
-		List<String> abortLaunchesOnException = new ArrayList<>();
+		List<String> abortLaunchesOnError = new ArrayList<>();
 
 		List<LaunchConfigurationModel> launchConfigurationDataList = new ArrayList<>();
 
-		names = configuration.getAttribute("names", new ArrayList<String>());
-		modes = configuration.getAttribute("modes", new ArrayList<String>());
-		postLaunchActions = configuration.getAttribute("postLaunchActions", new ArrayList<String>());
-		params = configuration.getAttribute("params", new ArrayList<String>());
-		abortLaunchesOnException = configuration.getAttribute("abortLaunchesOnException", new ArrayList<String>());
+		names = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_NAMES_ATTRIBUTE, new ArrayList<String>());
+		modes = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_MODES_ATTRIBUTE, new ArrayList<String>());
+		postLaunchActions = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_POST_LAUNCH_ACTIONS_ATTRIBUTE, new ArrayList<String>());
+		params = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_PARAMS_ATTRIBUTE, new ArrayList<String>());
+		abortLaunchesOnError = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ABORT_LAUNCHES_ON_ERROR_ATTRIBUTE, new ArrayList<String>());
 
 		for (int i = 0; i < names.size(); i++) {
 			launchConfigurationDataList.add(new LaunchConfigurationModel(
@@ -69,7 +69,7 @@ public class LaunchUtils {
 					modes.get(i),
 					PostLaunchActionUtils.convertToPostLaunchAction(postLaunchActions.get(i)),
 					params.get(i),
-					Boolean.parseBoolean(abortLaunchesOnException.get(i))));
+					Boolean.parseBoolean(abortLaunchesOnError.get(i))));
 		}
 		return launchConfigurationDataList;
 	}
