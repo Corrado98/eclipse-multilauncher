@@ -1,4 +1,4 @@
-package ch.parisi.e4.advancedlaunch.test;
+package ch.parisi.e4.advancedlaunch;
 
 import static org.junit.Assert.assertEquals;
 
