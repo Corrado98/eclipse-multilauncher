@@ -14,8 +14,6 @@ import org.eclipse.debug.core.model.IProcess;
 
 /**
  * This class handles the default behavior of all waiting strategies.
- * 
- * Moreover it offers the possibility to register a termination listener. 
  */
 public abstract class AbstractLaunchStrategy {
 
@@ -32,7 +30,7 @@ public abstract class AbstractLaunchStrategy {
 	 * 
 	 * @throws CoreException if the specified launchConfiguration's launch method fails. Reasons include:<ul>
 	 * <li>unable to instantiate the underlying launch configuration delegate</li>
-	 * <li>the launch fails (in the delegate)</code>
+	 * <li>the launch fails (in the delegate)</li>
 	 * </ul>
 	 */
 	public final boolean launchAndWait(ILaunchConfiguration launchConfiguration, String mode) throws CoreException {

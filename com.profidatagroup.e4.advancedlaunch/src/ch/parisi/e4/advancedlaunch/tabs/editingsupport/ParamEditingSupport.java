@@ -7,7 +7,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.tabs.LaunchTab;
-import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
 
 /**
  * The {@link ParamEditingSupport} for the CellEditor in the {@link LaunchTab}'s {@code TableViewer}.
@@ -34,10 +33,15 @@ public class ParamEditingSupport extends EditingSupport {
 	@Override
 	protected boolean canEdit(Object element) {
 		LaunchConfigurationModel launchConfigurationModel = (LaunchConfigurationModel) element;
-		if (launchConfigurationModel.getPostLaunchAction().equals(PostLaunchAction.NONE) || launchConfigurationModel.getPostLaunchAction().equals(PostLaunchAction.WAIT_FOR_TERMINATION)) {
-			return false;
+		switch (launchConfigurationModel.getPostLaunchAction()) {
+			case DELAY:
+			case WAIT_FOR_CONSOLESTRING:
+				return true;
+			case NONE:
+			case WAIT_FOR_TERMINATION:
+				return false;
 		}
-		return true;
+		throw new IllegalArgumentException("Unknown action: " + launchConfigurationModel.getPostLaunchAction());
 	}
 
 	@Override

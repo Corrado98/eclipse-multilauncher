@@ -27,7 +27,7 @@ public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 	}
 
 	@Override
-	protected void launchTerminated(int theExitCode) {
+	protected void launchTerminated(int exitCode) {
 		terminated = true;
 	}
 }

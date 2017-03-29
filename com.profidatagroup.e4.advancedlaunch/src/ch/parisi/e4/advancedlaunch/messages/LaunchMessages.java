@@ -26,7 +26,7 @@ import org.eclipse.osgi.util.NLS;
  * This approach allows that the text files can be maintained in separate plug-ins.
  * The included languages can be configured via a product configuration file.
  */
-@SuppressWarnings("javadoc") // the textual representation of this constants is within the LaunchMessages.properties file.
+@SuppressWarnings("javadoc") // name should be self explanatory
 public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfigurationDelegate_Loop;
 	public static String LaunchGroupConfigurationDelegate_Error;

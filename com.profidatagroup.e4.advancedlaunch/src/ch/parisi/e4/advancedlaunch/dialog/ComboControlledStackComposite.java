@@ -186,7 +186,7 @@ public class ComboControlledStackComposite extends Composite {
 	/**
 	 * Gets this composite's top control. 
 	 * 
-	 * @return the top control if {@link ComboControlledStackComposite#layout} is not null. Otherwise returns null.
+	 * @return the top control or {@code null} if not set.
 	 */
 	public Control getTopControl() {
 		return layout != null ? layout.topControl : null;

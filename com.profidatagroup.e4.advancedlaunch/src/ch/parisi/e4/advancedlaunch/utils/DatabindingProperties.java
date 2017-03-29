@@ -25,5 +25,6 @@ public class DatabindingProperties {
 	public static final String ABORT_LAUNCH_ON_ERROR_PROPERTY = "abortLaunchOnError";
 
 	private DatabindingProperties() {
+		// prevent instantiation
 	}
 }
