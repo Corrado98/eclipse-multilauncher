@@ -25,6 +25,9 @@ public class ConsoleRemoveListener implements IConsoleListener {
 
 	@Override
 	public void consolesAdded(IConsole[] consoles) {
+		if (Arrays.asList(consoles).contains(console)) {
+			removed = false;
+		}
 	}
 
 	@Override
