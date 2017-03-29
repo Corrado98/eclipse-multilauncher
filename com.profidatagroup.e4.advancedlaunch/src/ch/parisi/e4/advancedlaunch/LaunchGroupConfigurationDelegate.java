@@ -16,11 +16,12 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.swt.widgets.Display;
 
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
-import ch.parisi.e4.advancedlaunch.strategies.AbstractLaunchStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.DelayStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.EmptyStrategy;
+import ch.parisi.e4.advancedlaunch.strategies.LaunchAndWait;
 import ch.parisi.e4.advancedlaunch.strategies.ReadConsoleTextStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.WaitForTerminationStrategy;
+import ch.parisi.e4.advancedlaunch.strategies.WaitStrategy;
 import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 
@@ -66,7 +67,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 					if (process.isTerminated()) {
 						break;
 					}
-					AbstractLaunchStrategy launchAndWaitStrategy = createLaunchAndWaitStrategy(model);
+					LaunchAndWait launchAndWaitStrategy = new LaunchAndWait(createWaitStrategy(model));
 					boolean success = launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
 					if (!success && model.isAbortLaunchOnError()) {
 						break;
@@ -143,7 +144,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	 *            the model which stores the postLaunchAction-attribute
 	 * @return the strategy to follow
 	 */
-	private AbstractLaunchStrategy createLaunchAndWaitStrategy(LaunchConfigurationModel launchConfigurationModel) {
+	private WaitStrategy createWaitStrategy(LaunchConfigurationModel launchConfigurationModel) {
 		switch (launchConfigurationModel.getPostLaunchAction()) {
 			case WAIT_FOR_TERMINATION:
 				return new WaitForTerminationStrategy();
