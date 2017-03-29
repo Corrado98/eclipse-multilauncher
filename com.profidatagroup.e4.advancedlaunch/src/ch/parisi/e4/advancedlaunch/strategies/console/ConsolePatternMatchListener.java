@@ -42,10 +42,12 @@ public class ConsolePatternMatchListener implements IPatternMatchListener {
 
 	@Override
 	public void connect(TextConsole console) {
+		consoleStringDetected = false;
 	}
 
 	@Override
 	public void disconnect() {
+		// no action required
 	}
 
 	@Override
