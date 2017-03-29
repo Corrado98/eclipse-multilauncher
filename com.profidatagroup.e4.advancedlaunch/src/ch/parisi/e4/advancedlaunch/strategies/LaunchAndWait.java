@@ -15,7 +15,18 @@ import org.eclipse.debug.core.model.IProcess;
 /**
  * This class handles the default behavior of all waiting strategies.
  */
-public abstract class AbstractLaunchStrategy {
+public class LaunchAndWait {
+
+	private WaitStrategy waitStrategy;
+
+	/**
+	 * Constructs a {@link LaunchAndWait}.
+	 * 
+	 * @param waitStrategy the wait strategy
+	 */
+	public LaunchAndWait(WaitStrategy waitStrategy) {
+		this.waitStrategy = waitStrategy;
+	}
 
 	/**
 	 * Launches the specified {@link ILaunchConfiguration} in the given <code>mode</code> and waits until the conditions of this strategy are met.
@@ -40,9 +51,9 @@ public abstract class AbstractLaunchStrategy {
 			ILaunch launch = launchConfiguration.launch(mode, null);
 			debugEventSetListener = registerTerminationListener(exitCode -> {
 				success.set(exitCode == 0);
-				launchTerminated(exitCode);
+				waitStrategy.launchTerminated(exitCode);
 			});
-			waitForLaunch(launch);
+			waitStrategy.waitForLaunch(launch);
 		}
 		finally {
 			if (debugEventSetListener != null) {
@@ -51,22 +62,6 @@ public abstract class AbstractLaunchStrategy {
 		}
 		return success.get();
 	}
-
-	/**
-	 * Waits until the conditions of this strategy are met.
-	 * 
-	 * This method will only return when the conditions of this strategy are met.
-	 * 
-	 * @param launch the {@link ILaunch} to wait for
-	 */
-	protected abstract void waitForLaunch(ILaunch launch);
-
-	/**
-	 * This method gets called when a launch terminates with its exit code. 
-	 * 
-	 * @param exitCode the exit code of the terminated launch
-	 */
-	protected abstract void launchTerminated(int exitCode);
 
 	/**
 	 * Registers a {@link IDebugEventSetListener}. 

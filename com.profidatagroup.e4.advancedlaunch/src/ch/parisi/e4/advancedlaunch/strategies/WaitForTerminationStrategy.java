@@ -5,12 +5,12 @@ import org.eclipse.debug.core.ILaunch;
 /**
  * Waits for launch to be terminated. 
  */
-public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
+public class WaitForTerminationStrategy implements WaitStrategy {
 
 	private volatile boolean terminated = false;
 
 	@Override
-	protected void waitForLaunch(ILaunch launch) {
+	public void waitForLaunch(ILaunch launch) {
 		while (!terminated) {
 			sleep(launch);
 		}
@@ -27,7 +27,7 @@ public class WaitForTerminationStrategy extends AbstractLaunchStrategy {
 	}
 
 	@Override
-	protected void launchTerminated(int exitCode) {
+	public void launchTerminated(int exitCode) {
 		terminated = true;
 	}
 }

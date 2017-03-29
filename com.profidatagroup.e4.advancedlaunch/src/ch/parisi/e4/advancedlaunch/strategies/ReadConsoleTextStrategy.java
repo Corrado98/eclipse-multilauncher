@@ -14,7 +14,7 @@ import ch.parisi.e4.advancedlaunch.strategies.console.ConsoleRemoveListener;
 /**
  * Reads the output of all consoles and waits for a regular expression.
  */
-public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
+public class ReadConsoleTextStrategy implements WaitStrategy {
 
 	private final String regex;
 	private volatile boolean terminated = false;
@@ -29,7 +29,7 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 	}
 
 	@Override
-	protected void waitForLaunch(ILaunch launch) {
+	public void waitForLaunch(ILaunch launch) {
 		TextConsole console = findTextConsole(launch);
 		if (console != null) {
 			waitForConsolePatternMatch(console, launch);
@@ -92,7 +92,7 @@ public class ReadConsoleTextStrategy extends AbstractLaunchStrategy {
 	}
 
 	@Override
-	protected void launchTerminated(int exitCode) {
+	public void launchTerminated(int exitCode) {
 		terminated = true;
 	}
 

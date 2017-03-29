@@ -5,15 +5,15 @@ import org.eclipse.debug.core.ILaunch;
 /**
  * Does not wait for a launch.
  */
-public class EmptyStrategy extends AbstractLaunchStrategy {
+public class EmptyStrategy implements WaitStrategy {
 
 	@Override
-	protected void waitForLaunch(ILaunch launch) {
-		//nothing to do
+	public void waitForLaunch(ILaunch launch) {
+		// nothing to do
 	}
 
 	@Override
-	protected void launchTerminated(int exitCode) {
+	public void launchTerminated(int exitCode) {
 		// ignore termination
 	}
 
