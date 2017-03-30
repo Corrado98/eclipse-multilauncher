@@ -59,6 +59,7 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfiguration_Column_Action;
 	public static String LaunchGroupConfiguration_Column_Param;
 	public static String LaunchGroupConfiguration_Column_Abort;
+	public static String LaunchGroupConfiguration_AbortOnError;
 	public static String LaunchGroupConfiguration_Name;
 	public static String LaunchGroupConfiguration_Launches;
 	public static String LaunchGroupConfiguration_NotFound;
