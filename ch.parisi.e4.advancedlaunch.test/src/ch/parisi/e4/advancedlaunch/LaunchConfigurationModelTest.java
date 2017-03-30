@@ -4,11 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
 
 /**
- * The {@link LaunchConfigurationModelTest}.
+ * Tests {@link LaunchConfigurationModel}.
  */
 public class LaunchConfigurationModelTest {
 
@@ -20,7 +19,7 @@ public class LaunchConfigurationModelTest {
 	private LaunchConfigurationModel launchConfigurationModel = new LaunchConfigurationModel(name, mode, postLaunchAction, param, abortLaunchOnError);
 
 	/**
-	 * Asserts a {@code LaunchConfigurationModel}'s name.
+	 * Tests a {@code LaunchConfigurationModel}'s name.
 	 */
 	@Test
 	public void getNameTest() {
@@ -28,7 +27,7 @@ public class LaunchConfigurationModelTest {
 	}
 
 	/**
-	 * Asserts a {@code LaunchConfigurationModel}'s launch mode.
+	 * Tests a {@code LaunchConfigurationModel}'s launch mode.
 	 */
 	@Test
 	public void getModeTest() {
@@ -36,7 +35,7 @@ public class LaunchConfigurationModelTest {
 	}
 
 	/**
-	 * Asserts a {@code LaunchConfigurationModel}'s runtime parameter.
+	 * Tests a {@code LaunchConfigurationModel}'s runtime parameter.
 	 */
 	@Test
 	public void getParamTest() {
@@ -44,7 +43,7 @@ public class LaunchConfigurationModelTest {
 	}
 
 	/**
-	 * Asserts a {@code LaunchConfigurationModel}'s abortLaunchOnError flag.
+	 * Tests a {@code LaunchConfigurationModel}'s abortLaunchOnError flag.
 	 */
 	@Test
 	public void isAbortLaunchOnErrorTest() {
@@ -52,7 +51,7 @@ public class LaunchConfigurationModelTest {
 	}
 
 	/**
-	 * Asserts a {@code LaunchConfigurationModel}'s {@link PostLaunchAction}.
+	 * Tests a {@code LaunchConfigurationModel}'s {@link PostLaunchAction}.
 	 */
 	@Test
 	public void getPostLaunchActionTest() {
