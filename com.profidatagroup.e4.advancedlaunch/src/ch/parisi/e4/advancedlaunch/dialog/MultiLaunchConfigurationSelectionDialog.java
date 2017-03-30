@@ -57,6 +57,7 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
+import ch.parisi.e4.advancedlaunch.utils.DatabindingProperties;
 import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
@@ -286,7 +287,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	private void createAbortOnExceptionControl(Composite composite) {
 		abortLaunchOnErrorCheckbox = new Button(composite, SWT.CHECK);
 		abortLaunchOnErrorCheckbox.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-		abortLaunchOnErrorCheckbox.setText("Abort multilaunch on exception");
+		abortLaunchOnErrorCheckbox.setText(LaunchMessages.LaunchGroupConfiguration_AbortOnError);
 	}
 
 	//IObservableValue is not parameterized '<>' to make the plugin run on Eclipse Luna release as well.
@@ -297,7 +298,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 		// create the observables, which should be bound
 		IObservableValue fDelayAmountWidgetTarget = WidgetProperties.text(SWT.Modify).observe(paramTextWidget);
-		IObservableValue actionParamModel = PojoProperties.value("actionParam").observe(this);
+		IObservableValue actionParamModel = PojoProperties.value(DatabindingProperties.PARAM_PROPERTY).observe(this);
 
 		// bind observables together
 		dbc.bindValue(fDelayAmountWidgetTarget, actionParamModel);
@@ -311,7 +312,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 
 		// create the observables, which should be bound
 		IObservableValue abortLaunchOnErrorCheckboxTarget = WidgetProperties.selection().observe(abortLaunchOnErrorCheckbox);
-		IObservableValue abortLaunchOnErrorModel = PojoProperties.value("abortLaunchOnError").observe(this);
+		IObservableValue abortLaunchOnErrorModel = PojoProperties.value(DatabindingProperties.ABORT_LAUNCH_ON_ERROR_PROPERTY).observe(this);
 
 		// bind observables together
 		dbc.bindValue(abortLaunchOnErrorCheckboxTarget, abortLaunchOnErrorModel);
