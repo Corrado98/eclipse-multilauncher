@@ -6,7 +6,7 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleListener;
 
 /**
- * The {@link ConsoleRemoveListener}.
+ * The {@link ConsoleRemoveListener} keeps track whether a specific {@link IConsole} is added or removed.
  */
 public class ConsoleRemoveListener implements IConsoleListener {
 
@@ -17,7 +17,7 @@ public class ConsoleRemoveListener implements IConsoleListener {
 	/**
 	 * Constructs a {@link ConsoleRemoveListener}.
 	 * 
-	 * @param console the console to stop listening to
+	 * @param console the console to listen to
 	 */
 	public ConsoleRemoveListener(IConsole console) {
 		this.console = console;
