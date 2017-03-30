@@ -13,10 +13,9 @@ public class WaitForTerminationStrategyTest {
 
 	/**
 	 * Tests a basic {@link WaitForTerminationStrategy}.
-	 * @throws InterruptedException if any thread has interrupted the current thread. 
 	 */
 	@Test
-	public void basicWaitForTerminationStrategyTest() throws InterruptedException {
+	public void basicWaitForTerminationStrategyTest() {
 		WaitForTerminationStrategy waitForTerminationStrategy = new WaitForTerminationStrategy();
 		AtomicLong actualDelayInMilliseconds = new AtomicLong(0);
 
