@@ -294,8 +294,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			public void handleEvent(Event event) {
 				if (selectedConfiguration != null && launchConfigurationDataList != null) {
 					launchConfigurationDataList.remove(selectedConfiguration);
-					////FIXME Is this cleaner?
-					//selectedConfiguration.removePropertyChangeListener(propertyChangeListener);
 					updateDirtyModel();
 				}
 			}
@@ -606,6 +604,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private static class LaunchValidationException extends RuntimeException {
+		private static final long serialVersionUID = 1164646082952205965L;
+
 		public LaunchValidationException(String message) {
 			super(message);
 		}
