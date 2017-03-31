@@ -23,6 +23,7 @@ import ch.parisi.e4.advancedlaunch.strategies.ReadConsoleTextStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.WaitForTerminationStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.WaitStrategy;
 import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
+import ch.parisi.e4.advancedlaunch.utils.MultilauncherConfigurationAttributes;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 
 /**
@@ -90,7 +91,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	 * @throws CoreException if an exception occurs while retrieving the attribute from underlying storage.
 	 */
 	private boolean confirmMultilaunch(ILaunchConfiguration configuration) throws CoreException {
-		boolean promptBeforeLaunch = configuration.getAttribute("promptBeforeLaunch", false);
+		boolean promptBeforeLaunch = configuration.getAttribute(MultilauncherConfigurationAttributes.PROMPT_BEFORE_LAUNCH_ATTRIBUTE, false);
 		if (!promptBeforeLaunch) {
 			return true;
 		}
@@ -117,7 +118,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		if (startMultilaunchDialog.getReturnCode() == IDialogConstants.OK_ID) {
 			try {
 				ILaunchConfigurationWorkingCopy configurationCopy = configuration.getWorkingCopy();
-				configurationCopy.setAttribute("promptBeforeLaunch", !startMultilaunchDialog.getToggleState());
+				configurationCopy.setAttribute(MultilauncherConfigurationAttributes.PROMPT_BEFORE_LAUNCH_ATTRIBUTE, !startMultilaunchDialog.getToggleState());
 				configurationCopy.doSave();
 				return true;
 			}
