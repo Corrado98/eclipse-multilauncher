@@ -3,6 +3,7 @@ package ch.parisi.e4.advancedlaunch;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -12,6 +13,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.swt.widgets.Display;
 
@@ -20,10 +22,12 @@ import ch.parisi.e4.advancedlaunch.strategies.DelayStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.EmptyStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.LaunchAndWait;
 import ch.parisi.e4.advancedlaunch.strategies.ReadConsoleTextStrategy;
+import ch.parisi.e4.advancedlaunch.strategies.WaitForDialogStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.WaitForTerminationStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.WaitStrategy;
 import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
 import ch.parisi.e4.advancedlaunch.utils.MultilauncherConfigurationAttributes;
+import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
 
 /**
@@ -70,8 +74,10 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 					}
 					LaunchAndWait launchAndWaitStrategy = new LaunchAndWait(createWaitStrategy(model));
 					boolean success = launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
-					if (!success && model.isAbortLaunchOnError()) {
-						break;
+					if (!success) {
+						if (model.isAbortLaunchOnError() || model.getPostLaunchAction() == PostLaunchAction.WAIT_FOR_DIALOG) {
+							break;
+						}
 					}
 				}
 			}
@@ -158,9 +164,39 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 
 			case NONE:
 				return new EmptyStrategy();
+
+			case WAIT_FOR_DIALOG:
+				return new WaitForDialogStrategy(getShowDialogFunction(), launchConfigurationModel.getParam());
 		}
 
 		throw new IllegalArgumentException("Unknown launch and wait strategy: "
 				+ PostLaunchActionUtils.convertToName(launchConfigurationModel.getPostLaunchAction()));
 	}
+
+	private Function<String, Boolean> getShowDialogFunction() {
+		return new Function<String, Boolean>() {
+			@Override
+			public Boolean apply(String dialogText) {
+				AtomicBoolean confirmed = new AtomicBoolean(false);
+
+				Display.getDefault().syncExec(new Runnable() {
+					@Override
+					public void run() {
+						boolean okPressed = MessageDialog.openConfirm(
+								null,
+								LaunchMessages.LaunchGroupConfigurationSelectionDialog_ConfirmLaunch_Dialog_Title,
+								dialogText);
+
+						if (okPressed) {
+							confirmed.set(true);
+						}
+					}
+				});
+
+				return confirmed.get();
+			}
+		};
+
+	}
+
 }

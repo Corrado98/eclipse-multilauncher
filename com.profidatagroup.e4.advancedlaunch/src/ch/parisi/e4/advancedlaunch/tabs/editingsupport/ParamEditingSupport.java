@@ -36,6 +36,7 @@ public class ParamEditingSupport extends EditingSupport {
 		switch (launchConfigurationModel.getPostLaunchAction()) {
 			case DELAY:
 			case WAIT_FOR_CONSOLESTRING:
+			case WAIT_FOR_DIALOG:
 				return true;
 			case NONE:
 			case WAIT_FOR_TERMINATION:

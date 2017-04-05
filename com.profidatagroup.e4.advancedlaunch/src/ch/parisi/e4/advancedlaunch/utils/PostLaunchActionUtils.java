@@ -25,11 +25,11 @@ public class PostLaunchActionUtils {
 	/**
 	 * Converts the specified {@link PostLaunchAction} to the human readable name.
 	 * 
-	 * @param action the {@link PostLaunchAction} to convert
+	 * @param postLaunchAction the {@link PostLaunchAction} to convert
 	 * @return the human readable name
 	 */
-	public static String convertToName(PostLaunchAction action) {
-		switch (action) {
+	public static String convertToName(PostLaunchAction postLaunchAction) {
+		switch (postLaunchAction) {
 			case NONE:
 				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_None;
 			case WAIT_FOR_TERMINATION:
@@ -38,10 +38,13 @@ public class PostLaunchActionUtils {
 				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay;
 			case WAIT_FOR_CONSOLESTRING:
 				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString;
-			default:
-				assert false : "new post launch action type is missing logic"; //$NON-NLS-1$
-				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_None;
+			case WAIT_FOR_DIALOG:
+				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForDialog;
 		}
+
+		throw new IllegalArgumentException("Unknown post launch action: "
+				+ PostLaunchActionUtils.convertToName(postLaunchAction));
+
 	}
 
 	/**
@@ -64,9 +67,11 @@ public class PostLaunchActionUtils {
 		else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString)) {
 			return PostLaunchAction.WAIT_FOR_CONSOLESTRING;
 		}
+		else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForDialog)) {
+			return PostLaunchAction.WAIT_FOR_DIALOG;
+		}
 		else {
-			assert false : "new post launch action type is missing logic"; //$NON-NLS-1$
-			return PostLaunchAction.NONE;
+			throw new IllegalArgumentException("No post launch action for specified name: " + name);
 		}
 	}
 

@@ -18,6 +18,7 @@ public class ReadConsoleTextStrategy implements WaitStrategy {
 
 	private final String regex;
 	private volatile boolean terminated = false;
+	private volatile boolean success = true;
 
 	/**
 	 * Constructs a {@link ReadConsoleTextStrategy}.
@@ -29,11 +30,12 @@ public class ReadConsoleTextStrategy implements WaitStrategy {
 	}
 
 	@Override
-	public void waitForLaunch(ILaunch launch) {
+	public boolean waitForLaunch(ILaunch launch) {
 		TextConsole console = findTextConsole(launch);
 		if (console != null) {
 			waitForConsolePatternMatch(console, launch);
 		}
+		return success;
 	}
 
 	private void waitForConsolePatternMatch(TextConsole console, ILaunch launch) {
@@ -93,6 +95,10 @@ public class ReadConsoleTextStrategy implements WaitStrategy {
 
 	@Override
 	public void launchTerminated(int exitCode) {
+		if (exitCode != 0) {
+			success = false;
+		}
+		
 		terminated = true;
 	}
 

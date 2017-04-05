@@ -24,5 +24,10 @@ public enum PostLaunchAction {
 	/**
 	 * Wait until a specified regular expression appears in the console of the launch.
 	 */
-	WAIT_FOR_CONSOLESTRING
+	WAIT_FOR_CONSOLESTRING,
+
+	/**
+	 * Wait until dialog confirmation or cancellation. 
+	 */
+	WAIT_FOR_DIALOG
 }

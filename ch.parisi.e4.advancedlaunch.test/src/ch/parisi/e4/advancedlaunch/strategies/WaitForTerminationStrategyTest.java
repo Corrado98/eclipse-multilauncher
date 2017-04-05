@@ -34,7 +34,7 @@ public class WaitForTerminationStrategyTest {
 
 		actualDelayInMilliseconds.set(endTime - startTime);
 
-		assertTrue(actualDelayInMilliseconds.get() < 3000);
+		assertTrue(actualDelayInMilliseconds.get() < 3100);
 	}
 
 	private void sleep(long millis) {

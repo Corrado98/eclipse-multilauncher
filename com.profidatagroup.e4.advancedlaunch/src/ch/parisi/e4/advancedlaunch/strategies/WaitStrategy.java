@@ -13,8 +13,9 @@ public interface WaitStrategy {
 	 * This method will only return when the conditions of this strategy are met.
 	 * 
 	 * @param launch the {@link ILaunch} to wait for
+	 * @return whether waiting was successful
 	 */
-	void waitForLaunch(ILaunch launch);
+	boolean waitForLaunch(ILaunch launch);
 
 	/**
 	 * This method gets called when a launch terminates with its exit code. 

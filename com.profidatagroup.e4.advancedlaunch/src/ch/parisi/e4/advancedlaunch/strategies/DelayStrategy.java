@@ -10,6 +10,7 @@ public class DelayStrategy implements WaitStrategy {
 	private int waitingTimeInSeconds;
 
 	private volatile boolean terminated = false;
+	private volatile boolean success = true;
 
 	/**
 	 * Constructs a {@link DelayStrategy}.
@@ -21,14 +22,15 @@ public class DelayStrategy implements WaitStrategy {
 	}
 
 	@Override
-	public void waitForLaunch(ILaunch launch) {
+	public boolean waitForLaunch(ILaunch launch) {
 		for (int second = 0; second < waitingTimeInSeconds; second++) {
 			if (terminated) {
-				return;
+				return success;
 			}
 
 			waitDelay(1);
 		}
+		return success;
 	}
 
 	private void waitDelay(int seconds) {
@@ -42,8 +44,12 @@ public class DelayStrategy implements WaitStrategy {
 
 	@Override
 	public void launchTerminated(int exitCode) {
-		System.out.println("Launch with delay terminated " + exitCode);
+		if (exitCode != 0) {
+			success = false;
+		}
+
 		terminated = true;
+		System.out.println("Launch with delay terminated " + exitCode);
 	}
 
 }

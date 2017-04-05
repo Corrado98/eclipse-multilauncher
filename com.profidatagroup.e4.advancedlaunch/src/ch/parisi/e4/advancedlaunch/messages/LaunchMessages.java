@@ -34,6 +34,7 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfigurationDelegate_Action_WaitForTermination;
 	public static String LaunchGroupConfigurationDelegate_Action_Delay;
 	public static String LaunchGroupConfigurationDelegate_Action_WaitForConsoleString;
+	public static String LaunchGroupConfigurationDelegate_Action_WaitForDialog;
 	public static String LaunchGroupConfigurationSelectionDialog_4;
 	public static String LaunchGroupConfigurationSelectionDialog_8;
 	public static String LaunchGroupConfigurationSelectionDialog_9;
@@ -45,6 +46,11 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfigurationSelectionDialog_13;
 	public static String LaunchGroupConfigurationSelectionDialog_14;
 	public static String LaunchGroupConfigurationSelectionDialog_15;
+	public static String LaunchGroupConfigurationSelectionDialog_SecondsLabel;
+	public static String LaunchGroupConfigurationSelectionDialog_RegularExpressionLabel;
+	public static String LaunchGroupConfigurationSelectionDialog_DialogTextLabel;
+	public static String LaunchGroupConfigurationSelectionDialog_ConfirmLaunch_Dialog_Title;
+	public static String LaunchGroupConfigurationSelectionDialog_ConfirmLaunch_Dialog_DefaultMessage;
 	public static String LaunchGroupConfiguration_Up;
 	public static String LaunchGroupConfiguration_Down;
 	public static String LaunchGroupConfiguration_Edit;

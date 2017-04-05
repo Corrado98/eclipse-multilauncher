@@ -50,10 +50,9 @@ public class LaunchAndWait {
 		try {
 			ILaunch launch = launchConfiguration.launch(mode, null);
 			debugEventSetListener = registerTerminationListener(exitCode -> {
-				success.set(exitCode == 0);
 				waitStrategy.launchTerminated(exitCode);
 			});
-			waitStrategy.waitForLaunch(launch);
+			success.set(waitStrategy.waitForLaunch(launch));
 		}
 		finally {
 			if (debugEventSetListener != null) {

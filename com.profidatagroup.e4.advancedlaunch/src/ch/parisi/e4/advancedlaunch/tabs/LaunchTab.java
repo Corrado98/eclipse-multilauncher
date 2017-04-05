@@ -81,7 +81,14 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					break;
 
 				case DatabindingProperties.POST_LAUNCH_ACTION_PROPERTY:
-					((LaunchConfigurationModel) evt.getSource()).setParam("");
+					LaunchConfigurationModel launchConfigurationModel = (LaunchConfigurationModel) evt.getSource();
+					launchConfigurationModel.setParam("");
+
+					PostLaunchAction postLaunchAction = launchConfigurationModel.getPostLaunchAction();
+					if (postLaunchAction == PostLaunchAction.NONE || postLaunchAction == PostLaunchAction.WAIT_FOR_DIALOG) {
+						launchConfigurationModel.setAbortLaunchOnError(false);
+					}
+
 					setDirty(true);
 					updateLaunchConfigurationDialog();
 					break;

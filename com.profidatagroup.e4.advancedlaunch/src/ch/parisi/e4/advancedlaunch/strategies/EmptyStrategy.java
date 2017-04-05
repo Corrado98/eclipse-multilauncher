@@ -8,8 +8,8 @@ import org.eclipse.debug.core.ILaunch;
 public class EmptyStrategy implements WaitStrategy {
 
 	@Override
-	public void waitForLaunch(ILaunch launch) {
-		// nothing to do
+	public boolean waitForLaunch(ILaunch launch) {
+		return true;
 	}
 
 	@Override

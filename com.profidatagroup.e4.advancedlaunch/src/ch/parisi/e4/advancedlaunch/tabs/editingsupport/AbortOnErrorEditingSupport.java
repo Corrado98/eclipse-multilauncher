@@ -32,7 +32,17 @@ public class AbortOnErrorEditingSupport extends EditingSupport {
 
 	@Override
 	protected boolean canEdit(Object element) {
-		return true;
+		LaunchConfigurationModel launchConfigurationModel = (LaunchConfigurationModel) element;
+		switch (launchConfigurationModel.getPostLaunchAction()) {
+			case DELAY:
+			case WAIT_FOR_TERMINATION:
+			case WAIT_FOR_CONSOLESTRING:
+				return true;
+			case NONE:
+			case WAIT_FOR_DIALOG:
+				return false;
+		}
+		throw new IllegalArgumentException("Unknown action: " + launchConfigurationModel.getPostLaunchAction());
 	}
 
 	@Override

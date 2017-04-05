@@ -8,12 +8,14 @@ import org.eclipse.debug.core.ILaunch;
 public class WaitForTerminationStrategy implements WaitStrategy {
 
 	private volatile boolean terminated = false;
+	private volatile boolean success = true;
 
 	@Override
-	public void waitForLaunch(ILaunch launch) {
+	public boolean waitForLaunch(ILaunch launch) {
 		while (!terminated) {
 			sleep(launch);
 		}
+		return success;
 	}
 
 	private void sleep(ILaunch launch) {
@@ -28,6 +30,10 @@ public class WaitForTerminationStrategy implements WaitStrategy {
 
 	@Override
 	public void launchTerminated(int exitCode) {
+		if (exitCode != 0) {
+			success = false;
+		}
+
 		terminated = true;
 	}
 }

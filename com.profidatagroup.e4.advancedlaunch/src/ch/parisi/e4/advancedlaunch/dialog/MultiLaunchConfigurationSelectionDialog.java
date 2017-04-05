@@ -220,6 +220,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		initActionParamDatabinding();
 		initAbortLaunchOnErrorDatabinding();
 		showParamTextWidgetConditionally();
+		enableAbortLaunchOnErrorCheckboxConditionally();
 
 		return comp;
 	}
@@ -235,15 +236,33 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.WAIT_FOR_TERMINATION));
 		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.DELAY));
 		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.WAIT_FOR_CONSOLESTRING));
+		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.WAIT_FOR_DIALOG));
 
 		combo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final String actionStr = ((Combo) e.widget).getText();
 				postLaunchAction = PostLaunchActionUtils.convertToPostLaunchAction(actionStr);
-				if (postLaunchAction == PostLaunchAction.NONE || postLaunchAction == PostLaunchAction.WAIT_FOR_TERMINATION) {
-					paramTextWidget.setText("");
+				switch (postLaunchAction) {
+					case NONE:
+						paramTextWidget.setText("");
+						abortLaunchOnErrorCheckbox.setSelection(false);
+						abortLaunchOnErrorCheckbox.setEnabled(false);
+						break;
+					case WAIT_FOR_TERMINATION:
+						paramTextWidget.setText("");
+						abortLaunchOnErrorCheckbox.setEnabled(true);
+						break;
+					case WAIT_FOR_DIALOG:
+						abortLaunchOnErrorCheckbox.setSelection(false);
+						abortLaunchOnErrorCheckbox.setEnabled(false);
+						break;
+					case DELAY:
+					case WAIT_FOR_CONSOLESTRING:
+						abortLaunchOnErrorCheckbox.setEnabled(true);
+						break;
 				}
+
 				showParamTextWidgetConditionally();
 				validate();
 			}
@@ -330,22 +349,38 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	private void showParamTextWidgetConditionally() {
 		switch (postLaunchAction) {
 			case DELAY:
-				paramLabel.setText("Seconds:");
+				paramLabel.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_SecondsLabel);
 				paramLabel.setVisible(true);
 				paramTextWidget.setVisible(true);
 				break;
 			case WAIT_FOR_CONSOLESTRING:
-				paramLabel.setText("RegEx:");
+				paramLabel.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_RegularExpressionLabel);
+				paramLabel.setVisible(true);
+				paramTextWidget.setVisible(true);
+				break;
+			case WAIT_FOR_DIALOG:
+				paramLabel.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_DialogTextLabel);
 				paramLabel.setVisible(true);
 				paramTextWidget.setVisible(true);
 				break;
 			case WAIT_FOR_TERMINATION:
-				paramLabel.setVisible(false);
-				paramTextWidget.setVisible(false);
-				break;
 			case NONE:
 				paramLabel.setVisible(false);
 				paramTextWidget.setVisible(false);
+				break;
+		}
+	}
+
+	private void enableAbortLaunchOnErrorCheckboxConditionally() {
+		switch (postLaunchAction) {
+			case NONE:
+			case WAIT_FOR_DIALOG:
+				abortLaunchOnErrorCheckbox.setEnabled(false);
+				break;
+			case DELAY:
+			case WAIT_FOR_CONSOLESTRING:
+			case WAIT_FOR_TERMINATION:
+				abortLaunchOnErrorCheckbox.setEnabled(true);
 				break;
 		}
 	}
