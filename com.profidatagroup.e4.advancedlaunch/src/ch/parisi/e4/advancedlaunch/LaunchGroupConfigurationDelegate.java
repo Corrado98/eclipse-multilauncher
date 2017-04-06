@@ -64,9 +64,11 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		launch.addProcess(process);
 
 		try {
-			List<LaunchConfigurationModel> launchConfigurationDataList = LaunchUtils.loadLaunchConfigurations(configuration);
 
-			for (LaunchConfigurationModel model : launchConfigurationDataList) {
+			List<LaunchConfigurationModel> activeLaunchConfigurationModels = LaunchUtils
+					.getActiveLaunchConfigurationModels(LaunchUtils.loadLaunchConfigurations(configuration));
+
+			for (LaunchConfigurationModel model : activeLaunchConfigurationModels) {
 				ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(model.getName());
 				if (launchConfiguration != null) {
 					if (process.isTerminated()) {

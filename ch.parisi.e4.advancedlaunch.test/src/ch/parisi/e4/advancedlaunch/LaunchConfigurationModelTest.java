@@ -14,9 +14,16 @@ public class LaunchConfigurationModelTest {
 	private String name = "Multilauncher";
 	private String mode = "run";
 	private String param = "";
-	private boolean abortLaunchOnError = false;
 	private PostLaunchAction postLaunchAction = PostLaunchAction.NONE;
-	private LaunchConfigurationModel launchConfigurationModel = new LaunchConfigurationModel(name, mode, postLaunchAction, param, abortLaunchOnError);
+	private boolean abortLaunchOnError = false;
+	private boolean active = true;
+	private LaunchConfigurationModel launchConfigurationModel = new LaunchConfigurationModel(
+			name,
+			mode,
+			postLaunchAction,
+			param,
+			abortLaunchOnError,
+			active);
 
 	/**
 	 * Tests a {@code LaunchConfigurationModel}'s name.
@@ -43,6 +50,14 @@ public class LaunchConfigurationModelTest {
 	}
 
 	/**
+	 * Tests a {@code LaunchConfigurationModel}'s {@link PostLaunchAction}.
+	 */
+	@Test
+	public void getPostLaunchActionTest() {
+		assertEquals(postLaunchAction, launchConfigurationModel.getPostLaunchAction());
+	}
+
+	/**
 	 * Tests a {@code LaunchConfigurationModel}'s abortLaunchOnError flag.
 	 */
 	@Test
@@ -51,11 +66,11 @@ public class LaunchConfigurationModelTest {
 	}
 
 	/**
-	 * Tests a {@code LaunchConfigurationModel}'s {@link PostLaunchAction}.
+	 * Tests a {@code LaunchConfigurationModel}'s active flag.
 	 */
 	@Test
-	public void getPostLaunchActionTest() {
-		assertEquals(postLaunchAction, launchConfigurationModel.getPostLaunchAction());
+	public void isActiveTest() {
+		assertEquals(active, launchConfigurationModel.isActive());
 	}
 
 }

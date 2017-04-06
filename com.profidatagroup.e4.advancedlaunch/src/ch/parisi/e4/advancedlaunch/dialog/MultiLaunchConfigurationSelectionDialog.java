@@ -549,7 +549,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 	}
 
 	/**
-	 * Gets a dialog's {@link #abortLaunchOnError} flag.
+	 * Gets the dialog's {@link #abortLaunchOnError} flag.
 	 * 
 	 * @return {@code true} when a multilaunch must abort on error {@code false} when launching continues.
 	 */

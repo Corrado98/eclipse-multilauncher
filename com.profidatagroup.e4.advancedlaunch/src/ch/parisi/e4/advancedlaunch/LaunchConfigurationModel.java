@@ -3,6 +3,7 @@ package ch.parisi.e4.advancedlaunch;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import ch.parisi.e4.advancedlaunch.utils.DatabindingProperties;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
 
 /**
@@ -14,6 +15,7 @@ public class LaunchConfigurationModel {
 	private String mode;
 	private String param;
 	private boolean abortLaunchOnError;
+	private boolean active;
 
 	/**
 	 * {@link PostLaunchAction}.
@@ -29,13 +31,15 @@ public class LaunchConfigurationModel {
 	 * @param postLaunchAction the chosen postLaunchAction
 	 * @param param the chosen runtime-parameter
 	 * @param abortLaunchOnError whether to abort a launch on error
+	 * @param active whether launch is active
 	 */
-	public LaunchConfigurationModel(String name, String mode, PostLaunchAction postLaunchAction, String param, boolean abortLaunchOnError) {
+	public LaunchConfigurationModel(String name, String mode, PostLaunchAction postLaunchAction, String param, boolean abortLaunchOnError, boolean active) {
 		this.name = name;
 		this.mode = mode;
 		this.postLaunchAction = postLaunchAction;
 		this.param = param;
 		this.abortLaunchOnError = abortLaunchOnError;
+		this.active = active;
 	}
 
 	/**
@@ -67,15 +71,6 @@ public class LaunchConfigurationModel {
 	}
 
 	/**
-	 * Sets a {@code LaunchConfigurationModel}'s name and fires a {@link java.beans.PropertyChangeEvent}. 
-	 * 
-	 * @param name the name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * Gets a {@code LaunchConfigurationModel}'s launch mode.
 	 * 
 	 * @return the launch mode 
@@ -90,7 +85,7 @@ public class LaunchConfigurationModel {
 	 * @param mode the launch mode
 	 */
 	public void setMode(String mode) {
-		propertyChangeSupport.firePropertyChange("mode", this.mode, this.mode = mode);
+		propertyChangeSupport.firePropertyChange(DatabindingProperties.MODE_PROPERTY, this.mode, this.mode = mode);
 	}
 
 	/**
@@ -108,7 +103,7 @@ public class LaunchConfigurationModel {
 	 * @param postLaunchAction the post launch action
 	 */
 	public void setPostLaunchAction(PostLaunchAction postLaunchAction) {
-		propertyChangeSupport.firePropertyChange("postLaunchAction", this.postLaunchAction, this.postLaunchAction = postLaunchAction);
+		propertyChangeSupport.firePropertyChange(DatabindingProperties.POST_LAUNCH_ACTION_PROPERTY, this.postLaunchAction, this.postLaunchAction = postLaunchAction);
 	}
 
 	/**
@@ -126,7 +121,7 @@ public class LaunchConfigurationModel {
 	 * @param param the parameter
 	 */
 	public void setParam(String param) {
-		propertyChangeSupport.firePropertyChange("param", this.param, this.param = param);
+		propertyChangeSupport.firePropertyChange(DatabindingProperties.PARAM_PROPERTY, this.param, this.param = param);
 	}
 
 	/**
@@ -146,6 +141,27 @@ public class LaunchConfigurationModel {
 	 * @param abortLaunchOnError {@code true} when multilaunch must abort on error {@code false} when launching should continue.
 	 */
 	public void setAbortLaunchOnError(boolean abortLaunchOnError) {
-		propertyChangeSupport.firePropertyChange("abortLaunchOnError", this.abortLaunchOnError, this.abortLaunchOnError = abortLaunchOnError);
+		propertyChangeSupport.firePropertyChange(DatabindingProperties.ABORT_LAUNCH_ON_ERROR_PROPERTY, this.abortLaunchOnError, this.abortLaunchOnError = abortLaunchOnError);
 	}
+
+	/**
+	 * Gets a {@code LaunchConfigurationModel}'s active state. 
+	 * 
+	 * @return {@code true} when a childlaunch is active, otherwise {@code false}. 
+	 */
+	public boolean isActive() {
+		return active;
+	}
+
+	/**
+	 * Sets whether a {@code LaunchConfigurationModel}'s active.
+	 * 
+	 * This method fires a {@link java.beans.PropertyChangeEvent}. 
+	 * 
+	 * @param active the active flag
+	 */
+	public void setActive(boolean active) {
+		propertyChangeSupport.firePropertyChange(DatabindingProperties.ACTIVE_PROPERTY, this.active, this.active = active);
+	}
+
 }

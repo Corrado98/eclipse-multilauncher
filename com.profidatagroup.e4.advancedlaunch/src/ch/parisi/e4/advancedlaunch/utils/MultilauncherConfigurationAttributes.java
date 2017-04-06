@@ -33,6 +33,11 @@ public class MultilauncherConfigurationAttributes {
 	public static final String CHILDLAUNCH_ABORT_LAUNCHES_ON_ERROR_ATTRIBUTE = "abortLaunchesOnError";
 
 	/**
+	 * Multilaunch configuration attribute containing all childlaunch active flags.
+	 */
+	public static final String CHILDLAUNCH_ACTIVES_ATTRIBUTE = "actives";
+	
+	/**
 	 * Multilaunch configuration attribute holding the flag whether to open a confirmation dialog before launching a multilaunch.
 	 */
 	public static final String PROMPT_BEFORE_LAUNCH_ATTRIBUTE = "promptBeforeLaunch";

@@ -24,6 +24,11 @@ public class DatabindingProperties {
 	 */
 	public static final String ABORT_LAUNCH_ON_ERROR_PROPERTY = "abortLaunchOnError";
 
+	/**
+	 * The databinding property name for the active flag. 
+	 */
+	public static final String ACTIVE_PROPERTY = "active";
+
 	private DatabindingProperties() {
 		// prevent instantiation
 	}

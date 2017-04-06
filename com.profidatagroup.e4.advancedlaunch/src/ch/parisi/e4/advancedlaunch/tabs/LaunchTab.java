@@ -15,12 +15,15 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -63,7 +66,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	private Button downButton;
 	private Button editButton;
 	private Button promptBeforeLaunchCheckbox;
-	private TableViewer tableViewer;
+	private CheckboxTableViewer checkboxTableViewer;
 	private LaunchConfigurationModel selectedConfiguration;
 	private Composite mainComposite;
 	private Composite buttonComposite;
@@ -73,15 +76,15 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
 		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			switch (evt.getPropertyName()) {
+		public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+			switch (propertyChangeEvent.getPropertyName()) {
 				case DatabindingProperties.MODE_PROPERTY:
 					setDirty(true);
 					updateDirtyModel();
 					break;
 
 				case DatabindingProperties.POST_LAUNCH_ACTION_PROPERTY:
-					LaunchConfigurationModel launchConfigurationModel = (LaunchConfigurationModel) evt.getSource();
+					LaunchConfigurationModel launchConfigurationModel = (LaunchConfigurationModel) propertyChangeEvent.getSource();
 					launchConfigurationModel.setParam("");
 
 					PostLaunchAction postLaunchAction = launchConfigurationModel.getPostLaunchAction();
@@ -102,6 +105,11 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					setDirty(true);
 					updateLaunchConfigurationDialog();
 					break;
+
+				case DatabindingProperties.ACTIVE_PROPERTY:
+					setDirty(true);
+					updateLaunchConfigurationDialog();
+					break;
 			}
 		}
 	};
@@ -109,7 +117,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public void createControl(Composite parent) {
 		initMainComposite(parent);
-		initTableViewer();
+		initCheckboxTableViewer();
 		initButtonComposite();
 
 		//just change this method order to reorder the buttons in the gui.
@@ -129,26 +137,30 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(mainComposite);
 	}
 
-	private void initTableViewer() {
-		tableViewer = new TableViewer(
-				mainComposite,
-				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+	private void initCheckboxTableViewer() {
+		checkboxTableViewer = CheckboxTableViewer.newCheckList(mainComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(checkboxTableViewer.getTable());
 
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(tableViewer.getTable());
+		addCheckboxTableViewerCheckStateListener();
+		addCheckboxTableViewerSelectionChangedListener();
 
-		// gets user selected element in the table and works with it.
-		addTableViewerSelectionChangedListener();
-
-		// set the content provider
-		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-
-		// create the columns
+		checkboxTableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		createColumns();
 
-		// make lines and header visible
-		final Table table = tableViewer.getTable();
+		final Table table = checkboxTableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
+	}
+
+	private void addCheckboxTableViewerCheckStateListener() {
+		checkboxTableViewer.addCheckStateListener(new ICheckStateListener() {
+			@Override
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				checkboxTableViewer.setSelection(new StructuredSelection(event.getElement()), true);
+				selectedConfiguration = (LaunchConfigurationModel) event.getElement();
+				selectedConfiguration.setActive(event.getChecked());
+			}
+		});
 	}
 
 	private void initButtonComposite() {
@@ -181,10 +193,12 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					multiLaunchConfigurationSelectionDialog.getMode(),
 					multiLaunchConfigurationSelectionDialog.getPostLaunchAction(),
 					String.valueOf(multiLaunchConfigurationSelectionDialog.getParam()),
-					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnError());
+					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnError(),
+					true);
 			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.MODE_PROPERTY, propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.POST_LAUNCH_ACTION_PROPERTY, propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.PARAM_PROPERTY, propertyChangeListener);
+			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.ACTIVE_PROPERTY, propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.ABORT_LAUNCH_ON_ERROR_PROPERTY, propertyChangeListener);
 			launchConfigurationDataList.add(launchConfigurationModel);
 
@@ -195,10 +209,18 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void updateDirtyModel() {
-		tableViewer.setInput(launchConfigurationDataList);
-		tableViewer.refresh();
+		updateCheckboxTableViewer();
 		setDirty(true);
 		updateLaunchConfigurationDialog();
+	}
+
+	private void updateCheckboxTableViewer() {
+		checkboxTableViewer.setInput(launchConfigurationDataList);
+
+		List<LaunchConfigurationModel> activeLaunchConfigurationModels = LaunchUtils.getActiveLaunchConfigurationModels(launchConfigurationDataList);
+		checkboxTableViewer.setCheckedElements(activeLaunchConfigurationModels.toArray());
+
+		checkboxTableViewer.refresh();
 	}
 
 	private void initAddConfigurationSelectionDialog(
@@ -236,11 +258,15 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					multiLaunchConfigurationSelectionDialog.getMode(),
 					multiLaunchConfigurationSelectionDialog.getPostLaunchAction(),
 					String.valueOf(multiLaunchConfigurationSelectionDialog.getParam()),
-					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnError());
+					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnError(),
+					selectedConfiguration.isActive());
+			
 			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.MODE_PROPERTY, propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.POST_LAUNCH_ACTION_PROPERTY, propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.PARAM_PROPERTY, propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.ABORT_LAUNCH_ON_ERROR_PROPERTY, propertyChangeListener);
+			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.ACTIVE_PROPERTY, propertyChangeListener);
+
 			LaunchConfigurationModel model = launchConfigurationModel;
 			launchConfigurationDataList.set(launchConfigurationDataList.indexOf(selectedConfiguration), model);
 
@@ -271,11 +297,11 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 
-	private void addTableViewerSelectionChangedListener() {
-		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+	private void addCheckboxTableViewerSelectionChangedListener() {
+		checkboxTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				ISelection selection = tableViewer.getSelection();
+				ISelection selection = checkboxTableViewer.getSelection();
 				if (selection instanceof IStructuredSelection) {
 					IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 					Object selectedElement = structuredSelection.getFirstElement();
@@ -387,7 +413,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void addTableColumn(String columnName, int width, Function<LaunchConfigurationModel, String> actionTextFetcher) {
-		TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		TableViewerColumn tableViewerColumn = new TableViewerColumn(checkboxTableViewer, SWT.NONE);
 		tableViewerColumn.getColumn().setWidth(width);
 		tableViewerColumn.getColumn().setText(columnName);
 
@@ -437,16 +463,16 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void initEditingSupport(String columnName, TableViewerColumn tableViewerColumn) {
 		if (columnName.equals(LaunchMessages.LaunchGroupConfiguration_Column_Mode)) {
-			tableViewerColumn.setEditingSupport(new LaunchModeEditingSupport(tableViewer));
+			tableViewerColumn.setEditingSupport(new LaunchModeEditingSupport(checkboxTableViewer));
 		}
 		else if (columnName.equals(LaunchMessages.LaunchGroupConfiguration_Column_Action)) {
-			tableViewerColumn.setEditingSupport(new PostLaunchActionEditingSupport(tableViewer));
+			tableViewerColumn.setEditingSupport(new PostLaunchActionEditingSupport(checkboxTableViewer));
 		}
 		else if (columnName.equals(LaunchMessages.LaunchGroupConfiguration_Column_Param)) {
-			tableViewerColumn.setEditingSupport(new ParamEditingSupport(tableViewer));
+			tableViewerColumn.setEditingSupport(new ParamEditingSupport(checkboxTableViewer));
 		}
 		else if (columnName.equals(LaunchMessages.LaunchGroupConfiguration_Column_Abort)) {
-			tableViewerColumn.setEditingSupport(new AbortOnErrorEditingSupport(tableViewer));
+			tableViewerColumn.setEditingSupport(new AbortOnErrorEditingSupport(checkboxTableViewer));
 		}
 	}
 
@@ -469,17 +495,16 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 	private void initMultilaunchConfigurationFromAttributes(ILaunchConfiguration configuration) {
 		try {
-			List<LaunchConfigurationModel> loadLaunchConfigurations = LaunchUtils
-					.loadLaunchConfigurations(configuration);
+			List<LaunchConfigurationModel> loadLaunchConfigurations = LaunchUtils.loadLaunchConfigurations(configuration);
 			for (LaunchConfigurationModel launchConfigurationModel : loadLaunchConfigurations) {
 				launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.MODE_PROPERTY, propertyChangeListener);
 				launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.POST_LAUNCH_ACTION_PROPERTY, propertyChangeListener);
 				launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.PARAM_PROPERTY, propertyChangeListener);
 				launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.ABORT_LAUNCH_ON_ERROR_PROPERTY, propertyChangeListener);
+				launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.ACTIVE_PROPERTY, propertyChangeListener);
 			}
 			launchConfigurationDataList = loadLaunchConfigurations;
-			tableViewer.setInput(launchConfigurationDataList);
-			tableViewer.refresh();
+			updateCheckboxTableViewer();
 			promptBeforeLaunchCheckbox.setSelection(configuration.getAttribute(MultilauncherConfigurationAttributes.PROMPT_BEFORE_LAUNCH_ATTRIBUTE, false));
 		}
 		catch (CoreException e) {
@@ -494,6 +519,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		List<String> postLaunchActions = new ArrayList<>();
 		List<String> params = new ArrayList<>();
 		List<String> abortLaunchesOnError = new ArrayList<>();
+		List<String> actives = new ArrayList<>();
 
 		for (LaunchConfigurationModel launchConfigurationModel : launchConfigurationDataList) {
 			names.add(launchConfigurationModel.getName());
@@ -501,12 +527,14 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 			postLaunchActions.add(PostLaunchActionUtils.convertToName(launchConfigurationModel.getPostLaunchAction()));
 			params.add(launchConfigurationModel.getParam());
 			abortLaunchesOnError.add(String.valueOf(launchConfigurationModel.isAbortLaunchOnError()));
+			actives.add(String.valueOf(launchConfigurationModel.isActive()));
 		}
 
 		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_NAMES_ATTRIBUTE, names);
 		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_MODES_ATTRIBUTE, modes);
 		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_POST_LAUNCH_ACTIONS_ATTRIBUTE, postLaunchActions);
 		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_PARAMS_ATTRIBUTE, params);
+		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ACTIVES_ATTRIBUTE, actives);
 		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ABORT_LAUNCHES_ON_ERROR_ATTRIBUTE, abortLaunchesOnError);
 
 		configuration.setAttribute(MultilauncherConfigurationAttributes.PROMPT_BEFORE_LAUNCH_ATTRIBUTE, promptBeforeLaunchCheckbox.getSelection());
@@ -530,20 +558,22 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		for (LaunchConfigurationModel launchConfigurationModel : launchConfigurationDataList) {
 			if (launchConfigurationModel.getPostLaunchAction() == PostLaunchAction.DELAY) {
 				if (!isValidNumber(launchConfigurationModel.getParam())) {
-					setErrorMessage("Invalid number of seconds: " + launchConfigurationModel.getParam());
+					setErrorMessage(MessageFormat.format(
+							LaunchMessages.LaunchGroupConfiguration_InvalidNumberOfSeconds,
+							launchConfigurationModel.getParam()));
 					return false;
 				}
 			}
 			if (launchConfigurationModel.getPostLaunchAction() == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
 				if (launchConfigurationModel.getParam().trim().isEmpty()) {
-					setErrorMessage("Empty regular expression: " + launchConfigurationModel.getParam());
+					setErrorMessage(LaunchMessages.LaunchGroupConfiguration_EmptyRegularExpression);
 					return false;
 				}
 			}
 		}
 
 		try {
-			if (((List<?>) tableViewer.getInput()).isEmpty()) {
+			if (((List<?>) checkboxTableViewer.getInput()).isEmpty()) {
 				setMessage(null);
 				setErrorMessage(null);
 				return false;

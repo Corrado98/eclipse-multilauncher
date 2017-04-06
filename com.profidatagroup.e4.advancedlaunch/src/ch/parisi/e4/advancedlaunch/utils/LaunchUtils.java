@@ -3,6 +3,7 @@ package ch.parisi.e4.advancedlaunch.utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -54,6 +55,7 @@ public class LaunchUtils {
 		List<String> postLaunchActions = new ArrayList<>();
 		List<String> params = new ArrayList<>();
 		List<String> abortLaunchesOnError = new ArrayList<>();
+		List<String> actives = new ArrayList<>();
 
 		List<LaunchConfigurationModel> launchConfigurationDataList = new ArrayList<>();
 
@@ -62,6 +64,7 @@ public class LaunchUtils {
 		postLaunchActions = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_POST_LAUNCH_ACTIONS_ATTRIBUTE, new ArrayList<String>());
 		params = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_PARAMS_ATTRIBUTE, new ArrayList<String>());
 		abortLaunchesOnError = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ABORT_LAUNCHES_ON_ERROR_ATTRIBUTE, new ArrayList<String>());
+		actives = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ACTIVES_ATTRIBUTE, new ArrayList<String>());
 
 		for (int i = 0; i < names.size(); i++) {
 			launchConfigurationDataList.add(new LaunchConfigurationModel(
@@ -69,9 +72,28 @@ public class LaunchUtils {
 					modes.get(i),
 					PostLaunchActionUtils.convertToPostLaunchAction(postLaunchActions.get(i)),
 					params.get(i),
-					Boolean.parseBoolean(abortLaunchesOnError.get(i))));
+					Boolean.parseBoolean(abortLaunchesOnError.get(i)),
+					Boolean.parseBoolean(actives.get(i))));
 		}
 		return launchConfigurationDataList;
+	}
+
+	/**
+	 * Returns a list of active {@link LaunchConfigurationModel}s. 
+	 * 
+	 * @param launchConfigurationModels the launch configuration models or {@code null}.
+	 * @return the list of active {@code LaunchConfigurationModel}s or empty if none or parameter was {@code null}.
+	 */
+	public static List<LaunchConfigurationModel> getActiveLaunchConfigurationModels(List<LaunchConfigurationModel> launchConfigurationModels) {
+		if (launchConfigurationModels != null) {
+			return launchConfigurationModels
+					.stream()
+					.filter(launchConfigurationModel -> launchConfigurationModel.isActive())
+					.collect(Collectors.toList());
+		}
+		else {
+			return new ArrayList<LaunchConfigurationModel>();
+		}
 	}
 
 	/**
