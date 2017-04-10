@@ -3,9 +3,14 @@ package ch.parisi.e4.advancedlaunch.strategies;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Tests {@link DelayStrategy}.
@@ -45,14 +50,19 @@ public class DelayStrategyTest {
 	}
 
 	private long measureDelayStrategy(long delayInMilliseconds, Integer exitCode) throws InterruptedException {
-		WaitStrategy delayStrategy = new DelayStrategy((int) delayInMilliseconds / 1000);
+		PrintStream inMemoryStream = new PrintStream(new ByteArrayOutputStream(), true);
+		ILaunch launch = Mockito.mock(ILaunch.class);
+		Mockito.when(launch.getLaunchConfiguration()).thenReturn(Mockito.mock(ILaunchConfiguration.class));
+		Mockito.when(launch.getLaunchConfiguration().getName()).thenReturn("HelloJava");
+
+		WaitStrategy delayStrategy = new DelayStrategy((int) delayInMilliseconds / 1000, inMemoryStream);
 		AtomicLong actualDelayInMilliseconds = new AtomicLong(0);
 
 		Thread delayStrategyThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				long startTime = System.currentTimeMillis();
-				delayStrategy.waitForLaunch(null);
+				delayStrategy.waitForLaunch(launch);
 				long endTime = System.currentTimeMillis();
 
 				actualDelayInMilliseconds.set(endTime - startTime);
@@ -60,7 +70,7 @@ public class DelayStrategyTest {
 		});
 		delayStrategyThread.start();
 		if (exitCode != null) {
-			delayStrategy.launchTerminated(exitCode);
+			delayStrategy.launchTerminated(null, exitCode);
 		}
 
 		delayStrategyThread.join();

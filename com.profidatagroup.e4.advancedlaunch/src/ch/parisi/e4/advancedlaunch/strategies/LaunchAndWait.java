@@ -50,7 +50,7 @@ public class LaunchAndWait {
 		try {
 			ILaunch launch = launchConfiguration.launch(mode, null);
 			debugEventSetListener = registerTerminationListener(exitCode -> {
-				waitStrategy.launchTerminated(exitCode);
+				waitStrategy.launchTerminated(launchConfiguration.getName(), exitCode);
 			});
 			success.set(waitStrategy.waitForLaunch(launch));
 		}
@@ -82,7 +82,6 @@ public class LaunchAndWait {
 					if (source instanceof IProcess && event.getKind() == DebugEvent.TERMINATE) {
 						// check if the process terminating is one i'm
 						// interested in
-						System.out.println("Terminated " + source);
 						try {
 							int exitCode = ((IProcess) source).getExitValue();
 							exitCodeHandler.accept(exitCode);

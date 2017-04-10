@@ -79,8 +79,11 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
 			switch (propertyChangeEvent.getPropertyName()) {
 				case DatabindingProperties.MODE_PROPERTY:
+				case DatabindingProperties.PARAM_PROPERTY:
+				case DatabindingProperties.ABORT_LAUNCH_ON_ERROR_PROPERTY:
+				case DatabindingProperties.ACTIVE_PROPERTY:
 					setDirty(true);
-					updateDirtyModel();
+					updateLaunchConfigurationDialog();
 					break;
 
 				case DatabindingProperties.POST_LAUNCH_ACTION_PROPERTY:
@@ -92,21 +95,6 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 						launchConfigurationModel.setAbortLaunchOnError(false);
 					}
 
-					setDirty(true);
-					updateLaunchConfigurationDialog();
-					break;
-
-				case DatabindingProperties.PARAM_PROPERTY:
-					setDirty(true);
-					updateLaunchConfigurationDialog();
-					break;
-
-				case DatabindingProperties.ABORT_LAUNCH_ON_ERROR_PROPERTY:
-					setDirty(true);
-					updateLaunchConfigurationDialog();
-					break;
-
-				case DatabindingProperties.ACTIVE_PROPERTY:
 					setDirty(true);
 					updateLaunchConfigurationDialog();
 					break;
@@ -260,7 +248,7 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 					String.valueOf(multiLaunchConfigurationSelectionDialog.getParam()),
 					multiLaunchConfigurationSelectionDialog.isAbortLaunchOnError(),
 					selectedConfiguration.isActive());
-			
+
 			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.MODE_PROPERTY, propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.POST_LAUNCH_ACTION_PROPERTY, propertyChangeListener);
 			launchConfigurationModel.addPropertyChangeListener(DatabindingProperties.PARAM_PROPERTY, propertyChangeListener);
@@ -534,8 +522,8 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_MODES_ATTRIBUTE, modes);
 		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_POST_LAUNCH_ACTIONS_ATTRIBUTE, postLaunchActions);
 		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_PARAMS_ATTRIBUTE, params);
-		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ACTIVES_ATTRIBUTE, actives);
 		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ABORT_LAUNCHES_ON_ERROR_ATTRIBUTE, abortLaunchesOnError);
+		configuration.setAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ACTIVES_ATTRIBUTE, actives);
 
 		configuration.setAttribute(MultilauncherConfigurationAttributes.PROMPT_BEFORE_LAUNCH_ATTRIBUTE, promptBeforeLaunchCheckbox.getSelection());
 	}

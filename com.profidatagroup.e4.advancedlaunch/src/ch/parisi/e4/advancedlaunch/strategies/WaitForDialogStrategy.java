@@ -1,8 +1,9 @@
 package ch.parisi.e4.advancedlaunch.strategies;
 
+import java.io.PrintStream;
+import java.text.MessageFormat;
 import java.util.function.Function;
 
-import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
@@ -16,19 +17,22 @@ public class WaitForDialogStrategy implements WaitStrategy {
 
 	private Function<String, Boolean> showDialogFunction;
 	private String dialogText;
+	private PrintStream printStream;
 
 	/**
 	 * Constructs a {@link WaitForDialogStrategy}.
 	 * 
 	 * @param showDialogFunction the show dialog function
 	 * @param dialogText the dialog text or {@code null} if default text should be used
+	 * @param printStream the print stream
 	 */
-	public WaitForDialogStrategy(Function<String, Boolean> showDialogFunction, String dialogText) {
+	public WaitForDialogStrategy(Function<String, Boolean> showDialogFunction, String dialogText, PrintStream printStream) {
 		this.showDialogFunction = showDialogFunction;
 		this.dialogText = dialogText;
+		this.printStream = printStream;
 		setDialogTextToDefaultIfNullOrEmpty();
 	}
-	
+
 	private void setDialogTextToDefaultIfNullOrEmpty() {
 		if (dialogText == null || dialogText.trim().isEmpty()) {
 			dialogText = LaunchMessages.LaunchGroupConfigurationSelectionDialog_ConfirmLaunch_Dialog_DefaultMessage;
@@ -38,16 +42,7 @@ public class WaitForDialogStrategy implements WaitStrategy {
 	@Override
 	public boolean waitForLaunch(ILaunch launch) {
 		boolean confirmed = showDialogFunction.apply(dialogText);
-
-		if (!confirmed && launch.canTerminate()) {
-			try {
-				launch.terminate();
-			}
-			catch (DebugException debugException) {
-				return false;
-			}
-		}
-
+		printStream.println(MessageFormat.format("{0}: Dialog {1}", launch.getLaunchConfiguration().getName(), confirmed ? "confirmed." : "cancelled."));
 		return confirmed;
 	}
 
@@ -61,8 +56,8 @@ public class WaitForDialogStrategy implements WaitStrategy {
 	}
 
 	@Override
-	public void launchTerminated(int exitCode) {
-		// ignore termination
+	public void launchTerminated(String name, int exitCode) {
+		printStream.println(MessageFormat.format("{0}: Terminated with exit code {1}.", name, exitCode));
 	}
 
 }

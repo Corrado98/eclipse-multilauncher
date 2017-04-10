@@ -1,5 +1,8 @@
 package ch.parisi.e4.advancedlaunch.strategies;
 
+import java.io.PrintStream;
+import java.text.MessageFormat;
+
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -19,14 +22,17 @@ public class ReadConsoleTextStrategy implements WaitStrategy {
 	private final String regex;
 	private volatile boolean terminated = false;
 	private volatile boolean success = true;
+	private PrintStream printStream;
 
 	/**
 	 * Constructs a {@link ReadConsoleTextStrategy}.
 	 * 
 	 * @param consoleStringToWaitFor the console string to wait for
+	 * @param printStream the print stream
 	 */
-	public ReadConsoleTextStrategy(String consoleStringToWaitFor) {
+	public ReadConsoleTextStrategy(String consoleStringToWaitFor, PrintStream printStream) {
 		this.regex = consoleStringToWaitFor;
+		this.printStream = printStream;
 	}
 
 	@Override
@@ -53,16 +59,19 @@ public class ReadConsoleTextStrategy implements WaitStrategy {
 			consoleRemoveListener = new ConsoleRemoveListener(console);
 			consoleManager.addConsoleListener(consoleRemoveListener);
 
+			if (!consoleListener.isConsoleStringDetected()) {
+				printStream.println(MessageFormat.format("{0}: Waiting for regular expression match: {1}", launch.getLaunchConfiguration().getName(), regex));
+			}
+
 			while (!consoleRemoveListener.isRemoved() && !consoleListener.isConsoleStringDetected() && isLaunchRunning(launch)) {
 				sleep();
 			}
+
+			if (consoleListener.isConsoleStringDetected()) {
+				printStream.println(MessageFormat.format("{0}: Regular expression match found.", launch.getLaunchConfiguration().getName()));
+			}
 		}
 		finally {
-			IProcess[] processes = launch.getProcesses();
-			for (int process = 0; process < processes.length; process++) {
-				System.out.println("Finished waiting for " + regex);
-			}
-
 			if (consoleListener != null) {
 				console.removePatternMatchListener(consoleListener);
 			}
@@ -86,20 +95,21 @@ public class ReadConsoleTextStrategy implements WaitStrategy {
 	private void sleep() {
 		try {
 			Thread.sleep(1000);
-			System.out.println("Still waiting for console string: " + regex);
 		}
-		catch (InterruptedException e) {
-			e.printStackTrace();
+		catch (InterruptedException interruptedException) {
+			interruptedException.printStackTrace();
+			printStream.println(interruptedException.getMessage());
 		}
 	}
 
 	@Override
-	public void launchTerminated(int exitCode) {
+	public void launchTerminated(String name, int exitCode) {
 		if (exitCode != 0) {
 			success = false;
 		}
-		
+
 		terminated = true;
+		printStream.println(MessageFormat.format("{0}: Terminated with exit code {1}.", name, exitCode));
 	}
 
 	private TextConsole findTextConsole(ILaunch launch) {

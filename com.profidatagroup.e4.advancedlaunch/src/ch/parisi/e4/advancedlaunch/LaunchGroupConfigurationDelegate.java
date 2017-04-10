@@ -1,5 +1,7 @@
 package ch.parisi.e4.advancedlaunch;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,6 +18,8 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 
 import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 import ch.parisi.e4.advancedlaunch.strategies.DelayStrategy;
@@ -26,6 +30,7 @@ import ch.parisi.e4.advancedlaunch.strategies.WaitForDialogStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.WaitForTerminationStrategy;
 import ch.parisi.e4.advancedlaunch.strategies.WaitStrategy;
 import ch.parisi.e4.advancedlaunch.utils.LaunchUtils;
+import ch.parisi.e4.advancedlaunch.utils.MessageConsoleUtils;
 import ch.parisi.e4.advancedlaunch.utils.MultilauncherConfigurationAttributes;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchAction;
 import ch.parisi.e4.advancedlaunch.utils.PostLaunchActionUtils;
@@ -53,41 +58,78 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 		 * to set a name (label) to the multilaunch. After all wait strategies have finished, the multilaunch is removed 
 		 * from the LaunchManager.
 		 */
+		String multilauncherConsoleName = LaunchMessages.LaunchGroupConsole_Name;
+		MessageConsole multilauncherConsole = MessageConsoleUtils.findOrCreateConsole(multilauncherConsoleName);
 
-		if (!confirmMultilaunch(configuration)) {
-			removeLaunchesFromLaunchManager();
-			return;
-		}
+		try (MessageConsoleStream messageConsoleStream = multilauncherConsole.newMessageStream()) {
+			try (PrintStream printStream = new PrintStream(messageConsoleStream)) {
+				printStream.println("********************************");
 
-		PseudoProcess process = new PseudoProcess(launch);
-		process.setLabel(configuration.getName());
-		launch.addProcess(process);
+				if (!confirmMultilaunch(configuration, printStream)) {
+					printStream.println(MessageFormat.format("{0}: aborted.", launch.getLaunchConfiguration().getName()));
 
-		try {
+					removeLaunchesFromLaunchManager();
+					return;
+				}
 
-			List<LaunchConfigurationModel> activeLaunchConfigurationModels = LaunchUtils
-					.getActiveLaunchConfigurationModels(LaunchUtils.loadLaunchConfigurations(configuration));
+				PseudoProcess process = new PseudoProcess(launch);
+				process.setLabel(configuration.getName());
+				launch.addProcess(process);
 
-			for (LaunchConfigurationModel model : activeLaunchConfigurationModels) {
-				ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(model.getName());
-				if (launchConfiguration != null) {
-					if (process.isTerminated()) {
-						break;
+				try {
+
+					List<LaunchConfigurationModel> activeLaunchConfigurationModels = LaunchUtils
+							.getActiveLaunchConfigurationModels(LaunchUtils.loadLaunchConfigurations(configuration));
+
+					for (LaunchConfigurationModel launchConfigurationModel : activeLaunchConfigurationModels) {
+						printStream.println(MessageFormat.format("{0}: Scheduled {1}.", launch.getLaunchConfiguration().getName(), launchConfigurationModel.getName()));
 					}
-					LaunchAndWait launchAndWaitStrategy = new LaunchAndWait(createWaitStrategy(model));
-					boolean success = launchAndWaitStrategy.launchAndWait(launchConfiguration, model.getMode());
-					if (!success) {
-						if (model.isAbortLaunchOnError() || model.getPostLaunchAction() == PostLaunchAction.WAIT_FOR_DIALOG) {
-							break;
+
+					for (LaunchConfigurationModel launchConfigurationModel : activeLaunchConfigurationModels) {
+						ILaunchConfiguration launchConfiguration = LaunchUtils.findLaunchConfiguration(launchConfigurationModel.getName());
+						if (launchConfiguration != null) {
+							if (process.isTerminated()) {
+								break;
+							}
+
+							LaunchAndWait launchAndWaitStrategy = new LaunchAndWait(createWaitStrategy(launchConfigurationModel, printStream));
+							printStream.println(MessageFormat.format(
+									"{0}: Launching in launch mode ''{1}'' with waiting strategy ''{2}'', abort launch on error ''{3}'' and parameter ''{4}''",
+									launchConfigurationModel.getName(),
+									launchConfigurationModel.getMode(),
+									launchConfigurationModel.getPostLaunchAction(),
+									launchConfigurationModel.isAbortLaunchOnError(),
+									launchConfigurationModel.getParam()));
+							boolean success = launchAndWaitStrategy.launchAndWait(launchConfiguration, launchConfigurationModel.getMode());
+							printStream.println(MessageFormat.format("{0}: Waiting {1}.", launchConfigurationModel.getName(), success ? "successful" : "not successful"));
+
+							if (!success) {
+								if (launchConfigurationModel.isAbortLaunchOnError()) {
+									printStream.println(MessageFormat.format("{0}: Scheduled sequence aborted.", launch.getLaunchConfiguration().getName()));
+									break;
+								}
+
+								if (launchConfigurationModel.getPostLaunchAction() == PostLaunchAction.WAIT_FOR_DIALOG) {
+									LaunchUtils.terminateRunningConfigurations();
+									printStream.println(MessageFormat.format("{0}: Terminated all launch configurations.", launch.getLaunchConfiguration().getName()));
+									break;
+								}
+							}
 						}
 					}
+					DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
+					printStream.println(MessageFormat.format("{0}: Multilaunch completed.", launch.getLaunchConfiguration().getName()));
+
+				}
+				catch (CoreException coreException) {
+					printStream.println(coreException.getMessage());
+					removeLaunchesFromLaunchManager();
+					throw coreException;
 				}
 			}
-			DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
 		}
-		catch (CoreException e) {
-			removeLaunchesFromLaunchManager();
-			throw e;
+		catch (IOException ioException) {
+			// ignore
 		}
 	}
 
@@ -95,10 +137,11 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	 * This method opens and handles the user-interaction of the multilaunch-start-confirmation-dialog.
 	 * 
 	 * @param configuration the multilaunch configuration
+	 * @param printStream the print stream
 	 * @return whether the dialog was confirmed by the user.
 	 * @throws CoreException if an exception occurs while retrieving the attribute from underlying storage.
 	 */
-	private boolean confirmMultilaunch(ILaunchConfiguration configuration) throws CoreException {
+	private boolean confirmMultilaunch(ILaunchConfiguration configuration, PrintStream printStream) throws CoreException {
 		boolean promptBeforeLaunch = configuration.getAttribute(MultilauncherConfigurationAttributes.PROMPT_BEFORE_LAUNCH_ATTRIBUTE, false);
 		if (!promptBeforeLaunch) {
 			return true;
@@ -116,13 +159,13 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 								false,
 								null,
 								null);
-				isConfirmed.set(confirmDialog(startMultilaunchDialog, configuration));
+				isConfirmed.set(confirmDialog(startMultilaunchDialog, configuration, printStream));
 			}
 		});
 		return isConfirmed.get();
 	}
 
-	private boolean confirmDialog(MessageDialogWithToggle startMultilaunchDialog, ILaunchConfiguration configuration) {
+	private boolean confirmDialog(MessageDialogWithToggle startMultilaunchDialog, ILaunchConfiguration configuration, PrintStream printStream) {
 		if (startMultilaunchDialog.getReturnCode() == IDialogConstants.OK_ID) {
 			try {
 				ILaunchConfigurationWorkingCopy configurationCopy = configuration.getWorkingCopy();
@@ -132,6 +175,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 			}
 			catch (CoreException e) {
 				e.printStackTrace();
+				printStream.println(e.getMessage());
 			}
 		}
 		return false;
@@ -153,22 +197,22 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 	 *            the model which stores the postLaunchAction-attribute
 	 * @return the strategy to follow
 	 */
-	private WaitStrategy createWaitStrategy(LaunchConfigurationModel launchConfigurationModel) {
+	private WaitStrategy createWaitStrategy(LaunchConfigurationModel launchConfigurationModel, PrintStream printStream) {
 		switch (launchConfigurationModel.getPostLaunchAction()) {
 			case WAIT_FOR_TERMINATION:
-				return new WaitForTerminationStrategy();
+				return new WaitForTerminationStrategy(printStream);
 
 			case DELAY:
-				return new DelayStrategy(Integer.parseInt(launchConfigurationModel.getParam()));
+				return new DelayStrategy(Integer.parseInt(launchConfigurationModel.getParam()), printStream);
 
 			case WAIT_FOR_CONSOLESTRING:
-				return new ReadConsoleTextStrategy(launchConfigurationModel.getParam());
+				return new ReadConsoleTextStrategy(launchConfigurationModel.getParam(), printStream);
 
 			case NONE:
-				return new EmptyStrategy();
+				return new EmptyStrategy(printStream);
 
 			case WAIT_FOR_DIALOG:
-				return new WaitForDialogStrategy(getShowDialogFunction(), launchConfigurationModel.getParam());
+				return new WaitForDialogStrategy(getShowDialogFunction(), launchConfigurationModel.getParam(), printStream);
 		}
 
 		throw new IllegalArgumentException("Unknown launch and wait strategy: "

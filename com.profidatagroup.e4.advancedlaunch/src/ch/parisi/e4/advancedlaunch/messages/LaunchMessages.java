@@ -75,6 +75,7 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfiguration_EmptyRegularExpression;
 	public static String LaunchGroupConfiguration_LaunchDelegationError;
 	public static String LaunchGroupConfiguration_CannotLaunch;
+	public static String LaunchGroupConsole_Name;
 
 	private LaunchMessages() {
 	}

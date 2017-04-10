@@ -1,19 +1,25 @@
 package ch.parisi.e4.advancedlaunch.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
 import org.eclipse.debug.ui.ILaunchGroup;
 
 import ch.parisi.e4.advancedlaunch.LaunchConfigurationModel;
+import ch.parisi.e4.advancedlaunch.PseudoProcess;
 
 /**
  * Utility class with methods that can be accessed throughout the entire code.
@@ -42,29 +48,47 @@ public class LaunchUtils {
 	}
 
 	/**
-	 * Loads all the sublaunches of an already existing multilaunch into a list.
+	 * Terminates every running configuration in reverse order.
+	 */
+	public static void terminateRunningConfigurations() {
+		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+
+		ILaunch[] launches = manager.getLaunches();
+		Collections.reverse(Arrays.asList(launches));
+
+		for (ILaunch launch : launches) {
+			IProcess[] processes = launch.getProcesses();
+			Collections.reverse(Arrays.asList(processes));
+
+			for (IProcess process : processes) {
+				if (process.canTerminate() || process instanceof PseudoProcess) {
+					try {
+						process.terminate();
+					}
+					catch (DebugException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Loads all the sublaunches of a multilaunch into a list.
 	 * 
 	 * @param configuration the multilaunch. <b>Cannot</b> be {@code null}.
 	 * @return the sublaunches as a list of {@link LaunchConfigurationModel}s.
 	 * @throws CoreException
 	 */
-	public static List<LaunchConfigurationModel> loadLaunchConfigurations(ILaunchConfiguration configuration)
-			throws CoreException {
-		List<String> names = new ArrayList<>();
-		List<String> modes = new ArrayList<>();
-		List<String> postLaunchActions = new ArrayList<>();
-		List<String> params = new ArrayList<>();
-		List<String> abortLaunchesOnError = new ArrayList<>();
-		List<String> actives = new ArrayList<>();
-
+	public static List<LaunchConfigurationModel> loadLaunchConfigurations(ILaunchConfiguration configuration) throws CoreException {
 		List<LaunchConfigurationModel> launchConfigurationDataList = new ArrayList<>();
 
-		names = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_NAMES_ATTRIBUTE, new ArrayList<String>());
-		modes = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_MODES_ATTRIBUTE, new ArrayList<String>());
-		postLaunchActions = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_POST_LAUNCH_ACTIONS_ATTRIBUTE, new ArrayList<String>());
-		params = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_PARAMS_ATTRIBUTE, new ArrayList<String>());
-		abortLaunchesOnError = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ABORT_LAUNCHES_ON_ERROR_ATTRIBUTE, new ArrayList<String>());
-		actives = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ACTIVES_ATTRIBUTE, new ArrayList<String>());
+		List<String> names = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_NAMES_ATTRIBUTE, new ArrayList<String>());
+		List<String> modes = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_MODES_ATTRIBUTE, new ArrayList<String>());
+		List<String> postLaunchActions = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_POST_LAUNCH_ACTIONS_ATTRIBUTE, new ArrayList<String>());
+		List<String> params = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_PARAMS_ATTRIBUTE, new ArrayList<String>());
+		List<String> abortLaunchesOnError = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ABORT_LAUNCHES_ON_ERROR_ATTRIBUTE, new ArrayList<String>());
+		List<String> actives = configuration.getAttribute(MultilauncherConfigurationAttributes.CHILDLAUNCH_ACTIVES_ATTRIBUTE, new ArrayList<String>());
 
 		for (int i = 0; i < names.size(); i++) {
 			launchConfigurationDataList.add(new LaunchConfigurationModel(

@@ -20,8 +20,9 @@ public interface WaitStrategy {
 	/**
 	 * This method gets called when a launch terminates with its exit code. 
 	 * 
+	 * @param name the name of the terminated launch or {@code null}
 	 * @param exitCode the exit code of the terminated launch
 	 */
-	void launchTerminated(int exitCode);
+	void launchTerminated(String name, int exitCode);
 
 }

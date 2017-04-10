@@ -4,9 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.function.Function;
 
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -17,27 +21,37 @@ import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
  */
 public class WaitForDialogStrategyTest {
 
+	private PrintStream inMemoryStream;
+	private ILaunch launch;
+
 	/**
-	 * Tests that {@link WaitForDialogStrategy#waitForLaunch(org.eclipse.debug.core.ILaunch)} returns {@code true} when ok-pressed. 
+	 * Initializes the required mocks and sets up an in-memory print stream. 
+	 */
+	@Before
+	public void initializeMocks() {
+		inMemoryStream = new PrintStream(new ByteArrayOutputStream(), true);
+		launch = Mockito.mock(ILaunch.class);
+		Mockito.when(launch.getLaunchConfiguration()).thenReturn(Mockito.mock(ILaunchConfiguration.class));
+		Mockito.when(launch.getLaunchConfiguration().getName()).thenReturn("HelloJava");
+	}
+
+	/**
+	 * Tests that {@link WaitForDialogStrategy#waitForLaunch(ILaunch)} returns {@code true} when ok-pressed. 
 	 */
 	@Test
 	public void waitForDialogStrategyOkPressedTest() {
 		Function<String, Boolean> okPressedFunction = dialogText -> true;
-		WaitForDialogStrategy waitForDialogStrategy = new WaitForDialogStrategy(okPressedFunction, null);
-		assertTrue(waitForDialogStrategy.waitForLaunch(null));
+		WaitForDialogStrategy waitForDialogStrategy = new WaitForDialogStrategy(okPressedFunction, null, inMemoryStream);
+		assertTrue(waitForDialogStrategy.waitForLaunch(launch));
 	}
 
 	/**
-	 * Tests that {@link WaitForDialogStrategy#waitForLaunch(org.eclipse.debug.core.ILaunch)} returns {@code false} when cancel-pressed. 
+	 * Tests that {@link WaitForDialogStrategy#waitForLaunch(ILaunch)} returns {@code false} when cancel-pressed. 
 	 */
 	@Test
 	public void waitForDialogStrategyCancelPressedTest() {
 		Function<String, Boolean> cancelPressedFunction = dialogText -> false;
-
-		WaitForDialogStrategy waitForDialogStrategy = new WaitForDialogStrategy(cancelPressedFunction, null);
-		ILaunch launch = Mockito.mock(ILaunch.class);
-		Mockito.when(launch.canTerminate()).thenReturn(true);
-
+		WaitForDialogStrategy waitForDialogStrategy = new WaitForDialogStrategy(cancelPressedFunction, null, inMemoryStream);
 		assertFalse(waitForDialogStrategy.waitForLaunch(launch));
 	}
 
@@ -47,7 +61,7 @@ public class WaitForDialogStrategyTest {
 	@Test
 	public void basicDialogTextTest() {
 		String dialogText = "Continue launching HelloJava?";
-		WaitForDialogStrategy waitForDialogStrategy = new WaitForDialogStrategy(null, dialogText);
+		WaitForDialogStrategy waitForDialogStrategy = new WaitForDialogStrategy(null, dialogText, inMemoryStream);
 		assertEquals(
 				dialogText,
 				waitForDialogStrategy.getDialogText());
@@ -58,7 +72,7 @@ public class WaitForDialogStrategyTest {
 	 */
 	@Test
 	public void defaultDialogTextWhenNullTest() {
-		WaitForDialogStrategy waitForDialogStrategy = new WaitForDialogStrategy(null, null);
+		WaitForDialogStrategy waitForDialogStrategy = new WaitForDialogStrategy(null, null, inMemoryStream);
 		assertEquals(
 				LaunchMessages.LaunchGroupConfigurationSelectionDialog_ConfirmLaunch_Dialog_DefaultMessage,
 				waitForDialogStrategy.getDialogText());
@@ -70,7 +84,7 @@ public class WaitForDialogStrategyTest {
 	 */
 	@Test
 	public void defaultDialogTextWhenWhitespaceTest() {
-		WaitForDialogStrategy waitForDialogStrategy = new WaitForDialogStrategy(null, "   ");
+		WaitForDialogStrategy waitForDialogStrategy = new WaitForDialogStrategy(null, "   ", inMemoryStream);
 		assertEquals(
 				LaunchMessages.LaunchGroupConfigurationSelectionDialog_ConfirmLaunch_Dialog_DefaultMessage,
 				waitForDialogStrategy.getDialogText());

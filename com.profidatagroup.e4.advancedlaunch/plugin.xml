@@ -49,6 +49,14 @@
           </command>
        </toolbar>
     </menuContribution>
+    <menuContribution locationURI="toolbar:org.eclipse.ui.console.ConsoleView">
+		<command 
+		commandId="ch.parisi.e4.advancedlaunch.removeConsole"
+		 label="Remove Multilauncher Console"
+                icon="icons/full/obj16/progress_rem.gif"
+                style="push">
+          </command> 
+	</menuContribution>
  </extension>
  
  <extension
@@ -57,6 +65,11 @@
           defaultHandler="ch.parisi.e4.advancedlaunch.termination.TerminateRunningConfigurations"
           id="com.profidatagroup.e4.advancedlaunch.command1"
           name="terminate run/debugmode configurations">
+    </command>
+    <command
+          defaultHandler="ch.parisi.e4.advancedlaunch.strategies.console.RemoveMultilauncherConsole"
+          id="ch.parisi.e4.advancedlaunch.removeConsole"
+          name="Remove Multilauncher Console">
     </command>
  </extension>
  
