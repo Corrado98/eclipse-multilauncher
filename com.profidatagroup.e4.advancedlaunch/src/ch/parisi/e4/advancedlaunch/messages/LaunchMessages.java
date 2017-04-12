@@ -33,14 +33,13 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfigurationDelegate_Action_None;
 	public static String LaunchGroupConfigurationDelegate_Action_WaitForTermination;
 	public static String LaunchGroupConfigurationDelegate_Action_Delay;
-	public static String LaunchGroupConfigurationDelegate_Action_WaitForConsoleString;
+	public static String LaunchGroupConfigurationDelegate_Action_WaitForConsoleRegex;
+	public static String LaunchGroupConfigurationDelegate_Action_WaitForConsoleText;
 	public static String LaunchGroupConfigurationDelegate_Action_WaitForDialog;
 	public static String LaunchGroupConfigurationSelectionDialog_4;
 	public static String LaunchGroupConfigurationSelectionDialog_8;
 	public static String LaunchGroupConfigurationSelectionDialog_9;
 	public static String LaunchGroupConfigurationSelectionDialog_9_2;
-	public static String LaunchGroupConfigurationSelectionDialog_10;
-	public static String LaunchGroupConfigurationSelectionDialog_10_2;
 	public static String LaunchGroupConfigurationSelectionDialog_11;
 	public static String LaunchGroupConfigurationSelectionDialog_12;
 	public static String LaunchGroupConfigurationSelectionDialog_13;
@@ -48,6 +47,7 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfigurationSelectionDialog_15;
 	public static String LaunchGroupConfigurationSelectionDialog_SecondsLabel;
 	public static String LaunchGroupConfigurationSelectionDialog_RegularExpressionLabel;
+	public static String LaunchGroupConfigurationSelectionDialog_TextLabel;
 	public static String LaunchGroupConfigurationSelectionDialog_DialogTextLabel;
 	public static String LaunchGroupConfigurationSelectionDialog_ConfirmLaunch_Dialog_Title;
 	public static String LaunchGroupConfigurationSelectionDialog_ConfirmLaunch_Dialog_DefaultMessage;
@@ -73,6 +73,7 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfiguration_NotALaunchConfiguration;
 	public static String LaunchGroupConfiguration_InvalidNumberOfSeconds;
 	public static String LaunchGroupConfiguration_EmptyRegularExpression;
+	public static String LaunchGroupConfiguration_EmptyText;
 	public static String LaunchGroupConfiguration_LaunchDelegationError;
 	public static String LaunchGroupConfiguration_CannotLaunch;
 	public static String LaunchGroupConsole_Name;

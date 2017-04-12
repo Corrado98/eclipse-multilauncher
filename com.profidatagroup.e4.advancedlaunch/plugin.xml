@@ -25,7 +25,7 @@
 	<extension
 	     point="org.eclipse.ui.console.consolePatternMatchListeners">
 		  <consolePatternMatchListener
-			        class="ch.parisi.e4.advancedlaunch.strategies.ReadConsoleTextStrategy"
+			        class="ch.parisi.e4.advancedlaunch.strategies.WaitForConsoleRegexStrategy"
 			        id="com.profidatagroup.e4.advancedlaunch.strategies.ReadConsoleTextStrategy"
 			        regex="*foo*">
 					     <enablement>

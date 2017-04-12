@@ -88,11 +88,19 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 
 				case DatabindingProperties.POST_LAUNCH_ACTION_PROPERTY:
 					LaunchConfigurationModel launchConfigurationModel = (LaunchConfigurationModel) propertyChangeEvent.getSource();
-					launchConfigurationModel.setParam("");
-
-					PostLaunchAction postLaunchAction = launchConfigurationModel.getPostLaunchAction();
-					if (postLaunchAction == PostLaunchAction.NONE || postLaunchAction == PostLaunchAction.WAIT_FOR_DIALOG) {
-						launchConfigurationModel.setAbortLaunchOnError(false);
+					switch (launchConfigurationModel.getPostLaunchAction()) {
+						case WAIT_FOR_DIALOG:
+							launchConfigurationModel.setAbortLaunchOnError(false);
+							break;
+						case NONE:
+							launchConfigurationModel.setParam("");
+							launchConfigurationModel.setAbortLaunchOnError(false);
+							break;
+						case WAIT_FOR_CONSOLE_REGEX:
+						case WAIT_FOR_CONSOLE_TEXT:
+							break;
+						default:
+							launchConfigurationModel.setParam("");
 					}
 
 					setDirty(true);
@@ -544,19 +552,27 @@ public class LaunchTab extends AbstractLaunchConfigurationTab {
 		setErrorMessage(null);
 
 		for (LaunchConfigurationModel launchConfigurationModel : launchConfigurationDataList) {
-			if (launchConfigurationModel.getPostLaunchAction() == PostLaunchAction.DELAY) {
-				if (!isValidNumber(launchConfigurationModel.getParam())) {
-					setErrorMessage(MessageFormat.format(
-							LaunchMessages.LaunchGroupConfiguration_InvalidNumberOfSeconds,
-							launchConfigurationModel.getParam()));
-					return false;
-				}
-			}
-			if (launchConfigurationModel.getPostLaunchAction() == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
-				if (launchConfigurationModel.getParam().trim().isEmpty()) {
-					setErrorMessage(LaunchMessages.LaunchGroupConfiguration_EmptyRegularExpression);
-					return false;
-				}
+			switch (launchConfigurationModel.getPostLaunchAction()) {
+				case DELAY:
+					if (!isValidNumber(launchConfigurationModel.getParam())) {
+						setErrorMessage(LaunchMessages.LaunchGroupConfiguration_InvalidNumberOfSeconds);
+						return false;
+					}
+					continue;
+				case WAIT_FOR_CONSOLE_REGEX:
+					if (launchConfigurationModel.getParam().trim().isEmpty()) {
+						setErrorMessage(LaunchMessages.LaunchGroupConfiguration_EmptyRegularExpression);
+						return false;
+					}
+					continue;
+				case WAIT_FOR_CONSOLE_TEXT:
+					if (launchConfigurationModel.getParam().trim().isEmpty()) {
+						setErrorMessage(LaunchMessages.LaunchGroupConfiguration_EmptyText);
+						return false;
+					}
+					continue;
+				default:
+					continue;
 			}
 		}
 

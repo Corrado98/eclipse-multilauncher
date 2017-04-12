@@ -36,7 +36,8 @@ public class AbortOnErrorEditingSupport extends EditingSupport {
 		switch (launchConfigurationModel.getPostLaunchAction()) {
 			case DELAY:
 			case WAIT_FOR_TERMINATION:
-			case WAIT_FOR_CONSOLESTRING:
+			case WAIT_FOR_CONSOLE_REGEX:
+			case WAIT_FOR_CONSOLE_TEXT:
 				return true;
 			case NONE:
 			case WAIT_FOR_DIALOG:

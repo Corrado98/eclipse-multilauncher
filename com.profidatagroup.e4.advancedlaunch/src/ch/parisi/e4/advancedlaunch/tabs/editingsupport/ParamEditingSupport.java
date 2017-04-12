@@ -35,7 +35,8 @@ public class ParamEditingSupport extends EditingSupport {
 		LaunchConfigurationModel launchConfigurationModel = (LaunchConfigurationModel) element;
 		switch (launchConfigurationModel.getPostLaunchAction()) {
 			case DELAY:
-			case WAIT_FOR_CONSOLESTRING:
+			case WAIT_FOR_CONSOLE_REGEX:
+			case WAIT_FOR_CONSOLE_TEXT:
 			case WAIT_FOR_DIALOG:
 				return true;
 			case NONE:

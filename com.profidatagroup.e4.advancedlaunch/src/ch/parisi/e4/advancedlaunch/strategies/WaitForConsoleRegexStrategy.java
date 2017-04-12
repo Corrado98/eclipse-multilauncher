@@ -14,10 +14,10 @@ import org.eclipse.ui.console.TextConsole;
 import ch.parisi.e4.advancedlaunch.strategies.console.ConsolePatternMatchListener;
 import ch.parisi.e4.advancedlaunch.strategies.console.ConsoleRemoveListener;
 
-/**
- * Reads the output of all consoles and waits for a regular expression.
+/** 
+ * Waits for line and partial regular expression matching in the launch's console-output.
  */
-public class ReadConsoleTextStrategy implements WaitStrategy {
+public class WaitForConsoleRegexStrategy implements WaitStrategy {
 
 	private final String regex;
 	private volatile boolean terminated = false;
@@ -25,13 +25,13 @@ public class ReadConsoleTextStrategy implements WaitStrategy {
 	private PrintStream printStream;
 
 	/**
-	 * Constructs a {@link ReadConsoleTextStrategy}.
+	 * Constructs a {@link WaitForConsoleRegexStrategy}.
 	 * 
-	 * @param consoleStringToWaitFor the console string to wait for
+	 * @param regex the regular expression to wait for
 	 * @param printStream the print stream
 	 */
-	public ReadConsoleTextStrategy(String consoleStringToWaitFor, PrintStream printStream) {
-		this.regex = consoleStringToWaitFor;
+	public WaitForConsoleRegexStrategy(String regex, PrintStream printStream) {
+		this.regex = regex;
 		this.printStream = printStream;
 	}
 

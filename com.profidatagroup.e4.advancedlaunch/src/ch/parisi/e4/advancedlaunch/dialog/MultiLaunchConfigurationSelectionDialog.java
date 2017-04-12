@@ -235,7 +235,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.NONE));
 		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.WAIT_FOR_TERMINATION));
 		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.DELAY));
-		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.WAIT_FOR_CONSOLESTRING));
+		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.WAIT_FOR_CONSOLE_REGEX));
+		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.WAIT_FOR_CONSOLE_TEXT));
 		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.WAIT_FOR_DIALOG));
 
 		combo.addSelectionListener(new SelectionAdapter() {
@@ -258,7 +259,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 						abortLaunchOnErrorCheckbox.setEnabled(false);
 						break;
 					case DELAY:
-					case WAIT_FOR_CONSOLESTRING:
+					case WAIT_FOR_CONSOLE_REGEX:
+					case WAIT_FOR_CONSOLE_TEXT:
 						abortLaunchOnErrorCheckbox.setEnabled(true);
 						break;
 				}
@@ -291,7 +293,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 					}
 					validate();
 				}
-				if (postLaunchAction == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+				if (postLaunchAction == PostLaunchAction.WAIT_FOR_CONSOLE_REGEX || postLaunchAction == PostLaunchAction.WAIT_FOR_CONSOLE_TEXT) {
 					param = userInput;
 					validate();
 				}
@@ -353,8 +355,13 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				paramLabel.setVisible(true);
 				paramTextWidget.setVisible(true);
 				break;
-			case WAIT_FOR_CONSOLESTRING:
+			case WAIT_FOR_CONSOLE_REGEX:
 				paramLabel.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_RegularExpressionLabel);
+				paramLabel.setVisible(true);
+				paramTextWidget.setVisible(true);
+				break;
+			case WAIT_FOR_CONSOLE_TEXT:
+				paramLabel.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_TextLabel);
 				paramLabel.setVisible(true);
 				paramTextWidget.setVisible(true);
 				break;
@@ -378,7 +385,8 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				abortLaunchOnErrorCheckbox.setEnabled(false);
 				break;
 			case DELAY:
-			case WAIT_FOR_CONSOLESTRING:
+			case WAIT_FOR_CONSOLE_REGEX:
+			case WAIT_FOR_CONSOLE_TEXT:
 			case WAIT_FOR_TERMINATION:
 				abortLaunchOnErrorCheckbox.setEnabled(true);
 				break;
@@ -470,12 +478,16 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				}
 				catch (Exception e) {
 					isValid = false;
-					setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10);
+					setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfiguration_InvalidNumberOfSeconds);
 				}
 			}
-			else if (postLaunchAction == PostLaunchAction.WAIT_FOR_CONSOLESTRING) {
+			else if (postLaunchAction == PostLaunchAction.WAIT_FOR_CONSOLE_REGEX) {
 				isValid = (!String.valueOf(param).trim().isEmpty());
-				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfigurationSelectionDialog_10_2);
+				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfiguration_EmptyRegularExpression);
+			}
+			else if (postLaunchAction == PostLaunchAction.WAIT_FOR_CONSOLE_TEXT) {
+				isValid = (!String.valueOf(param).trim().isEmpty());
+				setErrorMessage(isValid ? null : LaunchMessages.LaunchGroupConfiguration_EmptyText);
 			}
 			if (currentSelection == null) {
 				isValid = false;

@@ -36,8 +36,10 @@ public class PostLaunchActionUtils {
 				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForTermination;
 			case DELAY:
 				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay;
-			case WAIT_FOR_CONSOLESTRING:
-				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString;
+			case WAIT_FOR_CONSOLE_REGEX:
+				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleRegex;
+			case WAIT_FOR_CONSOLE_TEXT:
+				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleText;
 			case WAIT_FOR_DIALOG:
 				return LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForDialog;
 		}
@@ -64,8 +66,11 @@ public class PostLaunchActionUtils {
 		else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_Delay)) {
 			return PostLaunchAction.DELAY;
 		}
-		else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleString)) {
-			return PostLaunchAction.WAIT_FOR_CONSOLESTRING;
+		else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleRegex)) {
+			return PostLaunchAction.WAIT_FOR_CONSOLE_REGEX;
+		}
+		else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForConsoleText)) {
+			return PostLaunchAction.WAIT_FOR_CONSOLE_TEXT;
 		}
 		else if (name.equals(LaunchMessages.LaunchGroupConfigurationDelegate_Action_WaitForDialog)) {
 			return PostLaunchAction.WAIT_FOR_DIALOG;

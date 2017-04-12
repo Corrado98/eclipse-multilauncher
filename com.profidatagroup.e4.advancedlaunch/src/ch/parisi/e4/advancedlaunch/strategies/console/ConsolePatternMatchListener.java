@@ -14,7 +14,7 @@ public class ConsolePatternMatchListener implements IPatternMatchListener {
 	/**
 	 * Constructs a {@link ConsolePatternMatchListener}.
 	 * 
-	 * @param regex the regex to listen for
+	 * @param regex the regular expression to listen for
 	 */
 	public ConsolePatternMatchListener(String regex) {
 		this.regex = regex;
@@ -27,7 +27,6 @@ public class ConsolePatternMatchListener implements IPatternMatchListener {
 
 	@Override
 	public String getPattern() {
-		// e.g:  .*successfully.*
 		return regex;
 	}
 
