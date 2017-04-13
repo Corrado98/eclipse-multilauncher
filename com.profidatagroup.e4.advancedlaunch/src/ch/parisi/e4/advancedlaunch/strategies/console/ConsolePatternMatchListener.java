@@ -1,5 +1,7 @@
 package ch.parisi.e4.advancedlaunch.strategies.console;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.ui.console.IPatternMatchListener;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
@@ -51,7 +53,7 @@ public class ConsolePatternMatchListener implements IPatternMatchListener {
 
 	@Override
 	public int getCompilerFlags() {
-		return 0;
+		return Pattern.MULTILINE;
 	}
 
 	@Override
