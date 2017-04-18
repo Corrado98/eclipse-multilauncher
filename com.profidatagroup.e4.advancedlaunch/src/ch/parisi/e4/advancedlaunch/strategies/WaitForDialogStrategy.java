@@ -42,7 +42,14 @@ public class WaitForDialogStrategy implements WaitStrategy {
 	@Override
 	public boolean waitForLaunch(ILaunch launch) {
 		boolean confirmed = showDialogFunction.apply(dialogText);
-		printStream.println(MessageFormat.format("{0}: Dialog {1}", launch.getLaunchConfiguration().getName(), confirmed ? "confirmed." : "cancelled."));
+
+		if (confirmed) {
+			printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_DialogConfirmed, launch.getLaunchConfiguration().getName()));
+		}
+		else {
+			printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_DialogCancelled, launch.getLaunchConfiguration().getName()));
+		}
+
 		return confirmed;
 	}
 
@@ -57,7 +64,7 @@ public class WaitForDialogStrategy implements WaitStrategy {
 
 	@Override
 	public void launchTerminated(String name, int exitCode) {
-		printStream.println(MessageFormat.format("{0}: Terminated with exit code {1}.", name, exitCode));
+		printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_LaunchNameWithExitCode, name, exitCode));
 	}
 
 }

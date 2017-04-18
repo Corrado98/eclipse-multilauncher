@@ -5,6 +5,8 @@ import java.text.MessageFormat;
 
 import org.eclipse.debug.core.ILaunch;
 
+import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
+
 /**
  * Waits for a specified amount of time before launching the next launch.
  */
@@ -31,11 +33,11 @@ public class DelayStrategy implements WaitStrategy {
 	public boolean waitForLaunch(ILaunch launch) {
 		for (int second = 0; second < waitingTimeInSeconds; second++) {
 			if (terminated) {
-				printStream.println(MessageFormat.format("{0}: Stopped waiting since terminated.", launch.getLaunchConfiguration().getName()));
+				printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_DelayStoppedWaiting, launch.getLaunchConfiguration().getName()));
 				return success;
 			}
 			waitDelay(1);
-			printStream.println(MessageFormat.format("{0}: Waiting for {1} seconds.", launch.getLaunchConfiguration().getName(), ((waitingTimeInSeconds - 1) - second)));
+			printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_DelayWaiting, launch.getLaunchConfiguration().getName(), ((waitingTimeInSeconds - 1) - second)));
 		}
 		return success;
 	}
@@ -46,7 +48,7 @@ public class DelayStrategy implements WaitStrategy {
 		}
 		catch (InterruptedException interruptedException) {
 			interruptedException.printStackTrace();
-			printStream.println(MessageFormat.format("InterruptedException: {0}", interruptedException.getMessage()));
+			printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_InterruptedException, interruptedException.getMessage()));
 		}
 	}
 
@@ -57,7 +59,7 @@ public class DelayStrategy implements WaitStrategy {
 		}
 
 		terminated = true;
-		printStream.println(MessageFormat.format("{0}: terminated with exit code: {1}", name, exitCode));
+		printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_LaunchNameWithExitCode, name, exitCode));
 	}
 
 }

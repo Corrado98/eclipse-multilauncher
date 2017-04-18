@@ -5,6 +5,8 @@ import java.text.MessageFormat;
 
 import org.eclipse.debug.core.ILaunch;
 
+import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
+
 /**
  * Does not wait for a launch.
  */
@@ -23,13 +25,13 @@ public class EmptyStrategy implements WaitStrategy {
 
 	@Override
 	public boolean waitForLaunch(ILaunch launch) {
-		printStream.println(MessageFormat.format("{0}: Not waiting, continue.", launch.getLaunchConfiguration().getName()));
+		printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_EmptyNotWaiting, launch.getLaunchConfiguration().getName()));
 		return true;
 	}
 
 	@Override
 	public void launchTerminated(String name, int exitCode) {
-		printStream.println(MessageFormat.format("{0}: Terminated with exit code {1}.", name, exitCode));
+		printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_LaunchNameWithExitCode, name, exitCode));
 	}
 
 }

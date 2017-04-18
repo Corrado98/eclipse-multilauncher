@@ -5,6 +5,8 @@ import java.text.MessageFormat;
 
 import org.eclipse.debug.core.ILaunch;
 
+import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
+
 /**
  * Waits for launch to be terminated. 
  */
@@ -26,7 +28,7 @@ public class WaitForTerminationStrategy implements WaitStrategy {
 	@Override
 	public boolean waitForLaunch(ILaunch launch) {
 		if (!terminated) {
-			printStream.println(MessageFormat.format("{0}: Waiting for termination...", launch.getLaunchConfiguration().getName()));
+			printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_TerminationWaiting, launch.getLaunchConfiguration().getName()));
 		}
 
 		while (!terminated) {
@@ -42,7 +44,7 @@ public class WaitForTerminationStrategy implements WaitStrategy {
 		}
 		catch (InterruptedException interruptedException) {
 			interruptedException.printStackTrace();
-			printStream.println(interruptedException.getMessage());
+			printStream.println(LaunchMessages.LaunchGroupConsole_InterruptedException);
 		}
 	}
 
@@ -53,7 +55,7 @@ public class WaitForTerminationStrategy implements WaitStrategy {
 		}
 
 		terminated = true;
-		printStream.println(MessageFormat.format("{0}: Terminated with exit code {1}.", name, exitCode));
+		printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_LaunchNameWithExitCode, name, exitCode));
 	}
 
 }

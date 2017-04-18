@@ -11,6 +11,7 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.TextConsole;
 
+import ch.parisi.e4.advancedlaunch.messages.LaunchMessages;
 import ch.parisi.e4.advancedlaunch.strategies.console.ConsolePatternMatchListener;
 import ch.parisi.e4.advancedlaunch.strategies.console.ConsoleRemoveListener;
 
@@ -49,31 +50,31 @@ public class WaitForConsoleRegexStrategy implements WaitStrategy {
 			return;
 		}
 		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
-		ConsolePatternMatchListener consoleListener = null;
+		ConsolePatternMatchListener consolePatterMatchListener = null;
 		ConsoleRemoveListener consoleRemoveListener = null;
 
 		try {
-			consoleListener = new ConsolePatternMatchListener(regex);
-			console.addPatternMatchListener(consoleListener);
+			consolePatterMatchListener = new ConsolePatternMatchListener(regex);
+			console.addPatternMatchListener(consolePatterMatchListener);
 
 			consoleRemoveListener = new ConsoleRemoveListener(console);
 			consoleManager.addConsoleListener(consoleRemoveListener);
 
-			if (!consoleListener.isConsoleStringDetected()) {
-				printStream.println(MessageFormat.format("{0}: Waiting for regular expression match: {1}", launch.getLaunchConfiguration().getName(), regex));
+			if (!consolePatterMatchListener.isConsoleStringDetected()) {
+				printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_RegexWaiting, launch.getLaunchConfiguration().getName(), regex));
 			}
 
-			while (!consoleRemoveListener.isRemoved() && !consoleListener.isConsoleStringDetected() && isLaunchRunning(launch)) {
+			while (!consoleRemoveListener.isRemoved() && !consolePatterMatchListener.isConsoleStringDetected() && isLaunchRunning(launch)) {
 				sleep();
 			}
 
-			if (consoleListener.isConsoleStringDetected()) {
-				printStream.println(MessageFormat.format("{0}: Regular expression match found.", launch.getLaunchConfiguration().getName()));
+			if (consolePatterMatchListener.isConsoleStringDetected()) {
+				printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_RegexStoppedWaiting, launch.getLaunchConfiguration().getName()));
 			}
 		}
 		finally {
-			if (consoleListener != null) {
-				console.removePatternMatchListener(consoleListener);
+			if (consolePatterMatchListener != null) {
+				console.removePatternMatchListener(consolePatterMatchListener);
 			}
 			if (consoleRemoveListener != null) {
 				consoleManager.removeConsoleListener(consoleRemoveListener);
@@ -98,7 +99,7 @@ public class WaitForConsoleRegexStrategy implements WaitStrategy {
 		}
 		catch (InterruptedException interruptedException) {
 			interruptedException.printStackTrace();
-			printStream.println(interruptedException.getMessage());
+			printStream.println(LaunchMessages.LaunchGroupConsole_InterruptedException);
 		}
 	}
 
@@ -109,7 +110,7 @@ public class WaitForConsoleRegexStrategy implements WaitStrategy {
 		}
 
 		terminated = true;
-		printStream.println(MessageFormat.format("{0}: Terminated with exit code {1}.", name, exitCode));
+		printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_LaunchNameWithExitCode, name, exitCode));
 	}
 
 	private TextConsole findTextConsole(ILaunch launch) {

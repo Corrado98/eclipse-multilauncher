@@ -36,15 +36,13 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfigurationDelegate_Action_WaitForConsoleRegex;
 	public static String LaunchGroupConfigurationDelegate_Action_WaitForConsoleText;
 	public static String LaunchGroupConfigurationDelegate_Action_WaitForDialog;
-	public static String LaunchGroupConfigurationSelectionDialog_4;
-	public static String LaunchGroupConfigurationSelectionDialog_8;
-	public static String LaunchGroupConfigurationSelectionDialog_9;
-	public static String LaunchGroupConfigurationSelectionDialog_9_2;
-	public static String LaunchGroupConfigurationSelectionDialog_11;
-	public static String LaunchGroupConfigurationSelectionDialog_12;
-	public static String LaunchGroupConfigurationSelectionDialog_13;
-	public static String LaunchGroupConfigurationSelectionDialog_14;
-	public static String LaunchGroupConfigurationSelectionDialog_15;
+	public static String LaunchGroupConfigurationSelectionDialog_LaunchMode;
+	public static String LaunchGroupConfigurationSelectionDialog_PostLaunchAction;
+	public static String LaunchGroupConfigurationSelectionDialog_SelectOnlyOneConfiguration;
+	public static String LaunchGroupConfigurationSelectionDialog_AddConfiguration;
+	public static String LaunchGroupConfigurationSelectionDialog_EditConfiguration;
+	public static String LaunchGroupConfigurationSelectionDialog_AddConfigurationTitle;
+	public static String LaunchGroupConfigurationSelectionDialog_EditConfigurationTitle;
 	public static String LaunchGroupConfigurationSelectionDialog_SecondsLabel;
 	public static String LaunchGroupConfigurationSelectionDialog_RegularExpressionLabel;
 	public static String LaunchGroupConfigurationSelectionDialog_TextLabel;
@@ -77,6 +75,24 @@ public class LaunchMessages extends NLS {
 	public static String LaunchGroupConfiguration_LaunchDelegationError;
 	public static String LaunchGroupConfiguration_CannotLaunch;
 	public static String LaunchGroupConsole_Name;
+	public static String LaunchGroupConsole_Abort;
+	public static String LaunchGroupConsole_Scheduled;
+	public static String LaunchGroupConsole_LaunchInformation;
+	public static String LaunchGroupConsole_WaitingSuccessful;
+	public static String LaunchGroupConsole_WaitingNotSuccessful;
+	public static String LaunchGroupConsole_ScheduledSequenceAborted;
+	public static String LaunchGroupConsole_TerminatedAllLaunchConfigurations;
+	public static String LaunchGroupConsole_Complete;
+	public static String LaunchGroupConsole_InterruptedException;
+	public static String LaunchGroupConsole_LaunchNameWithExitCode;
+	public static String LaunchGroupConsole_DelayWaiting;
+	public static String LaunchGroupConsole_DelayStoppedWaiting;
+	public static String LaunchGroupConsole_EmptyNotWaiting;
+	public static String LaunchGroupConsole_RegexWaiting;
+	public static String LaunchGroupConsole_RegexStoppedWaiting;
+	public static String LaunchGroupConsole_DialogConfirmed;
+	public static String LaunchGroupConsole_DialogCancelled;
+	public static String LaunchGroupConsole_TerminationWaiting;
 
 	private LaunchMessages() {
 	}

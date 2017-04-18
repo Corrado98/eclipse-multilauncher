@@ -161,10 +161,10 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		Composite comp = (Composite) super.createDialogArea(parent);
 
 		// title bar
-		getShell().setText(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_13 : LaunchMessages.LaunchGroupConfigurationSelectionDialog_12);
+		getShell().setText(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_EditConfiguration : LaunchMessages.LaunchGroupConfigurationSelectionDialog_AddConfiguration);
 
 		// dialog message area (not title bar)
-		setTitle(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_15 : LaunchMessages.LaunchGroupConfigurationSelectionDialog_14);
+		setTitle(editMode ? LaunchMessages.LaunchGroupConfigurationSelectionDialog_EditConfigurationTitle : LaunchMessages.LaunchGroupConfigurationSelectionDialog_AddConfigurationTitle);
 
 		stackComposite = new ComboControlledStackComposite(comp, SWT.NONE, this);
 
@@ -196,7 +196,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 				tree.getViewer().setSelection(initialSelection, true);
 			}
 		}
-		stackComposite.setLabelText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_4);
+		stackComposite.setLabelText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_LaunchMode);
 		stackComposite.pack();
 		Rectangle bounds = stackComposite.getBounds();
 		// adjust size
@@ -230,7 +230,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		comp.setLayout(new GridLayout(4, false));
 		comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		Label label = new Label(comp, SWT.NONE);
-		label.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_8);
+		label.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_PostLaunchAction);
 		Combo combo = new Combo(comp, SWT.READ_ONLY);
 		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.NONE));
 		combo.add(PostLaunchActionUtils.convertToName(PostLaunchAction.WAIT_FOR_TERMINATION));
@@ -273,7 +273,7 @@ public class MultiLaunchConfigurationSelectionDialog extends TitleAreaDialog {
 		combo.setText(PostLaunchActionUtils.convertToName(postLaunchAction));
 
 		paramLabel = new Label(comp, SWT.NONE);
-		paramLabel.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_9);
+		paramLabel.setText(LaunchMessages.LaunchGroupConfigurationSelectionDialog_SecondsLabel);
 
 		paramTextWidget = new Text(comp, SWT.SINGLE | SWT.BORDER);
 

@@ -64,7 +64,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 			printStream.println("********************************");
 
 			if (!confirmMultilaunch(configuration, printStream)) {
-				printStream.println(MessageFormat.format("{0}: aborted.", launch.getLaunchConfiguration().getName()));
+				printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_Abort, launch.getLaunchConfiguration().getName()));
 
 				removeLaunchesFromLaunchManager();
 				return;
@@ -80,7 +80,7 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 						.getActiveLaunchConfigurationModels(LaunchUtils.loadLaunchConfigurations(configuration));
 
 				for (LaunchConfigurationModel launchConfigurationModel : activeLaunchConfigurationModels) {
-					printStream.println(MessageFormat.format("{0}: Scheduled {1}.", launch.getLaunchConfiguration().getName(), launchConfigurationModel.getName()));
+					printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_Scheduled, launch.getLaunchConfiguration().getName(), launchConfigurationModel.getName()));
 				}
 
 				for (LaunchConfigurationModel launchConfigurationModel : activeLaunchConfigurationModels) {
@@ -92,31 +92,35 @@ public class LaunchGroupConfigurationDelegate implements ILaunchConfigurationDel
 
 						LaunchAndWait launchAndWaitStrategy = new LaunchAndWait(createWaitStrategy(launchConfigurationModel, printStream));
 						printStream.println(MessageFormat.format(
-								"{0}: Launching in launch mode ''{1}'' with waiting strategy ''{2}'', abort launch on error ''{3}'' and parameter ''{4}''",
+								LaunchMessages.LaunchGroupConsole_LaunchInformation,
 								launchConfigurationModel.getName(),
 								launchConfigurationModel.getMode(),
 								launchConfigurationModel.getPostLaunchAction(),
 								launchConfigurationModel.isAbortLaunchOnError(),
 								launchConfigurationModel.getParam()));
 						boolean success = launchAndWaitStrategy.launchAndWait(launchConfiguration, launchConfigurationModel.getMode());
-						printStream.println(MessageFormat.format("{0}: Waiting {1}.", launchConfigurationModel.getName(), success ? "successful" : "not successful"));
 
-						if (!success) {
+						if (success) {
+							printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_WaitingSuccessful, launchConfigurationModel.getName()));
+						}
+						else {
+							printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_WaitingNotSuccessful, launchConfigurationModel.getName()));
+
 							if (launchConfigurationModel.isAbortLaunchOnError()) {
-								printStream.println(MessageFormat.format("{0}: Scheduled sequence aborted.", launch.getLaunchConfiguration().getName()));
+								printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_ScheduledSequenceAborted, launch.getLaunchConfiguration().getName()));
 								break;
 							}
 
 							if (launchConfigurationModel.getPostLaunchAction() == PostLaunchAction.WAIT_FOR_DIALOG) {
 								LaunchUtils.terminateRunningConfigurations();
-								printStream.println(MessageFormat.format("{0}: Terminated all launch configurations.", launch.getLaunchConfiguration().getName()));
+								printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_TerminatedAllLaunchConfigurations, launch.getLaunchConfiguration().getName()));
 								break;
 							}
 						}
 					}
 				}
 				DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
-				printStream.println(MessageFormat.format("{0}: Multilaunch completed.", launch.getLaunchConfiguration().getName()));
+				printStream.println(MessageFormat.format(LaunchMessages.LaunchGroupConsole_Complete, launch.getLaunchConfiguration().getName()));
 
 			}
 			catch (CoreException coreException) {
