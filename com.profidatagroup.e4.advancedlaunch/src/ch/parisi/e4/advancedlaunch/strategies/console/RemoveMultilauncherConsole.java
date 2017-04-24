@@ -23,8 +23,8 @@ public class RemoveMultilauncherConsole extends AbstractHandler {
 
 		if (messageConsole != null) {
 			ConsolePlugin plugin = ConsolePlugin.getDefault();
-			IConsoleManager conMan = plugin.getConsoleManager();
-			conMan.removeConsoles(new IConsole[] {
+			IConsoleManager consoleManager = plugin.getConsoleManager();
+			consoleManager.removeConsoles(new IConsole[] {
 					messageConsole });
 		}
 

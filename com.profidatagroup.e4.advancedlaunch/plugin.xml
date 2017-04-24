@@ -34,53 +34,53 @@
 		  </consolePatternMatchListener>
 	</extension>
 	
- <extension
-       point="org.eclipse.ui.menus">
-    <menuContribution
-          allPopups="false"
-          locationURI="toolbar:org.eclipse.ui.main.toolbar">
-       <toolbar
-             id="com.profidatagroup.e4.advancedlaunch.toolbar1">
-          <command
-                commandId="com.profidatagroup.e4.advancedlaunch.command1"
-                label="terminate run/debugmode configurations"
-                icon="icons/full/obj16/terminate_all_co.gif"
-                style="push">
-          </command>
-       </toolbar>
-    </menuContribution>
-    <menuContribution locationURI="toolbar:org.eclipse.ui.console.ConsoleView">
-		<command 
-		commandId="ch.parisi.e4.advancedlaunch.removeConsole"
-		 label="Remove Multilauncher Console"
-                icon="icons/full/obj16/progress_rem.gif"
-                style="push">
-          </command> 
-	</menuContribution>
- </extension>
+	<extension
+	       point="org.eclipse.ui.menus">
+	    <menuContribution
+	          allPopups="false"
+	          locationURI="toolbar:org.eclipse.ui.main.toolbar">
+	       <toolbar
+	             id="com.profidatagroup.e4.advancedlaunch.toolbar1">
+	          <command
+	                commandId="com.profidatagroup.e4.advancedlaunch.command1"
+	                label="terminate run/debugmode configurations"
+	                icon="icons/full/obj16/terminate_all_co.gif"
+	                style="push">
+	          </command>
+	       </toolbar>
+	    </menuContribution>
+	    <menuContribution locationURI="toolbar:org.eclipse.ui.console.ConsoleView">
+			<command 
+			commandId="ch.parisi.e4.advancedlaunch.removeConsole"
+			 label="Remove Multilauncher Console"
+	                icon="icons/full/obj16/progress_rem.gif"
+	                style="push">
+	          </command> 
+		</menuContribution>
+	</extension>
  
- <extension
-       point="org.eclipse.ui.commands">
-    <command
-          defaultHandler="ch.parisi.e4.advancedlaunch.termination.TerminateRunningConfigurations"
-          id="com.profidatagroup.e4.advancedlaunch.command1"
-          name="terminate run/debugmode configurations">
-    </command>
-    <command
-          defaultHandler="ch.parisi.e4.advancedlaunch.strategies.console.RemoveMultilauncherConsole"
-          id="ch.parisi.e4.advancedlaunch.removeConsole"
-          name="Remove Multilauncher Console">
-    </command>
- </extension>
+	<extension
+	       point="org.eclipse.ui.commands">
+	    <command
+	          defaultHandler="ch.parisi.e4.advancedlaunch.termination.TerminateRunningConfigurations"
+	          id="com.profidatagroup.e4.advancedlaunch.command1"
+	          name="terminate run/debugmode configurations">
+	    </command>
+	    <command
+	          defaultHandler="ch.parisi.e4.advancedlaunch.strategies.console.RemoveMultilauncherConsole"
+	          id="ch.parisi.e4.advancedlaunch.removeConsole"
+	          name="Remove Multilauncher Console">
+	    </command>
+	 </extension>
  
- <extension
-        point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-    <launchConfigurationTypeImage
-            id="com.profidatagroup.e4.advancedlaunch.launchConfigurationTypeImage"
-            configTypeID="com.profidatagroup.e4.advancedlaunch.launchConfigurationType"
-            icon="icons/full/obj16/lrun_obj.gif">
-    </launchConfigurationTypeImage>
-</extension> 
+	<extension
+	        point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+	    <launchConfigurationTypeImage
+	            id="com.profidatagroup.e4.advancedlaunch.launchConfigurationTypeImage"
+	            configTypeID="com.profidatagroup.e4.advancedlaunch.launchConfigurationType"
+	            icon="icons/full/obj16/lrun_obj.gif">
+	    </launchConfigurationTypeImage>
+	</extension> 
 	
 
 </plugin>
